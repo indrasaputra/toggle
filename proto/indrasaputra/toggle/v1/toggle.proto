@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package proto.indrasaputra.toggle.v1;
+
+option go_package = "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1;togglev1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+service ToggleService {
+  rpc CreateToggle(CreateToggleRequest) returns (CreateToggleResponse) {
+    option (google.api.http) = {
+      post : "/v1/toggles",
+      body : "*"
+    };
+  }
+
+  rpc GetToggleByKey(GetToggleByKeyRequest) returns (GetToggleByKeyResponse) {
+    option (google.api.http) = {
+      get : "/v1/toggles/{key}",
+    };
+  }
+
+  rpc GetAllToggles(GetAllTogglesRequest) returns (GetAllTogglesResponse) {
+    option (google.api.http) = {
+      get : "/v1/toggles",
+    };
+  }
+
+  rpc Enable(EnableRequest) returns (EnableResponse) {
+    option (google.api.http) = {
+      put : "/v1/toggles/{key}/enable",
+    };
+  }
+
+  rpc Disable(DisableRequest) returns (DisableResponse) {
+    option (google.api.http) = {
+      put : "/v1/toggles/{key}/disable",
+    };
+  }
+
+  rpc DeleteToggle(DeleteToggleRequest) returns (DeleteToggleResponse) {
+    option (google.api.http) = {
+      delete : "/v1/toggles/{key}",
+    };
+  }
+}
+
+message CreateToggleRequest {
+  string key = 1;
+  string description = 2;
+}
+
+message CreateToggleResponse {
+}
+
+message GetToggleByKeyRequest {
+  string key = 1;
+}
+
+message GetToggleByKeyResponse {
+  Toggle toggle = 1;
+}
+
+message GetAllTogglesRequest {
+}
+
+message GetAllTogglesResponse {
+  repeated Toggle toggles = 1;
+}
+
+message EnableRequest {
+  string key = 1;
+}
+
+message EnableResponse {
+}
+
+message DisableRequest {
+  string key = 1;
+}
+
+message DisableResponse {
+}
+
+message DeleteToggleRequest {
+  string key = 1;
+}
+
+message DeleteToggleResponse {
+}
+
+message Toggle {
+  string key = 1;
+  bool is_enabled = 2;
+  string description = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message ToggleError {
+  ToggleErrorCode error_code = 1;
+}
+
+enum ToggleErrorCode {
+  // Default enum code according to
+  // https://medium.com/@akhaku/protobuf-definition-best-practices-87f281576f31.
+  UNSPECIFIED = 0;
+
+  // Unexpected behavior occured in system.
+  INTERNAL = 1;
+
+  // Toggle instance is empty or nil.
+  EMPTY_TOGGLE = 2;
+
+  // Toggle already exists.
+  // The uniqueness of a toggle is represented by its key.
+  ALREADY_EXISTS = 3;
+
+  // Toggle's key is invalid.
+  // It can be triggered when the key doesn't contain alphanumeric character.
+  INVALID_KEY = 4;
+
+  // Toggle's value (is_enabled field) is invalid.
+  // The value must be boolean.
+  INVALID_VALUE = 5;
+
+  // Toggle not found in system.
+  NOT_FOUND = 6;
+
+  // Toggle's value (is_enabled field) is true and it can't be deleted.
+  // It must be disabled (is_enabled set to false) first before deletion.
+  PROHIBITED_TO_DELETE = 7;
+}

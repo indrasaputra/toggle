@@ -1,0 +1,14 @@
+version: v1beta1
+name: buf.build/indrasaputra/toggle
+build:
+  roots:
+    - .
+lint:
+  use:
+    - BASIC
+breaking:
+  use:
+    - FILE
+
+deps:
+  - buf.build/beta/googleapis

@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	regexCompiler = regexp.MustCompile(`^[a-z0-9\-]+$`)
+	regexCompiler = regexp.MustCompile(`^[a-zA-Z0-9\-]+$`)
 }
 
 // CreateToggle defines the interface to create a toggle.
@@ -42,13 +42,12 @@ func NewToggleCreator(repo CreateToggleRepository) *ToggleCreator {
 
 // Create creates a new toggle.
 // It will reject if the toggle's key already exists in the system.
-// To standardize the key, it converts all non-alphanumeric characters to underscore.
+// The toggle's key is converted to lower case.
 func (tc *ToggleCreator) Create(ctx context.Context, toggle *entity.Toggle) error {
-	sanitizeToggle(toggle)
 	if err := validateToggle(toggle); err != nil {
 		return err
 	}
-	toggle.IsEnabled = false
+	sanitizeToggle(toggle)
 
 	return tc.repo.Insert(ctx, toggle)
 }
@@ -56,8 +55,8 @@ func (tc *ToggleCreator) Create(ctx context.Context, toggle *entity.Toggle) erro
 func sanitizeToggle(toggle *entity.Toggle) {
 	toggle.Key = strings.TrimSpace(toggle.Key)
 	toggle.Key = strings.ToLower(toggle.Key)
-
 	toggle.Description = strings.TrimSpace(toggle.Description)
+	toggle.IsEnabled = false
 }
 
 func validateToggle(toggle *entity.Toggle) error {

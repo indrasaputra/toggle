@@ -54,13 +54,13 @@ func TestNewToggle(t *testing.T) {
 	})
 }
 
-func TestToggle_SetIfNotExists(t *testing.T) {
+func TestToggle_Set(t *testing.T) {
 	t.Run("not all attributes are saved", func(t *testing.T) {
 		exec := createToggleExecutor()
 		exec.mock.ExpectHSet(testToggleKey, testHSetInput).SetVal(2)
 		exec.mock.ExpectExpire(testToggleKey, testTTL).SetVal(true)
 
-		err := exec.toggle.SetIfNotExists(testCtx, testToggle)
+		err := exec.toggle.Set(testCtx, testToggle)
 
 		assert.NotNil(t, err)
 		assert.Contains(t, err.Error(), "only success to save 2 out of 5 attributes")
@@ -71,7 +71,7 @@ func TestToggle_SetIfNotExists(t *testing.T) {
 		exec.mock.ExpectHSet(testToggleKey, testHSetInput).SetVal(5)
 		exec.mock.ExpectExpire(testToggleKey, testTTL).SetErr(errors.New(testRedisDownMessage))
 
-		err := exec.toggle.SetIfNotExists(testCtx, testToggle)
+		err := exec.toggle.Set(testCtx, testToggle)
 
 		assert.NotNil(t, err)
 		assert.Contains(t, err.Error(), testRedisDownMessage)
@@ -82,7 +82,7 @@ func TestToggle_SetIfNotExists(t *testing.T) {
 		exec.mock.ExpectHSet(testToggleKey, testHSetInput).SetVal(5)
 		exec.mock.ExpectExpire(testToggleKey, testTTL).SetVal(true)
 
-		err := exec.toggle.SetIfNotExists(testCtx, testToggle)
+		err := exec.toggle.Set(testCtx, testToggle)
 
 		assert.Nil(t, err)
 	})

@@ -37,9 +37,9 @@ func (t *Toggle) SetClient(client goredis.Cmdable) {
 	t.client = client
 }
 
-// SetIfNotExists sets the toggle in redis using SETNX.
+// Set sets the toggle in redis using hash (https://redis.io/commands/hset)..
 // It only sets the toggle for a certain time. It is set in ttl parameter in constructor.
-func (t *Toggle) SetIfNotExists(ctx context.Context, toggle *entity.Toggle) error {
+func (t *Toggle) Set(ctx context.Context, toggle *entity.Toggle) error {
 	hash := createToggleHash(toggle)
 
 	pipe := t.client.Pipeline()

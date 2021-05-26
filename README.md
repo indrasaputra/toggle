@@ -12,3 +12,19 @@ Toggle is a [Feature-Flag](https://martinfowler.com/articles/feature-toggles.htm
 ## Owner
 
 [Indra Saputra](https://github.com/indrasaputra)
+
+## API
+
+### gRPC
+
+The API can be seen in proto files (`*.proto`) in directory [proto](/proto).
+
+### RESTful JSON
+
+The API is automatically generated in OpenAPIv2 format when generating gRPC codes.
+The generated files are stored in directory [openapiv2](/openapiv2) in JSON format (`*.json`).
+To see the RESTful API contract, do the following:
+- Open the generated json file(s)
+- Copy the content
+- Open [https://editor.swagger.io/](https://editor.swagger.io/)
+- Paste the content in [https://editor.swagger.io/](https://editor.swagger.io/)

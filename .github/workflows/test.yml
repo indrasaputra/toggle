@@ -14,6 +14,15 @@ jobs:
         with:
           version: v1.38.0
 
+  migration-lint:
+    name: validate migration file's name
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2      
+      - run: make validate-migration
+
   import-lint:
     name: lint import block
     if: github.event_name == 'push'
@@ -23,10 +32,8 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ^1.16.x
-      
       - name: Checkout code
         uses: actions/checkout@v2
-      
       - run: make check-import
 
   proto-code-format:
@@ -48,11 +55,8 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: ^1.16.x
-      
       - name: Checkout code
         uses: actions/checkout@v2
-      
       - run: make cover
-      
       - name: Codecov
         uses: codecov/codecov-action@v1.0.13

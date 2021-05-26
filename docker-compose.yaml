@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - 6379:6379
+    networks:
+      - toggle
+
+  postgres:
+    image: postgres:13.2-alpine
+    environment:
+      - POSTGRES_USER=postgresuser
+      - POSTGRES_PASSWORD=postgrespassword
+      - POSTGRES_DB=toggle
+    ports:
+      - 5432:5432
+    networks:
+      - toggle
+
+networks:
+  toggle:

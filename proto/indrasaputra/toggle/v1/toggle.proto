@@ -118,7 +118,7 @@ enum ToggleErrorCode {
   ALREADY_EXISTS = 3;
 
   // Toggle's key is invalid.
-  // It can be triggered when the key doesn't contain alphanumeric character.
+  // It can be triggered when the key doesn't contain character other than alphanumeric and dash.
   INVALID_KEY = 4;
 
   // Toggle's value (is_enabled field) is invalid.

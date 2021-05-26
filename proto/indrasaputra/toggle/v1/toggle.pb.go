@@ -37,7 +37,7 @@ const (
 	// The uniqueness of a toggle is represented by its key.
 	ToggleErrorCode_ALREADY_EXISTS ToggleErrorCode = 3
 	// Toggle's key is invalid.
-	// It can be triggered when the key doesn't contain alphanumeric character.
+	// It can be triggered when the key doesn't contain character other than alphanumeric and dash.
 	ToggleErrorCode_INVALID_KEY ToggleErrorCode = 4
 	// Toggle's value (is_enabled field) is invalid.
 	// The value must be boolean.

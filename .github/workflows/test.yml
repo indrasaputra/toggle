@@ -29,6 +29,17 @@ jobs:
       
       - run: make check-import
 
+  proto-code-format:
+    name: format proto using clang-format
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: DoozyX/clang-format-lint-action@v0.11
+      with:
+        source: '.'
+        extensions: 'proto'
+        clangFormatVersion: 11
+
   unit-test:
     name: unit test and coverage
     runs-on: ubuntu-latest

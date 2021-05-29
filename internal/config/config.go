@@ -33,8 +33,8 @@ type Postgres struct {
 
 // Redis holds configuration for the Redis.
 type Redis struct {
-	Address  string `env:"REDIS_ADDRESS,default=localhost:6379"`
-	RedisTTL uint   `env:"REDIS_TTL,default=5"`
+	Address string `env:"REDIS_ADDRESS,default=localhost:6379"`
+	TTL     uint   `env:"REDIS_TTL,default=5"`
 }
 
 // NewConfig creates an instance of Config.

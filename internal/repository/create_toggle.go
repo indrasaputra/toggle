@@ -15,9 +15,8 @@ type InsertToggleDatabase interface {
 
 // SetToggleCache defines the interface to set a toggle in cache.
 type SetToggleCache interface {
-	// SetIfNotExists sets a toggle in cache if the toggle doesn't exist.
-	// Otherwise, it ignores the command.
-	SetIfNotExists(ctx context.Context, toggle *entity.Toggle) error
+	// Set sets a toggle in cache.
+	Set(ctx context.Context, toggle *entity.Toggle) error
 }
 
 // ToggleInserter is responsible to insert the toggle into storage.
@@ -44,6 +43,6 @@ func (ti *ToggleInserter) Insert(ctx context.Context, toggle *entity.Toggle) err
 	if err := ti.database.Insert(ctx, toggle); err != nil {
 		return err
 	}
-	_ = ti.cache.SetIfNotExists(ctx, toggle)
+	_ = ti.cache.Set(ctx, toggle)
 	return nil
 }

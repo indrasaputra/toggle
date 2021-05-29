@@ -61,7 +61,7 @@ func TestToggleInserter_Insert(t *testing.T) {
 	t.Run("cache error is ignored", func(t *testing.T) {
 		exec := createToggleInserterExecutor(ctrl)
 		exec.database.EXPECT().Insert(testCtx, testToggle).Return(nil)
-		exec.cache.EXPECT().SetIfNotExists(testCtx, testToggle).Return(entity.ErrInternal(errPostgresInternalMsg))
+		exec.cache.EXPECT().Set(testCtx, testToggle).Return(entity.ErrInternal(errPostgresInternalMsg))
 
 		err := exec.repo.Insert(testCtx, testToggle)
 
@@ -71,7 +71,7 @@ func TestToggleInserter_Insert(t *testing.T) {
 	t.Run("all steps are successful", func(t *testing.T) {
 		exec := createToggleInserterExecutor(ctrl)
 		exec.database.EXPECT().Insert(testCtx, testToggle).Return(nil)
-		exec.cache.EXPECT().SetIfNotExists(testCtx, testToggle).Return(nil)
+		exec.cache.EXPECT().Set(testCtx, testToggle).Return(nil)
 
 		err := exec.repo.Insert(testCtx, testToggle)
 

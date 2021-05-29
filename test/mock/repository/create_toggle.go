@@ -73,16 +73,16 @@ func (m *MockSetToggleCache) EXPECT() *MockSetToggleCacheMockRecorder {
 	return m.recorder
 }
 
-// SetIfNotExists mocks base method
-func (m *MockSetToggleCache) SetIfNotExists(ctx context.Context, toggle *entity.Toggle) error {
+// Set mocks base method
+func (m *MockSetToggleCache) Set(ctx context.Context, toggle *entity.Toggle) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetIfNotExists", ctx, toggle)
+	ret := m.ctrl.Call(m, "Set", ctx, toggle)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// SetIfNotExists indicates an expected call of SetIfNotExists
-func (mr *MockSetToggleCacheMockRecorder) SetIfNotExists(ctx, toggle interface{}) *gomock.Call {
+// Set indicates an expected call of Set
+func (mr *MockSetToggleCacheMockRecorder) Set(ctx, toggle interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetIfNotExists", reflect.TypeOf((*MockSetToggleCache)(nil).SetIfNotExists), ctx, toggle)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockSetToggleCache)(nil).Set), ctx, toggle)
 }

@@ -88,6 +88,26 @@ func TestToggle_Set(t *testing.T) {
 	})
 }
 
+func TestToggle_Delete(t *testing.T) {
+	t.Run("delete returns error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectDel(testToggleKey).SetErr(errors.New("redis: nil"))
+
+		err := exec.toggle.Delete(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("success delete", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectDel(testToggleKey).SetVal(1)
+
+		err := exec.toggle.Delete(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+	})
+}
+
 func createToggleExecutor() *ToggleExecutor {
 	client, mock := redismock.NewClientMock()
 	rds := redis.NewToggle(client, testTTL)

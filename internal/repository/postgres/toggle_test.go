@@ -5,8 +5,10 @@ import (
 	"errors"
 	"log"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgconn"
+	"github.com/jackc/pgx/v4"
 	"github.com/pashagolub/pgxmock"
 	"github.com/stretchr/testify/assert"
 
@@ -78,6 +80,49 @@ func TestToggle_Insert(t *testing.T) {
 		err := exec.toggle.Insert(testCtx, testToggle)
 
 		assert.Nil(t, err)
+	})
+}
+
+func TestToggle_GetByKey(t *testing.T) {
+	t.Run("select by key query returns empty row", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles WHERE key = \$1 LIMIT 1`).
+			WillReturnError(pgx.ErrNoRows)
+
+		res, err := exec.toggle.GetByKey(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrNotFound(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("select by key query returns error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles WHERE key = \$1 LIMIT 1`).
+			WillReturnError(errPostgresInternal)
+
+		res, err := exec.toggle.GetByKey(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(errPostgresInternalMsg), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("successfully retrieve row", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles WHERE key = \$1 LIMIT 1`).
+			WillReturnRows(pgxmock.
+				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
+				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()),
+			)
+
+		res, err := exec.toggle.GetByKey(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
 	})
 }
 

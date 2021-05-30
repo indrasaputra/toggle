@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgconn"
+	"github.com/jackc/pgx/v4"
 
 	"github.com/indrasaputra/toggle/entity"
 )
@@ -25,7 +26,7 @@ func NewToggle(pool PgxPoolIface) *Toggle {
 }
 
 // Insert inserts the toggle into the toggles table.
-func (g *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
+func (t *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 	if toggle == nil {
 		return entity.ErrEmptyToggle()
 	}
@@ -34,7 +35,7 @@ func (g *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 		"toggles (key, is_enabled, description, created_at, updated_at) " +
 		"VALUES ($1, $2, $3, $4, $5)"
 
-	_, err := g.pool.Exec(ctx, query,
+	_, err := t.pool.Exec(ctx, query,
 		toggle.Key,
 		toggle.IsEnabled,
 		toggle.Description,
@@ -49,6 +50,23 @@ func (g *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 		return entity.ErrInternal(err.Error())
 	}
 	return nil
+}
+
+// GetByKey gets a toggle from database.
+// It returns entity.ErrNotFound if toggle can't be found.
+func (t *Toggle) GetByKey(ctx context.Context, key string) (*entity.Toggle, error) {
+	query := "SELECT key, is_enabled, description, created_at, updated_at FROM toggles WHERE key = $1 LIMIT 1"
+	row := t.pool.QueryRow(ctx, query, key)
+
+	res := entity.Toggle{}
+	err := row.Scan(&res.Key, &res.IsEnabled, &res.Description, &res.CreatedAt, &res.UpdatedAt)
+	if err == pgx.ErrNoRows {
+		return nil, entity.ErrNotFound()
+	}
+	if err != nil {
+		return nil, entity.ErrInternal(err.Error())
+	}
+	return &res, nil
 }
 
 func isUniqueViolationErr(err error) bool {

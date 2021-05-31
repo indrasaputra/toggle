@@ -56,6 +56,12 @@ func (t *Toggle) Set(ctx context.Context, toggle *entity.Toggle) error {
 	return nil
 }
 
+// Delete deletes a toggle from redis.
+// It doesn't return error if toggle doesn't exist.
+func (t *Toggle) Delete(ctx context.Context, key string) error {
+	return t.client.Del(ctx, key).Err()
+}
+
 func createToggleHash(toggle *entity.Toggle) []string {
 	return []string{
 		"key",

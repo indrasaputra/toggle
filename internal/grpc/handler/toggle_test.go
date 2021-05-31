@@ -6,6 +6,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/indrasaputra/toggle/entity"
 	"github.com/indrasaputra/toggle/internal/grpc/handler"
@@ -19,11 +21,14 @@ var (
 	testToggleIsEnabled     = false
 	testToggle              = &entity.Toggle{Key: testToggleKey, IsEnabled: testToggleIsEnabled}
 	testCreateToggleRequest = &togglev1.CreateToggleRequest{Key: testToggleKey}
+	testDeleteToggleRequest = &togglev1.DeleteToggleRequest{Key: testToggleKey}
 )
 
 type ToggleExecutor struct {
 	handler *handler.Toggle
+
 	creator *mock_service.MockCreateToggle
+	deleter *mock_service.MockDeleteToggle
 }
 
 func TestNewToggle(t *testing.T) {
@@ -87,12 +92,50 @@ func TestToggle_CreateToggle(t *testing.T) {
 	})
 }
 
+func TestToggle_DeleteToggle(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("nil request is prohibited", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+
+		res, err := exec.handler.DeleteToggle(testCtx, nil)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, codes.InvalidArgument, status.Code(err))
+		assert.Nil(t, res)
+	})
+
+	t.Run("deleter service returns internal error", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.deleter.EXPECT().DeleteByKey(testCtx, testToggleKey).Return(entity.ErrInternal(""))
+
+		res, err := exec.handler.DeleteToggle(testCtx, testDeleteToggleRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, codes.Internal, status.Code(err))
+		assert.Nil(t, res)
+	})
+
+	t.Run("success delete toggle", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.deleter.EXPECT().DeleteByKey(testCtx, testToggleKey).Return(nil)
+
+		res, err := exec.handler.DeleteToggle(testCtx, testDeleteToggleRequest)
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
+	})
+}
+
 func createToggleExecutor(ctrl *gomock.Controller) *ToggleExecutor {
 	c := mock_service.NewMockCreateToggle(ctrl)
+	d := mock_service.NewMockDeleteToggle(ctrl)
 
-	h := handler.NewToggle(c)
+	h := handler.NewToggle(c, d)
 	return &ToggleExecutor{
 		handler: h,
 		creator: c,
+		deleter: d,
 	}
 }

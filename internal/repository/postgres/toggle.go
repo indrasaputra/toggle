@@ -69,6 +69,17 @@ func (t *Toggle) GetByKey(ctx context.Context, key string) (*entity.Toggle, erro
 	return &res, nil
 }
 
+// Delete deletes a toggle from PostgreSQL.
+// If the group doesn't exist, it doesn't returns error.
+func (t *Toggle) Delete(ctx context.Context, key string) error {
+	query := "DELETE FROM toggles WHERE key = $1"
+	_, err := t.pool.Exec(ctx, query, key)
+	if err != nil {
+		return entity.ErrInternal(err.Error())
+	}
+	return nil
+}
+
 func isUniqueViolationErr(err error) bool {
 	pgerr, ok := err.(*pgconn.PgError)
 	if !ok {

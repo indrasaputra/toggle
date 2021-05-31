@@ -11,6 +11,8 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/pashagolub/pgxmock"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/indrasaputra/toggle/entity"
 	"github.com/indrasaputra/toggle/internal/repository/postgres"
@@ -123,6 +125,31 @@ func TestToggle_GetByKey(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.NotNil(t, res)
+	})
+}
+
+func TestToggle_Delete(t *testing.T) {
+	t.Run("postgres database returns internal error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectExec(`DELETE FROM toggles WHERE key = \$1`).
+			WillReturnError(errPostgresInternal)
+
+		err := exec.toggle.Delete(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, codes.Internal, status.Code(err))
+	})
+
+	t.Run("success delete a group", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectExec(`DELETE FROM toggles WHERE key = \$1`).
+			WillReturnResult(pgxmock.NewResult("DELETE", 1))
+
+		err := exec.toggle.Delete(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
 	})
 }
 

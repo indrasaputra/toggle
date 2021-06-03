@@ -232,7 +232,7 @@ func TestToggle_UpdateIsEnabled(t *testing.T) {
 				AddRow(true),
 			)
 		exec.pgx.
-			ExpectExec(`UPDATE toggles SET is_enabled = \$1 WHERE key = \$2`).
+			ExpectExec(`UPDATE toggles SET is_enabled = \$1, updated_at = \$2 WHERE key = \$3`).
 			WillReturnError(errPostgresInternal)
 
 		err := exec.toggle.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
@@ -250,7 +250,7 @@ func TestToggle_UpdateIsEnabled(t *testing.T) {
 				AddRow(true),
 			)
 		exec.pgx.
-			ExpectExec(`UPDATE toggles SET is_enabled = \$1 WHERE key = \$2`).
+			ExpectExec(`UPDATE toggles SET is_enabled = \$1, updated_at = \$2 WHERE key = \$3`).
 			WillReturnResult(pgxmock.NewResult("UPDATE", 1))
 
 		err := exec.toggle.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)

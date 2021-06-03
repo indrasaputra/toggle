@@ -102,8 +102,8 @@ func (t *Toggle) UpdateIsEnabled(ctx context.Context, key string, value bool) er
 		return err
 	}
 
-	query := "UPDATE toggles SET is_enabled = $1 WHERE key = $2"
-	_, err := t.pool.Exec(ctx, query, value, key)
+	query := "UPDATE toggles SET is_enabled = $1, updated_at = $2 WHERE key = $3"
+	_, err := t.pool.Exec(ctx, query, value, time.Now(), key)
 	if err != nil {
 		return entity.ErrInternal(err.Error())
 	}

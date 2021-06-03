@@ -60,3 +60,14 @@ jobs:
       - run: make cover
       - name: Codecov
         uses: codecov/codecov-action@v1.0.13
+
+  api-test:
+    name: api test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    container:
+      image: indrasaputra/golang:0.0.1
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - run: make test.integration

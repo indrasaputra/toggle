@@ -1,4 +1,5 @@
-PROTOGEN_IMAGE = indrasaputra/protogen:v0.0.1
+GO_UNIT_TEST_FILES	= $(shell go list ./... | grep -v /features/)
+PROTOGEN_IMAGE 		= indrasaputra/protogen:v0.0.1
 
 .PHONY: format
 format:
@@ -42,13 +43,13 @@ pretty: tidy format lint
 
 .PHONY: cover
 cover:
-	go test -v -race ./... -coverprofile=coverage.out
+	go test -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
 	go tool cover -html=coverage.out -o coverage.html
 	go tool cover -func coverage.out
 
 .PHONY: coverhtml
 coverhtml:
-	go test -v -race ./... -coverprofile=coverage.out
+	go test -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
 	go tool cover -html=coverage.out
 
 .PHONY: cleantestcache
@@ -57,7 +58,11 @@ cleantestcache:
 
 .PHONY: test-unit
 test.unit: cleantestcache
-	go test -v -race ./...
+	go test -v -race $(GO_UNIT_TEST_FILES)
+
+.PHONY: test.integration
+test.integration:
+	bin/godog.sh
 
 .PHONY: migration
 migration:

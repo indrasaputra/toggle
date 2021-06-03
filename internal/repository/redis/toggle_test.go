@@ -8,6 +8,8 @@ import (
 
 	"github.com/go-redis/redismock/v8"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/indrasaputra/toggle/entity"
 	"github.com/indrasaputra/toggle/internal/repository/redis"
@@ -38,6 +40,14 @@ var (
 		testToggleCreatedAt.Format(time.RFC3339),
 		"updated_at",
 		testToggleUpdatedAt.Format(time.RFC3339),
+	}
+	testEmptyMapResult = make(map[string]string)
+	testValidMapResult = map[string]string{
+		"key":         testToggleKey,
+		"is_enabled":  "true",
+		"description": testToggleDescription,
+		"created_at":  testToggleCreatedAt.Format(time.RFC3339),
+		"updated_at":  testToggleUpdatedAt.Format(time.RFC3339),
 	}
 	testRedisDownMessage = "redis down"
 )
@@ -77,7 +87,7 @@ func TestToggle_Set(t *testing.T) {
 		assert.Contains(t, err.Error(), testRedisDownMessage)
 	})
 
-	t.Run("success save url in redis hash", func(t *testing.T) {
+	t.Run("success save res in redis hash", func(t *testing.T) {
 		exec := createToggleExecutor()
 		exec.mock.ExpectHSet(testToggleKey, testHSetInput).SetVal(5)
 		exec.mock.ExpectExpire(testToggleKey, testTTL).SetVal(true)
@@ -85,6 +95,80 @@ func TestToggle_Set(t *testing.T) {
 		err := exec.toggle.Set(testCtx, testToggle)
 
 		assert.Nil(t, err)
+	})
+}
+
+func TestToggle_Get(t *testing.T) {
+	t.Run("redis hgetall returns error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectHGetAll(testToggleKey).SetErr(errors.New(testRedisDownMessage))
+
+		res, err := exec.toggle.Get(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(testRedisDownMessage), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("redis hgetall returns empty hash", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectHGetAll(testToggleKey).SetVal(testEmptyMapResult)
+
+		res, err := exec.toggle.Get(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrNotFound(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("toggle is_enabled is invalid", func(t *testing.T) {
+		exec := createToggleExecutor()
+		hash := make(map[string]string)
+		hash["is_enabled"] = "no-value"
+		exec.mock.ExpectHGetAll(testToggleKey).SetVal(hash)
+
+		res, err := exec.toggle.Get(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, codes.Internal, status.Code(err))
+		assert.Nil(t, res)
+	})
+
+	t.Run("toggle created_at is invalid", func(t *testing.T) {
+		exec := createToggleExecutor()
+		hash := make(map[string]string)
+		hash["created_at"] = ""
+		exec.mock.ExpectHGetAll(testToggleKey).SetVal(hash)
+
+		res, err := exec.toggle.Get(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, codes.Internal, status.Code(err))
+		assert.Nil(t, res)
+	})
+
+	t.Run("toggle updated_at is invalid", func(t *testing.T) {
+		exec := createToggleExecutor()
+		hash := make(map[string]string)
+		hash["created_at"] = "2021-04-04T12:05:38.728727+07:00"
+		hash["updated_at"] = ""
+		exec.mock.ExpectHGetAll(testToggleKey).SetVal(hash)
+
+		res, err := exec.toggle.Get(testCtx, testToggleKey)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, codes.Internal, status.Code(err))
+		assert.Nil(t, res)
+	})
+
+	t.Run("success get toggle from redis hash", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectHGetAll(testToggleKey).SetVal(testValidMapResult)
+
+		res, err := exec.toggle.Get(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
 	})
 }
 

@@ -11,6 +11,10 @@ import (
 	"github.com/indrasaputra/toggle/entity"
 )
 
+const (
+	redisNotFound = "redis: nil"
+)
+
 var (
 	attributes        = []string{"key", "is_enabled", "description", "created_at", "updated_at"}
 	numberOfAttribute = len(attributes)
@@ -56,6 +60,23 @@ func (t *Toggle) Set(ctx context.Context, toggle *entity.Toggle) error {
 	return nil
 }
 
+// Get gets a toggle in cache.
+// It only returns error of there is error in the system or toggle value can't be processed.
+// If the data can't be found but the system is fine, it returns nil.
+func (t *Toggle) Get(ctx context.Context, key string) (*entity.Toggle, error) {
+	res, err := t.client.HGetAll(ctx, key).Result()
+	if err != nil && err.Error() == redisNotFound {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, entity.ErrInternal(err.Error())
+	}
+	if len(res) == 0 {
+		return nil, entity.ErrNotFound()
+	}
+	return createToggleFromHash(res)
+}
+
 // Delete deletes a toggle from redis.
 // It doesn't return error if toggle doesn't exist.
 func (t *Toggle) Delete(ctx context.Context, key string) error {
@@ -75,4 +96,26 @@ func createToggleHash(toggle *entity.Toggle) []string {
 		"updated_at",
 		toggle.UpdatedAt.Format(time.RFC3339),
 	}
+}
+
+func createToggleFromHash(hash map[string]string) (*entity.Toggle, error) {
+	toggle := &entity.Toggle{}
+	var err error
+
+	toggle.Key = hash["key"]
+	toggle.IsEnabled, err = strconv.ParseBool(hash["is_enabled"])
+	if err != nil {
+		return nil, entity.ErrInternal(err.Error())
+	}
+	toggle.Description = hash["description"]
+	toggle.CreatedAt, err = time.Parse(time.RFC3339, hash["created_at"])
+	if err != nil {
+		return nil, entity.ErrInternal(err.Error())
+	}
+	toggle.UpdatedAt, err = time.Parse(time.RFC3339, hash["updated_at"])
+	if err != nil {
+		return nil, entity.ErrInternal(err.Error())
+	}
+
+	return toggle, nil
 }

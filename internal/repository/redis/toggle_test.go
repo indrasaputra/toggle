@@ -187,7 +187,7 @@ func TestToggle_Get(t *testing.T) {
 func TestToggle_SetIsEnabled(t *testing.T) {
 	t.Run("set returns error", func(t *testing.T) {
 		exec := createToggleExecutor()
-		exec.mock.ExpectHSet(testToggleKey, "is_enabled", "false").SetErr(errors.New(testRedisDownMessage))
+		exec.mock.ExpectHSet(testToggleKey, "is_enabled", "false", "updated_at", time.Now().Format(time.RFC3339)).SetErr(errors.New(testRedisDownMessage))
 
 		err := exec.toggle.SetIsEnabled(testCtx, testToggleKey, false)
 
@@ -197,7 +197,7 @@ func TestToggle_SetIsEnabled(t *testing.T) {
 
 	t.Run("success set is_enabled field", func(t *testing.T) {
 		exec := createToggleExecutor()
-		exec.mock.ExpectHSet(testToggleKey, "is_enabled", "true").SetVal(0)
+		exec.mock.ExpectHSet(testToggleKey, "is_enabled", "true", "updated_at", time.Now().Format(time.RFC3339)).SetVal(0)
 
 		err := exec.toggle.SetIsEnabled(testCtx, testToggleKey, true)
 

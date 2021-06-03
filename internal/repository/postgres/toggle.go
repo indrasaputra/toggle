@@ -31,6 +31,8 @@ func (t *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 	if toggle == nil {
 		return entity.ErrEmptyToggle()
 	}
+	toggle.CreatedAt = time.Now()
+	toggle.UpdatedAt = time.Now()
 
 	query := "INSERT INTO " +
 		"toggles (key, is_enabled, description, created_at, updated_at) " +
@@ -40,8 +42,8 @@ func (t *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 		toggle.Key,
 		toggle.IsEnabled,
 		toggle.Description,
-		time.Now(),
-		time.Now(),
+		toggle.CreatedAt,
+		toggle.UpdatedAt,
 	)
 
 	if err != nil && isUniqueViolationErr(err) {

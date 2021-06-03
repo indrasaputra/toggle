@@ -196,8 +196,41 @@ func TestToggle_GetAll(t *testing.T) {
 }
 
 func TestToggle_UpdateIsEnabled(t *testing.T) {
+	t.Run("check exists returns error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT EXISTS\(SELECT 1 FROM toggles WHERE key = \$1\)`).
+			WillReturnError(errPostgresInternal)
+
+		err := exec.toggle.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(errPostgresInternalMsg), err)
+	})
+
+	t.Run("toggle not found", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT EXISTS\(SELECT 1 FROM toggles WHERE key = \$1\)`).
+			WillReturnRows(pgxmock.
+				NewRows([]string{"exists"}).
+				AddRow(false),
+			)
+
+		err := exec.toggle.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrNotFound(), err)
+	})
+
 	t.Run("postgres database returns internal error", func(t *testing.T) {
 		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT EXISTS\(SELECT 1 FROM toggles WHERE key = \$1\)`).
+			WillReturnRows(pgxmock.
+				NewRows([]string{"exists"}).
+				AddRow(true),
+			)
 		exec.pgx.
 			ExpectExec(`UPDATE toggles SET is_enabled = \$1 WHERE key = \$2`).
 			WillReturnError(errPostgresInternal)
@@ -210,6 +243,12 @@ func TestToggle_UpdateIsEnabled(t *testing.T) {
 
 	t.Run("success update a toggle", func(t *testing.T) {
 		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT EXISTS\(SELECT 1 FROM toggles WHERE key = \$1\)`).
+			WillReturnRows(pgxmock.
+				NewRows([]string{"exists"}).
+				AddRow(true),
+			)
 		exec.pgx.
 			ExpectExec(`UPDATE toggles SET is_enabled = \$1 WHERE key = \$2`).
 			WillReturnResult(pgxmock.NewResult("UPDATE", 1))

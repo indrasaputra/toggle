@@ -98,6 +98,10 @@ func (t *Toggle) GetAll(ctx context.Context, limit uint) ([]*entity.Toggle, erro
 // UpdateIsEnabled updates the toggle's is_enabled value in the storage.
 // It should handle if the toggle doesn't exist.
 func (t *Toggle) UpdateIsEnabled(ctx context.Context, key string, value bool) error {
+	if err := t.checkIfToggleExists(ctx, key); err != nil {
+		return err
+	}
+
 	query := "UPDATE toggles SET is_enabled = $1 WHERE key = $2"
 	_, err := t.pool.Exec(ctx, query, value, key)
 	if err != nil {
@@ -113,6 +117,20 @@ func (t *Toggle) Delete(ctx context.Context, key string) error {
 	_, err := t.pool.Exec(ctx, query, key)
 	if err != nil {
 		return entity.ErrInternal(err.Error())
+	}
+	return nil
+}
+
+func (t *Toggle) checkIfToggleExists(ctx context.Context, key string) error {
+	query := "SELECT EXISTS(SELECT 1 FROM toggles WHERE key = $1)"
+	row := t.pool.QueryRow(ctx, query, key)
+
+	var found bool
+	if err := row.Scan(&found); err != nil {
+		return entity.ErrInternal(err.Error())
+	}
+	if !found {
+		return entity.ErrNotFound()
 	}
 	return nil
 }

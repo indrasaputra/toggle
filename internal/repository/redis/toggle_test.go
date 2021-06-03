@@ -99,6 +99,16 @@ func TestToggle_Set(t *testing.T) {
 }
 
 func TestToggle_Get(t *testing.T) {
+	t.Run("redis hgetall returns not found (redis: nil)", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectHGetAll(testToggleKey).SetErr(errors.New("redis: nil"))
+
+		res, err := exec.toggle.Get(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+		assert.Nil(t, res)
+	})
+
 	t.Run("redis hgetall returns error", func(t *testing.T) {
 		exec := createToggleExecutor()
 		exec.mock.ExpectHGetAll(testToggleKey).SetErr(errors.New(testRedisDownMessage))
@@ -137,6 +147,7 @@ func TestToggle_Get(t *testing.T) {
 	t.Run("toggle created_at is invalid", func(t *testing.T) {
 		exec := createToggleExecutor()
 		hash := make(map[string]string)
+		hash["is_enabled"] = "false"
 		hash["created_at"] = ""
 		exec.mock.ExpectHGetAll(testToggleKey).SetVal(hash)
 
@@ -150,6 +161,7 @@ func TestToggle_Get(t *testing.T) {
 	t.Run("toggle updated_at is invalid", func(t *testing.T) {
 		exec := createToggleExecutor()
 		hash := make(map[string]string)
+		hash["is_enabled"] = "false"
 		hash["created_at"] = "2021-04-04T12:05:38.728727+07:00"
 		hash["updated_at"] = ""
 		exec.mock.ExpectHGetAll(testToggleKey).SetVal(hash)

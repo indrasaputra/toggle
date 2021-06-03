@@ -6,6 +6,12 @@ import (
 	"github.com/indrasaputra/toggle/entity"
 )
 
+const (
+	defaultLimit = 10
+	// DefaultToggleLimit is deliberately set to 10 because it is enough for simple application.
+	DefaultToggleLimit = uint(defaultLimit)
+)
+
 // GetToggleDatabase defines the interface to get toggle from database.
 type GetToggleDatabase interface {
 	// GetByKey gets a toggle from database.
@@ -13,7 +19,7 @@ type GetToggleDatabase interface {
 	GetByKey(ctx context.Context, key string) (*entity.Toggle, error)
 	// GetAll gets all available toggles from database.
 	// If there isn't any toggle in repository, it returns empty list of toggle and nil error.
-	GetAll(ctx context.Context) ([]*entity.Toggle, error)
+	GetAll(ctx context.Context, limit uint) ([]*entity.Toggle, error)
 }
 
 // GetToggleCache defines the interface to get a toggle in cache.
@@ -61,5 +67,5 @@ func (tg *ToggleGetter) GetByKey(ctx context.Context, key string) (*entity.Toggl
 // GetAll gets all available toggles from storage.
 // If there isn't any toggle in repository, it returns empty list of toggle and nil error.
 func (tg *ToggleGetter) GetAll(ctx context.Context) ([]*entity.Toggle, error) {
-	return tg.database.GetAll(ctx)
+	return tg.database.GetAll(ctx, DefaultToggleLimit)
 }

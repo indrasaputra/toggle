@@ -83,7 +83,7 @@ func TestToggleGetter_GetAll(t *testing.T) {
 
 	t.Run("database returns error", func(t *testing.T) {
 		exec := createToggleGetterExecutor(ctrl)
-		exec.database.EXPECT().GetAll(testCtx).Return([]*entity.Toggle{}, entity.ErrInternal(""))
+		exec.database.EXPECT().GetAll(testCtx, repository.DefaultToggleLimit).Return([]*entity.Toggle{}, entity.ErrInternal(""))
 
 		res, err := exec.getter.GetAll(testCtx)
 
@@ -94,7 +94,7 @@ func TestToggleGetter_GetAll(t *testing.T) {
 
 	t.Run("database returns empty list and nil error", func(t *testing.T) {
 		exec := createToggleGetterExecutor(ctrl)
-		exec.database.EXPECT().GetAll(testCtx).Return([]*entity.Toggle{}, nil)
+		exec.database.EXPECT().GetAll(testCtx, repository.DefaultToggleLimit).Return([]*entity.Toggle{}, nil)
 
 		res, err := exec.getter.GetAll(testCtx)
 
@@ -104,7 +104,7 @@ func TestToggleGetter_GetAll(t *testing.T) {
 
 	t.Run("success get toggle from db", func(t *testing.T) {
 		exec := createToggleGetterExecutor(ctrl)
-		exec.database.EXPECT().GetAll(testCtx).Return([]*entity.Toggle{testToggle}, nil)
+		exec.database.EXPECT().GetAll(testCtx, repository.DefaultToggleLimit).Return([]*entity.Toggle{testToggle}, nil)
 
 		res, err := exec.getter.GetAll(testCtx)
 

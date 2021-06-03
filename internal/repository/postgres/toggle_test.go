@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/indrasaputra/toggle/entity"
+	"github.com/indrasaputra/toggle/internal/repository"
 	"github.com/indrasaputra/toggle/internal/repository/postgres"
 )
 
@@ -128,6 +129,71 @@ func TestToggle_GetByKey(t *testing.T) {
 	})
 }
 
+func TestToggle_GetAll(t *testing.T) {
+	t.Run("select all query returns error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT \$1`).
+			WillReturnError(errPostgresInternal)
+
+		res, err := exec.toggle.GetAll(testCtx, repository.DefaultToggleLimit)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(errPostgresInternalMsg), err)
+		assert.Empty(t, res)
+	})
+
+	t.Run("select all rows scan returns error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT \$1`).
+			WillReturnRows(pgxmock.
+				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
+				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
+				AddRow("1$%", true, testToggleDesc, "time.Now()", "time.Now()"),
+			)
+
+		res, err := exec.toggle.GetAll(testCtx, repository.DefaultToggleLimit)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 1, len(res))
+	})
+
+	t.Run("select all rows error occurs after scanning", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT \$1`).
+			WillReturnRows(pgxmock.
+				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
+				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
+				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
+				RowError(2, errPostgresInternal),
+			)
+
+		res, err := exec.toggle.GetAll(testCtx, repository.DefaultToggleLimit)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(errPostgresInternalMsg), err)
+		assert.Empty(t, res)
+	})
+
+	t.Run("successfully retrieve all rows", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT \$1`).
+			WillReturnRows(pgxmock.
+				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
+				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
+				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()),
+			)
+
+		res, err := exec.toggle.GetAll(testCtx, repository.DefaultToggleLimit)
+
+		assert.Nil(t, err)
+		assert.Equal(t, 2, len(res))
+	})
+}
+
 func TestToggle_Delete(t *testing.T) {
 	t.Run("postgres database returns internal error", func(t *testing.T) {
 		exec := createToggleExecutor()
@@ -141,7 +207,7 @@ func TestToggle_Delete(t *testing.T) {
 		assert.Equal(t, codes.Internal, status.Code(err))
 	})
 
-	t.Run("success delete a group", func(t *testing.T) {
+	t.Run("success delete a toggle", func(t *testing.T) {
 		exec := createToggleExecutor()
 		exec.pgx.
 			ExpectExec(`DELETE FROM toggles WHERE key = \$1`).

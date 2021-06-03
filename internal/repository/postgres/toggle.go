@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/jackc/pgconn"
@@ -67,6 +68,31 @@ func (t *Toggle) GetByKey(ctx context.Context, key string) (*entity.Toggle, erro
 		return nil, entity.ErrInternal(err.Error())
 	}
 	return &res, nil
+}
+
+// GetAll gets all available toggles from storage.
+// If there isn't any toggle in repository, it returns empty list of toggle and nil error.
+func (t *Toggle) GetAll(ctx context.Context, limit uint) ([]*entity.Toggle, error) {
+	query := "SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT $1"
+	rows, err := t.pool.Query(ctx, query, limit)
+	if err != nil {
+		return []*entity.Toggle{}, entity.ErrInternal(err.Error())
+	}
+	defer rows.Close()
+
+	res := []*entity.Toggle{}
+	for rows.Next() {
+		var tmp entity.Toggle
+		if err := rows.Scan(&tmp.Key, &tmp.IsEnabled, &tmp.Description, &tmp.CreatedAt, &tmp.UpdatedAt); err != nil {
+			log.Printf("[Toggle-GetAll] scan rows error: %s", err.Error())
+			continue
+		}
+		res = append(res, &tmp)
+	}
+	if rows.Err() != nil {
+		return []*entity.Toggle{}, entity.ErrInternal(rows.Err().Error())
+	}
+	return res, nil
 }
 
 // Delete deletes a toggle from PostgreSQL.

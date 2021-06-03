@@ -52,18 +52,18 @@ func (mr *MockGetToggleDatabaseMockRecorder) GetByKey(ctx, key interface{}) *gom
 }
 
 // GetAll mocks base method
-func (m *MockGetToggleDatabase) GetAll(ctx context.Context) ([]*entity.Toggle, error) {
+func (m *MockGetToggleDatabase) GetAll(ctx context.Context, limit uint) ([]*entity.Toggle, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAll", ctx)
+	ret := m.ctrl.Call(m, "GetAll", ctx, limit)
 	ret0, _ := ret[0].([]*entity.Toggle)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetAll indicates an expected call of GetAll
-func (mr *MockGetToggleDatabaseMockRecorder) GetAll(ctx interface{}) *gomock.Call {
+func (mr *MockGetToggleDatabaseMockRecorder) GetAll(ctx, limit interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockGetToggleDatabase)(nil).GetAll), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockGetToggleDatabase)(nil).GetAll), ctx, limit)
 }
 
 // MockGetToggleCache is a mock of GetToggleCache interface

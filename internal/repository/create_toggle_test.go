@@ -15,8 +15,8 @@ import (
 var (
 	testCtx                = context.Background()
 	testToggleKey          = "toggle-1"
-	testToggleDesc         = "description"
-	testToggle             = &entity.Toggle{Key: testToggleKey, Description: testToggleDesc}
+	testToggleDescription  = "description"
+	testToggle             = &entity.Toggle{Key: testToggleKey, Description: testToggleDescription}
 	errPostgresInternalMsg = "database down"
 )
 

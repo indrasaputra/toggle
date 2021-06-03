@@ -31,6 +31,8 @@ func (t *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 	if toggle == nil {
 		return entity.ErrEmptyToggle()
 	}
+	toggle.CreatedAt = time.Now().UTC()
+	toggle.UpdatedAt = time.Now().UTC()
 
 	query := "INSERT INTO " +
 		"toggles (key, is_enabled, description, created_at, updated_at) " +
@@ -40,8 +42,8 @@ func (t *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 		toggle.Key,
 		toggle.IsEnabled,
 		toggle.Description,
-		time.Now(),
-		time.Now(),
+		toggle.CreatedAt,
+		toggle.UpdatedAt,
 	)
 
 	if err != nil && isUniqueViolationErr(err) {
@@ -95,6 +97,21 @@ func (t *Toggle) GetAll(ctx context.Context, limit uint) ([]*entity.Toggle, erro
 	return res, nil
 }
 
+// UpdateIsEnabled updates the toggle's is_enabled value in the storage.
+// It should handle if the toggle doesn't exist.
+func (t *Toggle) UpdateIsEnabled(ctx context.Context, key string, value bool) error {
+	if err := t.checkIfToggleExists(ctx, key); err != nil {
+		return err
+	}
+
+	query := "UPDATE toggles SET is_enabled = $1, updated_at = $2 WHERE key = $3"
+	_, err := t.pool.Exec(ctx, query, value, time.Now().UTC(), key)
+	if err != nil {
+		return entity.ErrInternal(err.Error())
+	}
+	return nil
+}
+
 // Delete deletes a toggle from PostgreSQL.
 // If the group doesn't exist, it doesn't returns error.
 func (t *Toggle) Delete(ctx context.Context, key string) error {
@@ -102,6 +119,20 @@ func (t *Toggle) Delete(ctx context.Context, key string) error {
 	_, err := t.pool.Exec(ctx, query, key)
 	if err != nil {
 		return entity.ErrInternal(err.Error())
+	}
+	return nil
+}
+
+func (t *Toggle) checkIfToggleExists(ctx context.Context, key string) error {
+	query := "SELECT EXISTS(SELECT 1 FROM toggles WHERE key = $1)"
+	row := t.pool.QueryRow(ctx, query, key)
+
+	var found bool
+	if err := row.Scan(&found); err != nil {
+		return entity.ErrInternal(err.Error())
+	}
+	if !found {
+		return entity.ErrNotFound()
 	}
 	return nil
 }

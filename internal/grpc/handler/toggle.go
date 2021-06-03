@@ -16,14 +16,16 @@ type Toggle struct {
 
 	creator service.CreateToggle
 	getter  service.GetToggle
+	updater service.UpdateToggle
 	deleter service.DeleteToggle
 }
 
 // NewToggle creates an instance of Toggle.
-func NewToggle(creator service.CreateToggle, getter service.GetToggle, deleter service.DeleteToggle) *Toggle {
+func NewToggle(creator service.CreateToggle, getter service.GetToggle, updater service.UpdateToggle, deleter service.DeleteToggle) *Toggle {
 	return &Toggle{
 		creator: creator,
 		getter:  getter,
+		updater: updater,
 		deleter: deleter,
 	}
 }
@@ -67,6 +69,34 @@ func (th *Toggle) GetAllToggles(ctx context.Context, request *togglev1.GetAllTog
 		return nil, err
 	}
 	return createGetAllTogglesResponse(toggles), nil
+}
+
+// Enable handles HTTP/2 gRPC request similar to PUT in HTTP/1.1.
+// It sets the toggle's is_enabled field to be true.
+func (th *Toggle) Enable(ctx context.Context, request *togglev1.EnableRequest) (*togglev1.EnableResponse, error) {
+	if request == nil {
+		return nil, entity.ErrEmptyToggle()
+	}
+
+	err := th.updater.Enable(ctx, request.GetKey())
+	if err != nil {
+		return nil, err
+	}
+	return &togglev1.EnableResponse{}, nil
+}
+
+// Disable handles HTTP/2 gRPC request similar to PUT in HTTP/1.1.
+// It sets the toggle's is_enabled field to be false.
+func (th *Toggle) Disable(ctx context.Context, request *togglev1.DisableRequest) (*togglev1.DisableResponse, error) {
+	if request == nil {
+		return nil, entity.ErrEmptyToggle()
+	}
+
+	err := th.updater.Disable(ctx, request.GetKey())
+	if err != nil {
+		return nil, err
+	}
+	return &togglev1.DisableResponse{}, nil
 }
 
 // DeleteToggle handles HTTP/2 gRPC request similar to DELETE in HTTP/1.1.

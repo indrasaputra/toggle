@@ -34,7 +34,6 @@ func NewToggleDeleter(repo DeleteToggleRepository) *ToggleDeleter {
 
 // DeleteByKey deletes a toggle by its key.
 // It only deletes disabled toggle.
-// If the toggle doesn't exist, it doesn't return any error.
 func (td *ToggleDeleter) DeleteByKey(ctx context.Context, key string) error {
 	toggle, err := td.repo.GetByKey(ctx, key)
 	if err != nil {

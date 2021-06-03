@@ -35,13 +35,7 @@ func NewToggle(client goredis.Cmdable, ttl time.Duration) *Toggle {
 	}
 }
 
-// SetClient sets go-redis client.
-// This method is specifically created for testing purposes.
-func (t *Toggle) SetClient(client goredis.Cmdable) {
-	t.client = client
-}
-
-// Set sets the toggle in redis using hash (https://redis.io/commands/hset)..
+// Set sets the toggle in redis using hash (https://redis.io/commands/hset).
 // It only sets the toggle for a certain time. It is set in ttl parameter in constructor.
 func (t *Toggle) Set(ctx context.Context, toggle *entity.Toggle) error {
 	hash := createToggleHash(toggle)
@@ -54,6 +48,16 @@ func (t *Toggle) Set(ctx context.Context, toggle *entity.Toggle) error {
 	if int(res.Val()) != numberOfAttribute {
 		return entity.ErrInternal(fmt.Sprintf("only success to save %d out of %d attributes", res.Val(), numberOfAttribute))
 	}
+	if err != nil {
+		return entity.ErrInternal(err.Error())
+	}
+	return nil
+}
+
+// SetIsEnabled sets the toggle's is_enabled field in redis.
+// It doesn't change the current expire time.
+func (t *Toggle) SetIsEnabled(ctx context.Context, key string, value bool) error {
+	err := t.client.HSet(ctx, key, "is_enabled", strconv.FormatBool(value), "updated_at", time.Now().UTC().Format(time.RFC3339)).Err()
 	if err != nil {
 		return entity.ErrInternal(err.Error())
 	}
@@ -80,7 +84,11 @@ func (t *Toggle) Get(ctx context.Context, key string) (*entity.Toggle, error) {
 // Delete deletes a toggle from redis.
 // It doesn't return error if toggle doesn't exist.
 func (t *Toggle) Delete(ctx context.Context, key string) error {
-	return t.client.Del(ctx, key).Err()
+	err := t.client.Del(ctx, key).Err()
+	if err != nil {
+		return entity.ErrInternal(err.Error())
+	}
+	return nil
 }
 
 func createToggleHash(toggle *entity.Toggle) []string {

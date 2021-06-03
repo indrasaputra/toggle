@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	testKey            = "toggle-1"
-	testToggle         = &entity.Toggle{Key: testKey, IsEnabled: true}
-	testToggleDisabled = &entity.Toggle{Key: testKey, IsEnabled: false}
+	testToggleKey      = "toggle-1"
+	testToggle         = &entity.Toggle{Key: testToggleKey, IsEnabled: testToggleIsEnabledTrue}
+	testToggleDisabled = &entity.Toggle{Key: testToggleKey, IsEnabled: testToggleIsEnabledFalse}
 )
 
 type ToggleDeleterExecutor struct {
@@ -38,9 +38,9 @@ func TestToggleDeleter_DeleteByKey(t *testing.T) {
 
 	t.Run("repository returns error for find toggle", func(t *testing.T) {
 		exec := createToggleDeleterExecutor(ctrl)
-		exec.repo.EXPECT().GetByKey(testCtx, testKey).Return(nil, entity.ErrInternal(""))
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(nil, entity.ErrInternal(""))
 
-		err := exec.deleter.DeleteByKey(testCtx, testKey)
+		err := exec.deleter.DeleteByKey(testCtx, testToggleKey)
 
 		assert.NotNil(t, err)
 		assert.Equal(t, entity.ErrInternal(""), err)
@@ -48,9 +48,9 @@ func TestToggleDeleter_DeleteByKey(t *testing.T) {
 
 	t.Run("enabled toggle can't be deleted", func(t *testing.T) {
 		exec := createToggleDeleterExecutor(ctrl)
-		exec.repo.EXPECT().GetByKey(testCtx, testKey).Return(testToggle, nil)
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(testToggle, nil)
 
-		err := exec.deleter.DeleteByKey(testCtx, testKey)
+		err := exec.deleter.DeleteByKey(testCtx, testToggleKey)
 
 		assert.NotNil(t, err)
 		assert.Equal(t, entity.ErrProhibitedToDelete(), err)
@@ -58,10 +58,10 @@ func TestToggleDeleter_DeleteByKey(t *testing.T) {
 
 	t.Run("repository returns error for delete toggle", func(t *testing.T) {
 		exec := createToggleDeleterExecutor(ctrl)
-		exec.repo.EXPECT().GetByKey(testCtx, testKey).Return(testToggleDisabled, nil)
-		exec.repo.EXPECT().DeleteByKey(testCtx, testKey).Return(entity.ErrInternal(""))
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(testToggleDisabled, nil)
+		exec.repo.EXPECT().DeleteByKey(testCtx, testToggleKey).Return(entity.ErrInternal(""))
 
-		err := exec.deleter.DeleteByKey(testCtx, testKey)
+		err := exec.deleter.DeleteByKey(testCtx, testToggleKey)
 
 		assert.NotNil(t, err)
 		assert.Equal(t, entity.ErrInternal(""), err)
@@ -69,10 +69,10 @@ func TestToggleDeleter_DeleteByKey(t *testing.T) {
 
 	t.Run("successfully delete a single toggle", func(t *testing.T) {
 		exec := createToggleDeleterExecutor(ctrl)
-		exec.repo.EXPECT().GetByKey(testCtx, testKey).Return(testToggleDisabled, nil)
-		exec.repo.EXPECT().DeleteByKey(testCtx, testKey).Return(nil)
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(testToggleDisabled, nil)
+		exec.repo.EXPECT().DeleteByKey(testCtx, testToggleKey).Return(nil)
 
-		err := exec.deleter.DeleteByKey(testCtx, testKey)
+		err := exec.deleter.DeleteByKey(testCtx, testToggleKey)
 
 		assert.Nil(t, err)
 	})

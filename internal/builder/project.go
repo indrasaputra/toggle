@@ -23,13 +23,15 @@ func BuildToggleHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL ti
 
 	inserterRepo := repository.NewToggleInserter(psql, rds)
 	getterRepo := repository.NewToggleGetter(psql, rds)
+	updaterRepo := repository.NewToggleUpdater(psql, rds)
 	deleterRepo := repository.NewToggleDeleter(psql, rds)
 
 	creator := service.NewToggleCreator(inserterRepo)
 	getter := service.NewToggleGetter(getterRepo)
+	updater := service.NewToggleUpdater(updaterRepo)
 	deleter := service.NewToggleDeleter(deleterRepo)
 
-	return handler.NewToggle(creator, getter, deleter)
+	return handler.NewToggle(creator, getter, updater, deleter)
 }
 
 // BuildPgxPool builds a pool of pgx client.

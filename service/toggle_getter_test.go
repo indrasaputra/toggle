@@ -32,9 +32,9 @@ func TestToggleGetter_GetByKey(t *testing.T) {
 
 	t.Run("repository returns internal error", func(t *testing.T) {
 		exec := createToggleGetterExecutor(ctrl)
-		exec.repo.EXPECT().GetByKey(testCtx, testKey).Return(nil, entity.ErrInternal(""))
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(nil, entity.ErrInternal(""))
 
-		res, err := exec.getter.GetByKey(testCtx, testKey)
+		res, err := exec.getter.GetByKey(testCtx, testToggleKey)
 
 		assert.NotNil(t, err)
 		assert.Equal(t, entity.ErrInternal(""), err)
@@ -43,9 +43,9 @@ func TestToggleGetter_GetByKey(t *testing.T) {
 
 	t.Run("repository returns not found error", func(t *testing.T) {
 		exec := createToggleGetterExecutor(ctrl)
-		exec.repo.EXPECT().GetByKey(testCtx, testKey).Return(nil, entity.ErrNotFound())
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(nil, entity.ErrNotFound())
 
-		res, err := exec.getter.GetByKey(testCtx, testKey)
+		res, err := exec.getter.GetByKey(testCtx, testToggleKey)
 
 		assert.NotNil(t, err)
 		assert.Equal(t, entity.ErrNotFound(), err)
@@ -54,9 +54,9 @@ func TestToggleGetter_GetByKey(t *testing.T) {
 
 	t.Run("successfully get a single toggle", func(t *testing.T) {
 		exec := createToggleGetterExecutor(ctrl)
-		exec.repo.EXPECT().GetByKey(testCtx, testKey).Return(testToggle, nil)
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(testToggle, nil)
 
-		res, err := exec.getter.GetByKey(testCtx, testKey)
+		res, err := exec.getter.GetByKey(testCtx, testToggleKey)
 
 		assert.Nil(t, err)
 		assert.Equal(t, testToggle, res)
@@ -101,9 +101,9 @@ func TestToggleGetter_GetAll(t *testing.T) {
 
 func createToggleGetterExecutor(ctrl *gomock.Controller) *ToggleGetterExecutor {
 	r := mock_service.NewMockGetToggleRepository(ctrl)
-	c := service.NewToggleGetter(r)
+	g := service.NewToggleGetter(r)
 	return &ToggleGetterExecutor{
-		getter: c,
+		getter: g,
 		repo:   r,
 	}
 }

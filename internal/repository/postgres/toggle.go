@@ -31,8 +31,8 @@ func (t *Toggle) Insert(ctx context.Context, toggle *entity.Toggle) error {
 	if toggle == nil {
 		return entity.ErrEmptyToggle()
 	}
-	toggle.CreatedAt = time.Now()
-	toggle.UpdatedAt = time.Now()
+	toggle.CreatedAt = time.Now().UTC()
+	toggle.UpdatedAt = time.Now().UTC()
 
 	query := "INSERT INTO " +
 		"toggles (key, is_enabled, description, created_at, updated_at) " +
@@ -105,7 +105,7 @@ func (t *Toggle) UpdateIsEnabled(ctx context.Context, key string, value bool) er
 	}
 
 	query := "UPDATE toggles SET is_enabled = $1, updated_at = $2 WHERE key = $3"
-	_, err := t.pool.Exec(ctx, query, value, time.Now(), key)
+	_, err := t.pool.Exec(ctx, query, value, time.Now().UTC(), key)
 	if err != nil {
 		return entity.ErrInternal(err.Error())
 	}

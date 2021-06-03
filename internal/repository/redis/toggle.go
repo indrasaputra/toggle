@@ -57,7 +57,7 @@ func (t *Toggle) Set(ctx context.Context, toggle *entity.Toggle) error {
 // SetIsEnabled sets the toggle's is_enabled field in redis.
 // It doesn't change the current expire time.
 func (t *Toggle) SetIsEnabled(ctx context.Context, key string, value bool) error {
-	err := t.client.HSet(ctx, key, "is_enabled", strconv.FormatBool(value), "updated_at", time.Now().Format(time.RFC3339)).Err()
+	err := t.client.HSet(ctx, key, "is_enabled", strconv.FormatBool(value), "updated_at", time.Now().UTC().Format(time.RFC3339)).Err()
 	if err != nil {
 		return entity.ErrInternal(err.Error())
 	}

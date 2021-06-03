@@ -172,14 +172,36 @@ func TestToggle_Get(t *testing.T) {
 	})
 }
 
+func TestToggle_SetIsEnabled(t *testing.T) {
+	t.Run("set returns error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectHSet(testToggleKey, "is_enabled", "false").SetErr(errors.New(testRedisDownMessage))
+
+		err := exec.toggle.SetIsEnabled(testCtx, testToggleKey, false)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(testRedisDownMessage), err)
+	})
+
+	t.Run("success set is_enabled field", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.mock.ExpectHSet(testToggleKey, "is_enabled", "true").SetVal(0)
+
+		err := exec.toggle.SetIsEnabled(testCtx, testToggleKey, true)
+
+		assert.Nil(t, err)
+	})
+}
+
 func TestToggle_Delete(t *testing.T) {
 	t.Run("delete returns error", func(t *testing.T) {
 		exec := createToggleExecutor()
-		exec.mock.ExpectDel(testToggleKey).SetErr(errors.New("redis: nil"))
+		exec.mock.ExpectDel(testToggleKey).SetErr(errors.New(testRedisDownMessage))
 
 		err := exec.toggle.Delete(testCtx, testToggleKey)
 
 		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(testRedisDownMessage), err)
 	})
 
 	t.Run("success delete", func(t *testing.T) {

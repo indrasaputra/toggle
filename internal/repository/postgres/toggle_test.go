@@ -20,12 +20,13 @@ import (
 )
 
 var (
-	testCtx                = context.Background()
-	testToggleKey          = "toggle-1"
-	testToggleDesc         = "description"
-	testToggle             = &entity.Toggle{Key: testToggleKey, Description: testToggleDesc}
-	errPostgresInternalMsg = "database down"
-	errPostgresInternal    = errors.New(errPostgresInternalMsg)
+	testCtx                 = context.Background()
+	testToggleKey           = "toggle-1"
+	testToggleDescription   = "description"
+	testToggleIsEnabledTrue = true
+	testToggle              = &entity.Toggle{Key: testToggleKey, Description: testToggleDescription}
+	errPostgresInternalMsg  = "database down"
+	errPostgresInternal     = errors.New(errPostgresInternalMsg)
 )
 
 type ToggleExecutor struct {
@@ -119,7 +120,7 @@ func TestToggle_GetByKey(t *testing.T) {
 			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles WHERE key = \$1 LIMIT 1`).
 			WillReturnRows(pgxmock.
 				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
-				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()),
+				AddRow(testToggleKey, true, testToggleDescription, time.Now(), time.Now()),
 			)
 
 		res, err := exec.toggle.GetByKey(testCtx, testToggleKey)
@@ -149,8 +150,8 @@ func TestToggle_GetAll(t *testing.T) {
 			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT \$1`).
 			WillReturnRows(pgxmock.
 				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
-				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
-				AddRow("1$%", true, testToggleDesc, "time.Now()", "time.Now()"),
+				AddRow(testToggleKey, true, testToggleDescription, time.Now(), time.Now()).
+				AddRow("1$%", true, testToggleDescription, "time.Now()", "time.Now()"),
 			)
 
 		res, err := exec.toggle.GetAll(testCtx, repository.DefaultToggleLimit)
@@ -165,8 +166,8 @@ func TestToggle_GetAll(t *testing.T) {
 			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT \$1`).
 			WillReturnRows(pgxmock.
 				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
-				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
-				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
+				AddRow(testToggleKey, true, testToggleDescription, time.Now(), time.Now()).
+				AddRow(testToggleKey, true, testToggleDescription, time.Now(), time.Now()).
 				RowError(2, errPostgresInternal),
 			)
 
@@ -183,14 +184,39 @@ func TestToggle_GetAll(t *testing.T) {
 			ExpectQuery(`SELECT key, is_enabled, description, created_at, updated_at FROM toggles LIMIT \$1`).
 			WillReturnRows(pgxmock.
 				NewRows([]string{"key", "is_enabled", "description", "created_at", "updated_at"}).
-				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()).
-				AddRow(testToggleKey, true, testToggleDesc, time.Now(), time.Now()),
+				AddRow(testToggleKey, true, testToggleDescription, time.Now(), time.Now()).
+				AddRow(testToggleKey, true, testToggleDescription, time.Now(), time.Now()),
 			)
 
 		res, err := exec.toggle.GetAll(testCtx, repository.DefaultToggleLimit)
 
 		assert.Nil(t, err)
 		assert.Equal(t, 2, len(res))
+	})
+}
+
+func TestToggle_UpdateIsEnabled(t *testing.T) {
+	t.Run("postgres database returns internal error", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectExec(`UPDATE toggles SET is_enabled = \$1 WHERE key = \$2`).
+			WillReturnError(errPostgresInternal)
+
+		err := exec.toggle.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, codes.Internal, status.Code(err))
+	})
+
+	t.Run("success update a toggle", func(t *testing.T) {
+		exec := createToggleExecutor()
+		exec.pgx.
+			ExpectExec(`UPDATE toggles SET is_enabled = \$1 WHERE key = \$2`).
+			WillReturnResult(pgxmock.NewResult("UPDATE", 1))
+
+		err := exec.toggle.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
+
+		assert.Nil(t, err)
 	})
 }
 

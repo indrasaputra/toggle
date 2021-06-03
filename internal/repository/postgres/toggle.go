@@ -95,6 +95,17 @@ func (t *Toggle) GetAll(ctx context.Context, limit uint) ([]*entity.Toggle, erro
 	return res, nil
 }
 
+// UpdateIsEnabled updates the toggle's is_enabled value in the storage.
+// It should handle if the toggle doesn't exist.
+func (t *Toggle) UpdateIsEnabled(ctx context.Context, key string, value bool) error {
+	query := "UPDATE toggles SET is_enabled = $1 WHERE key = $2"
+	_, err := t.pool.Exec(ctx, query, value, key)
+	if err != nil {
+		return entity.ErrInternal(err.Error())
+	}
+	return nil
+}
+
 // Delete deletes a toggle from PostgreSQL.
 // If the group doesn't exist, it doesn't returns error.
 func (t *Toggle) Delete(ctx context.Context, key string) error {

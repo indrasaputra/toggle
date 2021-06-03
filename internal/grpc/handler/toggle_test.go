@@ -48,6 +48,8 @@ var (
 	testGetToggleByKeyResponse = &togglev1.GetToggleByKeyResponse{Toggle: testToggleProto}
 	testGetAllTogglesRequest   = &togglev1.GetAllTogglesRequest{}
 	testGetAllTogglesResponse  = &togglev1.GetAllTogglesResponse{Toggles: []*togglev1.Toggle{testToggleProto}}
+	testEnableRequest          = &togglev1.EnableRequest{Key: testToggleKey}
+	testDisableRequest         = &togglev1.DisableRequest{Key: testToggleKey}
 	testDeleteToggleRequest    = &togglev1.DeleteToggleRequest{Key: testToggleKey}
 )
 
@@ -56,6 +58,7 @@ type ToggleExecutor struct {
 
 	creator *mock_service.MockCreateToggle
 	getter  *mock_service.MockGetToggle
+	updater *mock_service.MockUpdateToggle
 	deleter *mock_service.MockDeleteToggle
 }
 
@@ -203,6 +206,100 @@ func TestToggle_GetAllToggles(t *testing.T) {
 	})
 }
 
+func TestToggle_Enable(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("nil request is prohibited", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+
+		res, err := exec.handler.Enable(testCtx, nil)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrEmptyToggle(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("toggle not found", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.updater.EXPECT().Enable(testCtx, testToggleKey).Return(entity.ErrNotFound())
+
+		res, err := exec.handler.Enable(testCtx, testEnableRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrNotFound(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("updater service returns internal error", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.updater.EXPECT().Enable(testCtx, testToggleKey).Return(entity.ErrInternal(""))
+
+		res, err := exec.handler.Enable(testCtx, testEnableRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(""), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("success enable toggle", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.updater.EXPECT().Enable(testCtx, testToggleKey).Return(nil)
+
+		res, err := exec.handler.Enable(testCtx, testEnableRequest)
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
+	})
+}
+
+func TestToggle_Disable(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("nil request is prohibited", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+
+		res, err := exec.handler.Disable(testCtx, nil)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrEmptyToggle(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("toggle not found", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.updater.EXPECT().Disable(testCtx, testToggleKey).Return(entity.ErrNotFound())
+
+		res, err := exec.handler.Disable(testCtx, testDisableRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrNotFound(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("updater service returns internal error", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.updater.EXPECT().Disable(testCtx, testToggleKey).Return(entity.ErrInternal(""))
+
+		res, err := exec.handler.Disable(testCtx, testDisableRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(""), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("success disable toggle", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.updater.EXPECT().Disable(testCtx, testToggleKey).Return(nil)
+
+		res, err := exec.handler.Disable(testCtx, testDisableRequest)
+
+		assert.Nil(t, err)
+		assert.NotNil(t, res)
+	})
+}
+
 func TestToggle_DeleteToggle(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -242,13 +339,15 @@ func TestToggle_DeleteToggle(t *testing.T) {
 func createToggleExecutor(ctrl *gomock.Controller) *ToggleExecutor {
 	c := mock_service.NewMockCreateToggle(ctrl)
 	g := mock_service.NewMockGetToggle(ctrl)
+	u := mock_service.NewMockUpdateToggle(ctrl)
 	d := mock_service.NewMockDeleteToggle(ctrl)
 
-	h := handler.NewToggle(c, g, d)
+	h := handler.NewToggle(c, g, u, d)
 	return &ToggleExecutor{
 		handler: h,
 		creator: c,
 		getter:  g,
+		updater: u,
 		deleter: d,
 	}
 }

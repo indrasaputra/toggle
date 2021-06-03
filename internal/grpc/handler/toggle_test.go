@@ -3,11 +3,13 @@ package handler_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/indrasaputra/toggle/entity"
 	"github.com/indrasaputra/toggle/internal/grpc/handler"
@@ -16,18 +18,44 @@ import (
 )
 
 var (
-	testCtx                 = context.Background()
-	testToggleKey           = "test_key"
-	testToggleIsEnabled     = false
-	testToggle              = &entity.Toggle{Key: testToggleKey, IsEnabled: testToggleIsEnabled}
-	testCreateToggleRequest = &togglev1.CreateToggleRequest{Key: testToggleKey}
-	testDeleteToggleRequest = &togglev1.DeleteToggleRequest{Key: testToggleKey}
+	testCtx               = context.Background()
+	testToggleKey         = "test_key"
+	testToggleIsEnabled   = false
+	testToggleDescription = "description"
+	testToggleCreatedAt   = time.Now()
+	testToggleUpdatedAt   = time.Now()
+	testToggle            = &entity.Toggle{
+		Key:         testToggleKey,
+		IsEnabled:   testToggleIsEnabled,
+		Description: testToggleDescription,
+	}
+	testToggleResult = &entity.Toggle{
+		Key:         testToggleKey,
+		IsEnabled:   testToggleIsEnabled,
+		Description: testToggleDescription,
+		CreatedAt:   testToggleCreatedAt,
+		UpdatedAt:   testToggleUpdatedAt,
+	}
+	testToggleProto = &togglev1.Toggle{
+		Key:         testToggleKey,
+		IsEnabled:   testToggleIsEnabled,
+		Description: testToggleDescription,
+		CreatedAt:   timestamppb.New(testToggleCreatedAt),
+		UpdatedAt:   timestamppb.New(testToggleUpdatedAt),
+	}
+	testCreateToggleRequest    = &togglev1.CreateToggleRequest{Key: testToggleKey, Description: testToggleDescription}
+	testGetToggleByKeyRequest  = &togglev1.GetToggleByKeyRequest{Key: testToggleKey}
+	testGetToggleByKeyResponse = &togglev1.GetToggleByKeyResponse{Toggle: testToggleProto}
+	testGetAllTogglesRequest   = &togglev1.GetAllTogglesRequest{}
+	testGetAllTogglesResponse  = &togglev1.GetAllTogglesResponse{Toggles: []*togglev1.Toggle{testToggleProto}}
+	testDeleteToggleRequest    = &togglev1.DeleteToggleRequest{Key: testToggleKey}
 )
 
 type ToggleExecutor struct {
 	handler *handler.Toggle
 
 	creator *mock_service.MockCreateToggle
+	getter  *mock_service.MockGetToggle
 	deleter *mock_service.MockDeleteToggle
 }
 
@@ -92,6 +120,89 @@ func TestToggle_CreateToggle(t *testing.T) {
 	})
 }
 
+func TestToggle_GetToggleByKey(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("nil request is prohibited", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+
+		res, err := exec.handler.GetToggleByKey(testCtx, nil)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrEmptyToggle(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("toggle not found", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.getter.EXPECT().GetByKey(testCtx, testToggleKey).Return(nil, entity.ErrNotFound())
+
+		res, err := exec.handler.GetToggleByKey(testCtx, testGetToggleByKeyRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrNotFound(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("getter service returns error", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.getter.EXPECT().GetByKey(testCtx, testToggleKey).Return(nil, entity.ErrInternal(""))
+
+		res, err := exec.handler.GetToggleByKey(testCtx, testGetToggleByKeyRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(""), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("success get a single toggle", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.getter.EXPECT().GetByKey(testCtx, testToggleKey).Return(testToggleResult, nil)
+
+		res, err := exec.handler.GetToggleByKey(testCtx, testGetToggleByKeyRequest)
+
+		assert.Nil(t, err)
+		assert.Equal(t, testGetToggleByKeyResponse, res)
+	})
+}
+
+func TestToggle_GetAllToggles(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("nil request is prohibited", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+
+		res, err := exec.handler.GetAllToggles(testCtx, nil)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrEmptyToggle(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("getter service returns error", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.getter.EXPECT().GetAll(testCtx).Return([]*entity.Toggle{}, entity.ErrInternal(""))
+
+		res, err := exec.handler.GetAllToggles(testCtx, testGetAllTogglesRequest)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrInternal(""), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("success get all toggles", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+		exec.getter.EXPECT().GetAll(testCtx).Return([]*entity.Toggle{testToggleResult}, nil)
+
+		res, err := exec.handler.GetAllToggles(testCtx, testGetAllTogglesRequest)
+
+		assert.Nil(t, err)
+		assert.Equal(t, testGetAllTogglesResponse, res)
+	})
+}
+
 func TestToggle_DeleteToggle(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -130,12 +241,14 @@ func TestToggle_DeleteToggle(t *testing.T) {
 
 func createToggleExecutor(ctrl *gomock.Controller) *ToggleExecutor {
 	c := mock_service.NewMockCreateToggle(ctrl)
+	g := mock_service.NewMockGetToggle(ctrl)
 	d := mock_service.NewMockDeleteToggle(ctrl)
 
-	h := handler.NewToggle(c, d)
+	h := handler.NewToggle(c, g, d)
 	return &ToggleExecutor{
 		handler: h,
 		creator: c,
+		getter:  g,
 		deleter: d,
 	}
 }

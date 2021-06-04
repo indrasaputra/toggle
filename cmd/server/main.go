@@ -9,9 +9,11 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health/grpc_health_v1"
 
 	"github.com/indrasaputra/toggle/internal/builder"
 	"github.com/indrasaputra/toggle/internal/config"
+	"github.com/indrasaputra/toggle/internal/grpc/handler"
 	"github.com/indrasaputra/toggle/internal/server"
 	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
@@ -40,6 +42,9 @@ func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.
 	// start register all module's gRPC handlers
 	toggle := builder.BuildToggleHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
 	togglev1.RegisterToggleServiceServer(server, toggle)
+
+	health := handler.NewHealth()
+	grpc_health_v1.RegisterHealthServer(server, health)
 	// end of register all module's gRPC handlers
 }
 

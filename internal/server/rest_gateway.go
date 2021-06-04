@@ -24,6 +24,7 @@ func NewRest(port string) *Rest {
 		port:     port,
 	}
 	_ = srv.EnablePrometheus() // error is impossible, hence ignored.
+	_ = srv.EnableHealth()     // error is impossible, hence ignored.
 	return srv
 }
 
@@ -31,6 +32,12 @@ func NewRest(port string) *Rest {
 // It can be accessed via /metrics.
 func (r *Rest) EnablePrometheus() error {
 	return r.ServeMux.HandlePath(http.MethodGet, "/metrics", prometheusHandler())
+}
+
+// EnableHealth enables health endpoint.
+// It can be accessed via /health.
+func (r *Rest) EnableHealth() error {
+	return r.ServeMux.HandlePath(http.MethodGet, "/health", healthHandler())
 }
 
 // Run runs HTTP/1.1 runtime.ServeMux.
@@ -47,6 +54,12 @@ func (r *Rest) Run() error {
 func prometheusHandler() runtime.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
 		promhttp.Handler().ServeHTTP(w, r)
+	}
+}
+
+func healthHandler() runtime.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
+		w.WriteHeader(http.StatusOK)
 	}
 }
 

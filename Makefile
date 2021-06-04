@@ -41,6 +41,10 @@ tidy:
 .PHONY: pretty
 pretty: tidy format lint
 
+.PHONY: compile
+compile:
+	GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o toggle cmd/server/main.go
+
 .PHONY: cover
 cover:
 	go test -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out

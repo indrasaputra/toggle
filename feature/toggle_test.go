@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	toggleURL = "http://localhost:8081/v1/toggles"
+	toggleURL = "http://toggle:8081/v1/toggles"
 )
 
 var (

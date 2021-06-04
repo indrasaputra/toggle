@@ -145,6 +145,5 @@ jobs:
         uses: actions/checkout@v2
       - name: run api test
         run: |
-          lsof -i -P -n  | grep LISTEN
-          make migrate url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_NAME}"
+          make migrate url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAME}"
           make test.integration

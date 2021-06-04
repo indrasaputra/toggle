@@ -28,3 +28,13 @@ To see the RESTful API contract, do the following:
 - Copy the content
 - Open [https://editor.swagger.io/](https://editor.swagger.io/)
 - Paste the content in [https://editor.swagger.io/](https://editor.swagger.io/)
+
+## How to Run
+
+- Read [Prerequisites](doc/PREREQUISITES.md).
+- Then, read [How to Run](doc/HOW_TO_RUN.md).
+
+## Development Guide
+
+- Read [Prerequisites](doc/PREREQUISITES.md).
+- Then, read [Development Guide](doc/DEVELOPMENT_GUIDE.md).

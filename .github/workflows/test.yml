@@ -3,71 +3,92 @@ name: Test
 on: [push, pull_request]
   
 jobs:
-  go-code-lint:
-    name: lint using golangci
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.38.0
+  # go-code-lint:
+  #   name: lint using golangci
+  #   if: github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout repo 
+  #       uses: actions/checkout@v2
+  #     - name: golangci-lint
+  #       uses: golangci/golangci-lint-action@v2
+  #       with:
+  #         version: v1.38.0
 
-  migration-lint:
-    name: validate migration file's name
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2      
-      - run: make validate-migration
+  # migration-lint:
+  #   name: validate migration file's name
+  #   if: github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout repo
+  #       uses: actions/checkout@v2
+  #     - name: validate migration file's name      
+  #       run: make validate-migration
 
-  import-lint:
-    name: lint import block
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: ^1.16.x
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - run: make check-import
+  # import-lint:
+  #   name: lint import block
+  #   if: github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: setup go
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: ^1.16.x
+  #     - name: checkout repo
+  #       uses: actions/checkout@v2
+  #     - name: check import block
+  #       run: make check-import
 
-  proto-code-format:
-    name: format proto using clang-format
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: DoozyX/clang-format-lint-action@v0.11
-      with:
-        source: '.'
-        extensions: 'proto'
-        clangFormatVersion: 11
+  # proto-code-format:
+  #   name: format proto using clang-format
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout repo
+  #       uses: actions/checkout@v2
+  #     - name: format proto files
+  #       uses: DoozyX/clang-format-lint-action@v0.11
+  #       with:
+  #         source: '.'
+  #         extensions: 'proto'
+  #         clangFormatVersion: 11
 
-  unit-test:
-    name: unit test and coverage
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: ^1.16.x
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - run: make cover
-      - name: Codecov
-        uses: codecov/codecov-action@v1.0.13
+  # unit-test:
+  #   name: unit test and coverage
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: setup go
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: ^1.16.x
+  #     - name: checkout repo
+  #       uses: actions/checkout@v2
+  #     - name: run unit test and coverage 
+  #       run: make cover
+  #     - name: push result to codecov
+  #       uses: codecov/codecov-action@v1.0.13
 
-  api-test:
-    name: api test
-    if: github.event_name == 'push'
+  build-docker:
+    name: build and push docker image
     runs-on: ubuntu-latest
     container:
-      image: indrasaputra/golang:0.0.1
+      image: docker:dind
     steps:
-      - name: Checkout code
+      - name: checkout repo
         uses: actions/checkout@v2
-      - run: make test.integration
+      - name: build and push image
+        run: |
+          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
+          docker push ${{ github.repository }}:${{ github.sha }}
+
+  # api-test:
+  #   name: api test
+  #   if: github.event_name == 'push'
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: indrasaputra/golang:0.0.1
+  #   steps:
+  #     - name: checkout repo
+  #       uses: actions/checkout@v2
+  #     - name: run api test
+  #       run: make test.integration

@@ -5,17 +5,17 @@ PROTOGEN_IMAGE 		= indrasaputra/protogen:v0.0.1
 format:
 	bin/format.sh
 
-.PHONY: gengrpc
-gengrpc:
+.PHONY: genproto
+genproto:
 	bin/generate-grpc.sh
 
-.PHONY: gengrpcdocker
-gengrpcdocker:
+.PHONY: genprotodocker
+genprotodocker:
 	docker run -it --rm \
     --mount "type=bind,source=$(PWD),destination=/work" \
     --mount "type=volume,source=toggle-go-mod-cache,destination=/go,consistency=cached" \
     --mount "type=volume,source=toggle-buf-cache,destination=/home/.cache,consistency=cached" \
-    -w /work $(PROTOGEN_IMAGE) make -e -f Makefile gengrpc pretty
+    -w /work $(PROTOGEN_IMAGE) make -e -f Makefile genproto pretty
 
 .PHONY: check-import
 check-import:

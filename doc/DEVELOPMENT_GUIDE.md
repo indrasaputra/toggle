@@ -23,14 +23,14 @@
 - If you want to generate files based on protocol buffer definition, run
 
     ```
-    $ make gengrpc
+    $ make genproto
     ```
 
     Alternatively, you can generate files using provided docker image.
     Run this command to use docker to generate files.
 
     ```
-    $ make gengrpcdocker
+    $ make genprotodocker
     ```
 
 - If you want to generate mock based on some interfaces, run

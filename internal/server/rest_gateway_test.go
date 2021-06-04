@@ -26,3 +26,11 @@ func TestRest_EnablePrometheus(t *testing.T) {
 		assert.Nil(t, err)
 	})
 }
+
+func TestRest_EnableHealth(t *testing.T) {
+	t.Run("success enable health", func(t *testing.T) {
+		srv := server.NewRest(testRestPort)
+		err := srv.EnableHealth()
+		assert.Nil(t, err)
+	})
+}

@@ -89,18 +89,11 @@ jobs:
     container:
       image: indrasaputra/golang:0.0.1
     env:
-      PORT_GRPC: 8080
-      PORT_REST: 8081
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_USER: postgresuser
       POSTGRES_PASSWORD: postgrespassword
       POSTGRES_NAME: toggle
-      POSTGRES_MAX_OPEN_CONNS: 50
-      POSTGRES_MAX_CONN_LIFETIME: 10m
-      POSTGRES_MAX_IDLE_LIFETIME: 5m
-      REDIS_ADDRESS: redis:6379
-      REDIS_TTL: 5
     services:
       postgres:
         image: postgres:13.2-alpine
@@ -143,7 +136,7 @@ jobs:
           - 8080:8080
           - 8081:8081
         options: >-
-          --health-cmd "curl http://localhost:8081/health"
+          --health-cmd "./wait-for -t 4 localhost:8081"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5

@@ -16,7 +16,6 @@ COPY --from=builder /bin/wait-for ./wait-for
 COPY --from=builder /app/toggle .
 COPY --from=builder /app/bin/start.sh ./start.sh
 RUN chmod 755 /app/start.sh /app/wait-for
-RUN apk add curl
 EXPOSE 8080
 EXPOSE 8081
 CMD ["./start.sh"]

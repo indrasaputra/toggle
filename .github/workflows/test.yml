@@ -86,8 +86,6 @@ jobs:
     if: github.event_name == 'push'
     # needs: [build-docker]
     runs-on: ubuntu-latest
-    container:
-      image: indrasaputra/golang:0.0.1
     env:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
@@ -145,5 +143,7 @@ jobs:
         uses: actions/checkout@v2
       - name: run api test
         run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
+          mv migrate.linux-amd64 /usr/local/bin/migrate
           make migrate url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAME}"
           make test.integration

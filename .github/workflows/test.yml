@@ -67,24 +67,24 @@ jobs:
   #     - name: push result to codecov
   #       uses: codecov/codecov-action@v1.0.13
 
-  build-docker:
-    name: build and push docker image
-    runs-on: ubuntu-latest
-    container:
-      image: docker:dind
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v2
-      - name: build and push image
-        run: |
-          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
-          docker push ${{ github.repository }}:${{ github.sha }}
+  # build-docker:
+  #   name: build and push docker image
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: docker:dind
+  #   steps:
+  #     - name: checkout repo
+  #       uses: actions/checkout@v2
+  #     - name: build and push image
+  #       run: |
+  #         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+  #         docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
+  #         docker push ${{ github.repository }}:${{ github.sha }}
 
   api-test:
     name: api test
     if: github.event_name == 'push'
-    needs: [build-docker]
+    # needs: [build-docker]
     runs-on: ubuntu-latest
     container:
       image: indrasaputra/golang:0.0.1
@@ -118,7 +118,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       toggle:
-        image: ${{ github.repository }}:${{ github.sha }}
+        image: indrasaputra/toggle:162759d5b0c0545c7048bb31da86144665fe382a
         env:
           PORT_GRPC: 8080
           PORT_REST: 8081
@@ -145,5 +145,6 @@ jobs:
         uses: actions/checkout@v2
       - name: run api test
         run: |
-          make migrate url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_NAME}"
+          lsof -i -P -n  | grep LISTEN
+          make migrate url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_NAME}"
           make test.integration

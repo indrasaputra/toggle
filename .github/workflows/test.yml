@@ -3,88 +3,90 @@ name: Test
 on: [push, pull_request]
   
 jobs:
-  # go-code-lint:
-  #   name: lint using golangci
-  #   if: github.event_name == 'push'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: checkout repo 
-  #       uses: actions/checkout@v2
-  #     - name: golangci-lint
-  #       uses: golangci/golangci-lint-action@v2
-  #       with:
-  #         version: v1.38.0
-
-  # migration-lint:
-  #   name: validate migration file's name
-  #   if: github.event_name == 'push'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: validate migration file's name      
-  #       run: make validate-migration
-
-  # import-lint:
-  #   name: lint import block
-  #   if: github.event_name == 'push'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: setup go
-  #       uses: actions/setup-go@v2
-  #       with:
-  #         go-version: ^1.16.x
-  #     - name: checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: check import block
-  #       run: make check-import
-
-  # proto-code-format:
-  #   name: format proto using clang-format
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: format proto files
-  #       uses: DoozyX/clang-format-lint-action@v0.11
-  #       with:
-  #         source: '.'
-  #         extensions: 'proto'
-  #         clangFormatVersion: 11
-
-  # unit-test:
-  #   name: unit test and coverage
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: setup go
-  #       uses: actions/setup-go@v2
-  #       with:
-  #         go-version: ^1.16.x
-  #     - name: checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: run unit test and coverage 
-  #       run: make cover
-  #     - name: push result to codecov
-  #       uses: codecov/codecov-action@v1.0.13
-
-  # build-docker:
-  #   name: build and push docker image
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: docker:dind
-  #   steps:
-  #     - name: checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: build and push image
-  #       run: |
-  #         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-  #         docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
-  #         docker push ${{ github.repository }}:${{ github.sha }}
-
-  api-test:
-    name: api test
+  go-code-lint:
+    name: Lint using golangci
     if: github.event_name == 'push'
-    # needs: [build-docker]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository 
+        uses: actions/checkout@v2
+      - name: Lint using golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.38.0
+
+  migration-lint:
+    name: Validate migration file's name
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Validate migration file's name      
+        run: make validate-migration
+
+  import-lint:
+    name: Lint import block
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16.x
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Check import blocks
+        run: make check-import
+
+  proto-code-format:
+    name: Format proto
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Format proto files using clang-format
+        uses: DoozyX/clang-format-lint-action@v0.11
+        with:
+          source: '.'
+          extensions: 'proto'
+          clangFormatVersion: 11
+
+  unit-test:
+    name: Unit test and coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16.x
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Run unit test and coverage 
+        run: make cover
+      - name: Push coverage result to Codecov
+        uses: codecov/codecov-action@v1.0.13
+
+  build-docker:
+    name: Build and push docker image
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    container:
+      image: docker:dind
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Build and push image
+        run: |
+          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
+          docker push ${{ github.repository }}:${{ github.sha }}
+
+  integration-test:
+    name: Integration test
+    if: github.event_name == 'push'
+    needs: [build-docker]
     runs-on: ubuntu-latest
     container:
       image: indrasaputra/golang:0.0.1
@@ -112,7 +114,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       toggle:
-        image: indrasaputra/toggle:162759d5b0c0545c7048bb31da86144665fe382a
+        image: ${{ github.repository }}:${{ github.sha }}
         env:
           PORT_GRPC: 8080
           PORT_REST: 8081
@@ -135,9 +137,9 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - name: checkout repo
+      - name: Clone repository
         uses: actions/checkout@v2
-      - name: run api test
+      - name: Run integration test using godog
         env:
           SERVER_URL: http://toggle:8081/v1/toggles
           POSTGRES_HOST: postgres

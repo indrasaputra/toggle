@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"time"
 
 	goredis "github.com/go-redis/redis/v8"
@@ -39,9 +38,6 @@ func main() {
 	_ = grpcServer.AwaitTermination()
 }
 
-func health(w http.ResponseWriter, req *http.Request) {
-	w.WriteHeader(http.StatusOK)
-}
 func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.Client, cfg *config.Config) {
 	// start register all module's gRPC handlers
 	toggle := builder.BuildToggleHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)

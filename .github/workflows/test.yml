@@ -67,24 +67,24 @@ jobs:
   #     - name: push result to codecov
   #       uses: codecov/codecov-action@v1.0.13
 
-  # build-docker:
-  #   name: build and push docker image
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: docker:dind
-  #   steps:
-  #     - name: checkout repo
-  #       uses: actions/checkout@v2
-  #     - name: build and push image
-  #       run: |
-  #         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-  #         docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
-  #         docker push ${{ github.repository }}:${{ github.sha }}
+  build-docker:
+    name: build and push docker image
+    runs-on: ubuntu-latest
+    container:
+      image: docker:dind
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: build and push image
+        run: |
+          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
+          docker push ${{ github.repository }}:${{ github.sha }}
 
   api-test:
     name: api test
     if: github.event_name == 'push'
-    # needs: [build-docker]
+    needs: [build-docker]
     runs-on: ubuntu-latest
     container:
       image: indrasaputra/golang:0.0.1
@@ -125,7 +125,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       toggle:
-        image: indrasaputra/toggle:66d9d49d092e9582d24545f04cf0045350925116
+        image: ${{ github.repository }}:${{ github.sha }}
         env:
           PORT_GRPC: 8080
           PORT_REST: 8081
@@ -143,7 +143,6 @@ jobs:
           - 8080:8080
           - 8081:8081
         options: >-
-          --restart always
           --health-cmd "curl http://localhost:8081/health"
           --health-interval 10s
           --health-timeout 5s

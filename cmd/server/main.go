@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"time"
 
 	goredis "github.com/go-redis/redis/v8"
@@ -14,7 +15,6 @@ import (
 	"github.com/indrasaputra/toggle/internal/builder"
 	"github.com/indrasaputra/toggle/internal/config"
 	"github.com/indrasaputra/toggle/internal/grpc/handler"
-	"github.com/indrasaputra/toggle/internal/server"
 	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
 
@@ -22,22 +22,29 @@ func main() {
 	cfg, cerr := config.NewConfig(".env")
 	checkError(cerr)
 
-	psql, perr := builder.BuildPgxPool(&cfg.Postgres)
-	checkError(perr)
-	rds, rerr := builder.BuildRedisClient(&cfg.Redis)
-	checkError(rerr)
+	http.HandleFunc("/health", health)
 
-	grpcServer := server.NewGrpc(cfg.Port.GRPC)
-	registerGrpcHandlers(grpcServer.Server, psql, rds, cfg)
+	http.ListenAndServe(fmt.Sprintf(":%s", cfg.Port.REST), nil)
 
-	restServer := server.NewRest(cfg.Port.REST)
-	registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
+	// psql, perr := builder.BuildPgxPool(&cfg.Postgres)
+	// checkError(perr)
+	// rds, rerr := builder.BuildRedisClient(&cfg.Redis)
+	// checkError(rerr)
 
-	_ = grpcServer.Run()
-	_ = restServer.Run()
-	_ = grpcServer.AwaitTermination()
+	// grpcServer := server.NewGrpc(cfg.Port.GRPC)
+	// registerGrpcHandlers(grpcServer.Server, psql, rds, cfg)
+
+	// restServer := server.NewRest(cfg.Port.REST)
+	// registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
+
+	// _ = grpcServer.Run()
+	// _ = restServer.Run()
+	// _ = grpcServer.AwaitTermination()
 }
 
+func health(w http.ResponseWriter, req *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
 func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.Client, cfg *config.Config) {
 	// start register all module's gRPC handlers
 	toggle := builder.BuildToggleHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)

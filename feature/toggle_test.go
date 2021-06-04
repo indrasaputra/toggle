@@ -14,15 +14,13 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
-)
-
-const (
-	toggleURL = "http://toggle:8081/v1/toggles"
+	"github.com/joho/godotenv"
 )
 
 var (
-	ctx    = context.Background()
-	client = http.DefaultClient
+	ctx       = context.Background()
+	client    = http.DefaultClient
+	toggleURL = "http://localhost:8081/v1/toggles"
 
 	httpStatus int
 	httpBody   []byte
@@ -59,6 +57,12 @@ func restoreDefaultState(sc *godog.Scenario) {
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
+	_ = godotenv.Load()
+	url := os.Getenv("SERVER_URL")
+	if url != "" {
+		toggleURL = url
+	}
+
 	ctx.BeforeScenario(restoreDefaultState)
 
 	ctx.Step(`^there are toggles with$`, thereAreTogglesWith)

@@ -67,28 +67,92 @@ jobs:
   #     - name: push result to codecov
   #       uses: codecov/codecov-action@v1.0.13
 
-  build-docker:
-    name: build and push docker image
-    runs-on: ubuntu-latest
-    container:
-      image: docker:dind
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v2
-      - name: build and push image
-        run: |
-          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
-          docker push ${{ github.repository }}:${{ github.sha }}
-
-  # api-test:
-  #   name: api test
-  #   if: github.event_name == 'push'
+  # build-docker:
+  #   name: build and push docker image
   #   runs-on: ubuntu-latest
   #   container:
-  #     image: indrasaputra/golang:0.0.1
+  #     image: docker:dind
   #   steps:
   #     - name: checkout repo
   #       uses: actions/checkout@v2
-  #     - name: run api test
-  #       run: make test.integration
+  #     - name: build and push image
+  #       run: |
+  #         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+  #         docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
+  #         docker push ${{ github.repository }}:${{ github.sha }}
+
+  api-test:
+    name: api test
+    if: github.event_name == 'push'
+    # needs: [build-docker]
+    runs-on: ubuntu-latest
+    container:
+      image: indrasaputra/golang:0.0.1
+    services:
+      postgres:
+        image: postgres:13.2-alpine
+        env:
+          POSTGRES_USER: postgresuser
+          POSTGRES_PASSWORD: postgrespassword
+          POSTGRES_DB: toggle
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:6.2-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      # toggle:
+      #   image: indrasaputra/toggle:269ba33e1e78aa84c30228339e5831fb899b8668
+      #   env:
+      #     PORT_GRPC: 8080
+      #     PORT_REST: 8081
+      #     POSTGRES_HOST: postgres
+      #     POSTGRES_PORT: 5432
+      #     POSTGRES_USER: postgresuser
+      #     POSTGRES_PASSWORD: postgrespassword
+      #     POSTGRES_NAME: toggle
+      #     POSTGRES_MAX_OPEN_CONNS: 50
+      #     POSTGRES_MAX_CONN_LIFETIME: 10m
+      #     POSTGRES_MAX_IDLE_LIFETIME: 5m
+      #     REDIS_ADDRESS: redis:6379
+      #     REDIS_TTL: 5
+      #   ports:
+      #     - 8080:8080
+      #     - 8081:8081
+      #   options: >-
+      #     --health-cmd "curl http://localhost:8081/v1/toggles"
+      #     --health-interval 10s
+      #     --health-timeout 5s
+      #     --health-retries 5
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: run toggle service
+        env:
+          PORT_GRPC: 8080
+          PORT_REST: 8081
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgresuser
+          POSTGRES_PASSWORD: postgrespassword
+          POSTGRES_NAME: toggle
+          POSTGRES_MAX_OPEN_CONNS: 50
+          POSTGRES_MAX_CONN_LIFETIME: 10m
+          POSTGRES_MAX_IDLE_LIFETIME: 5m
+          REDIS_ADDRESS: redis:6379
+          REDIS_TTL: 5
+        run: go run cmd/server/main.go
+      - name: run api test
+        run: |
+          make migrate url="postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_NAME}"
+          make test.integration

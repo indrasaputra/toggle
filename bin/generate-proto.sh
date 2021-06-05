@@ -6,7 +6,7 @@ IMAGE_DIR=bin
 
 buf beta mod update
 buf lint
-buf breaking --against '.git#branch=main'
+# buf breaking --against '.git#branch=main'
 buf generate
 
 mkdir -p ${IMAGE_DIR}

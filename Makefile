@@ -1,5 +1,5 @@
 GO_UNIT_TEST_FILES	= $(shell go list ./... | grep -v /features/)
-PROTOGEN_IMAGE 		= indrasaputra/protogen:v0.0.1
+PROTOGEN_IMAGE 		= indrasaputra/protogen:0.0.1
 
 .PHONY: format
 format:
@@ -7,7 +7,7 @@ format:
 
 .PHONY: genproto
 genproto:
-	bin/generate-grpc.sh
+	bin/generate-proto.sh
 
 .PHONY: genprotodocker
 genprotodocker:

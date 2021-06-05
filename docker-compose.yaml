@@ -28,5 +28,17 @@ services:
     networks:
       - toggle
 
+  grafana:
+    image: grafana/grafana:7.5.7
+    ports:
+      - 3000:3000
+    volumes:
+      - storage:/var/lib/grafana
+    networks:
+      - toggle
+
+volumes:
+  storage:
+
 networks:
   toggle:

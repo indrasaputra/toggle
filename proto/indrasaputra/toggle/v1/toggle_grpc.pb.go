@@ -19,11 +19,36 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ToggleServiceClient interface {
+	// Create a new toggle.
+	//
+	// This endpoint creates a new toggle with provided key and description.
+	// The description can be left empty, but the key must exists.
+	// The key must be unique and it can only contain alphanumeric and dash.
+	// The key will be converted to lower case.
 	CreateToggle(ctx context.Context, in *CreateToggleRequest, opts ...grpc.CallOption) (*CreateToggleResponse, error)
+	// Get a toggle.
+	//
+	// This endpoint gets a single toggle by its key.
 	GetToggleByKey(ctx context.Context, in *GetToggleByKeyRequest, opts ...grpc.CallOption) (*GetToggleByKeyResponse, error)
+	// Get many toggles.
+	//
+	// This endpoint gets all available toggles in the system.
+	// Currently, it only retrieves 10 toggles at most.
 	GetAllToggles(ctx context.Context, in *GetAllTogglesRequest, opts ...grpc.CallOption) (*GetAllTogglesResponse, error)
+	// Enable a toggle.
+	//
+	// This endpoint set toggle's usability to active.
+	// Its *isEnabled* attribute will be set to true.
 	Enable(ctx context.Context, in *EnableRequest, opts ...grpc.CallOption) (*EnableResponse, error)
+	// Disable a toggle.
+	//
+	// This endpoint set toggle's usability to inactive.
+	// Its *isEnabled* attribute will be set to false.
 	Disable(ctx context.Context, in *DisableRequest, opts ...grpc.CallOption) (*DisableResponse, error)
+	// Delete a toggle.
+	//
+	// This endpoint deletes a toggle by its key.
+	// The operation is hard-delete, thus the toggle will be gone forever.
 	DeleteToggle(ctx context.Context, in *DeleteToggleRequest, opts ...grpc.CallOption) (*DeleteToggleResponse, error)
 }
 
@@ -93,11 +118,36 @@ func (c *toggleServiceClient) DeleteToggle(ctx context.Context, in *DeleteToggle
 // All implementations must embed UnimplementedToggleServiceServer
 // for forward compatibility
 type ToggleServiceServer interface {
+	// Create a new toggle.
+	//
+	// This endpoint creates a new toggle with provided key and description.
+	// The description can be left empty, but the key must exists.
+	// The key must be unique and it can only contain alphanumeric and dash.
+	// The key will be converted to lower case.
 	CreateToggle(context.Context, *CreateToggleRequest) (*CreateToggleResponse, error)
+	// Get a toggle.
+	//
+	// This endpoint gets a single toggle by its key.
 	GetToggleByKey(context.Context, *GetToggleByKeyRequest) (*GetToggleByKeyResponse, error)
+	// Get many toggles.
+	//
+	// This endpoint gets all available toggles in the system.
+	// Currently, it only retrieves 10 toggles at most.
 	GetAllToggles(context.Context, *GetAllTogglesRequest) (*GetAllTogglesResponse, error)
+	// Enable a toggle.
+	//
+	// This endpoint set toggle's usability to active.
+	// Its *isEnabled* attribute will be set to true.
 	Enable(context.Context, *EnableRequest) (*EnableResponse, error)
+	// Disable a toggle.
+	//
+	// This endpoint set toggle's usability to inactive.
+	// Its *isEnabled* attribute will be set to false.
 	Disable(context.Context, *DisableRequest) (*DisableResponse, error)
+	// Delete a toggle.
+	//
+	// This endpoint deletes a toggle by its key.
+	// The operation is hard-delete, thus the toggle will be gone forever.
 	DeleteToggle(context.Context, *DeleteToggleRequest) (*DeleteToggleResponse, error)
 	mustEmbedUnimplementedToggleServiceServer()
 }

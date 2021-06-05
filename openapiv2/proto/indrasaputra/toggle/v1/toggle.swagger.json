@@ -1,12 +1,21 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/indrasaputra/toggle/v1/toggle.proto",
-    "version": "version not set"
+    "title": "Feature-Toggle API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Indra Saputra",
+      "url": "https://github.com/indrasaputra"
+    },
+    "license": {
+      "name": "BSD 3-Clause License",
+      "url": "https://github.com/indrasaputra/toggle/blob/main/LICENSE"
+    }
   },
   "tags": [
     {
-      "name": "ToggleService"
+      "name": "ToggleService",
+      "description": "This service provides basic command or use cases to work with feature-toggle.A toggle is represented by a key as its unique identifier."
     }
   ],
   "consumes": [
@@ -18,6 +27,8 @@
   "paths": {
     "/v1/toggles": {
       "get": {
+        "summary": "Get many toggles.",
+        "description": "This endpoint gets all available toggles in the system.\nCurrently, it only retrieves 10 toggles at most.",
         "operationId": "ToggleService_GetAllToggles",
         "responses": {
           "200": {
@@ -38,6 +49,8 @@
         ]
       },
       "post": {
+        "summary": "Create a new toggle.",
+        "description": "This endpoint creates a new toggle with provided key and description.\nThe description can be left empty, but the key must exists.\nThe key must be unique and it can only contain alphanumeric and dash.\nThe key will be converted to lower case.",
         "operationId": "ToggleService_CreateToggle",
         "responses": {
           "200": {
@@ -59,7 +72,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateToggleRequest"
+              "$ref": "#/definitions/v1Toggle"
             }
           }
         ],
@@ -70,6 +83,8 @@
     },
     "/v1/toggles/{key}": {
       "get": {
+        "summary": "Get a toggle.",
+        "description": "This endpoint gets a single toggle by its key.",
         "operationId": "ToggleService_GetToggleByKey",
         "responses": {
           "200": {
@@ -88,6 +103,7 @@
         "parameters": [
           {
             "name": "key",
+            "description": "Unique identifier of a toggle",
             "in": "path",
             "required": true,
             "type": "string"
@@ -98,6 +114,8 @@
         ]
       },
       "delete": {
+        "summary": "Delete a toggle.",
+        "description": "This endpoint deletes a toggle by its key.\nThe operation is hard-delete, thus the toggle will be gone forever.",
         "operationId": "ToggleService_DeleteToggle",
         "responses": {
           "200": {
@@ -116,6 +134,7 @@
         "parameters": [
           {
             "name": "key",
+            "description": "Unique identifier of a toggle",
             "in": "path",
             "required": true,
             "type": "string"
@@ -128,6 +147,8 @@
     },
     "/v1/toggles/{key}/disable": {
       "put": {
+        "summary": "Disable a toggle.",
+        "description": "This endpoint set toggle's usability to inactive.\nIts *isEnabled* attribute will be set to false.",
         "operationId": "ToggleService_Disable",
         "responses": {
           "200": {
@@ -146,6 +167,7 @@
         "parameters": [
           {
             "name": "key",
+            "description": "Unique identifier of a toggle",
             "in": "path",
             "required": true,
             "type": "string"
@@ -158,6 +180,8 @@
     },
     "/v1/toggles/{key}/enable": {
       "put": {
+        "summary": "Enable a toggle.",
+        "description": "This endpoint set toggle's usability to active.\nIts *isEnabled* attribute will be set to true.",
         "operationId": "ToggleService_Enable",
         "responses": {
           "200": {
@@ -176,6 +200,7 @@
         "parameters": [
           {
             "name": "key",
+            "description": "Unique identifier of a toggle",
             "in": "path",
             "required": true,
             "type": "string"
@@ -218,17 +243,6 @@
         }
       }
     },
-    "v1CreateToggleRequest": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        }
-      }
-    },
     "v1CreateToggleResponse": {
       "type": "object"
     },
@@ -264,23 +278,43 @@
       "type": "object",
       "properties": {
         "key": {
-          "type": "string"
+          "type": "string",
+          "example": "dropdown-menubar",
+          "description": "Unique identifier of a toggle",
+          "maxLength": 50,
+          "minLength": 1,
+          "required": [
+            "key"
+          ]
         },
         "isEnabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "format": "boolean",
+          "example": true,
+          "description": "Toggle's usability status",
+          "readOnly": true
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "example": "toggle for showing/unshowing dropdown menubar",
+          "description": "A concise description of a toggle",
+          "maxLength": 255,
+          "minLength": 1
         },
         "createdAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         },
         "updatedAt": {
           "type": "string",
-          "format": "date-time"
+          "format": "date-time",
+          "readOnly": true
         }
-      }
+      },
+      "required": [
+        "key"
+      ]
     }
   }
 }

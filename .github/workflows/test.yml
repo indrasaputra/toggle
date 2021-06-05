@@ -3,31 +3,8 @@ name: Test
 on: [push, pull_request]
   
 jobs:
-  go-code-lint:
-    name: Lint using golangci
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone repository 
-        uses: actions/checkout@v2
-      - name: Lint using golangci-lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.38.0
-
-  migration-lint:
-    name: Validate migration file's name
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
-      - name: Validate migration file's name      
-        run: make validate-migration
-
-  import-lint:
-    name: Lint import block
-    if: github.event_name == 'push'
+  download-module:
+    name: Download go module
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
@@ -36,25 +13,54 @@ jobs:
           go-version: ^1.16.x
       - name: Clone repository
         uses: actions/checkout@v2
-      - name: Check import blocks
-        run: make check-import
-
-  proto-code-format:
-    name: Format proto
+      - name: Download module
+        run: go mod download
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-module-${{ github.repository }}-${{ github.sha }}
+          restore-keys: |
+            go-module-${{ github.repository }}-${{ github.sha }}
+  
+  code-linter:
+    name: Lint all codes and file format
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: Clone repository
+      - name: Clone repository 
         uses: actions/checkout@v2
+      - name: Validate migration file's name      
+        run: make validate-migration
       - name: Format proto files using clang-format
         uses: DoozyX/clang-format-lint-action@v0.11
         with:
           source: '.'
           extensions: 'proto'
           clangFormatVersion: 11
+      - name: Lint using golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.38.0
+
+  import-linter:
+    name: Lint import block
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    container:
+      image: indrasaputra/protogen:0.0.1
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Check import blocks
+        run: |
+          make format
+          make check-import
 
   unit-test:
     name: Unit test and coverage
+    needs: [download-module]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
@@ -63,25 +69,70 @@ jobs:
           go-version: ^1.16.x
       - name: Clone repository
         uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-module-${{ github.repository }}-${{ github.sha }}
+          restore-keys: |
+            go-module-${{ github.repository }}-${{ github.sha }}
       - name: Run unit test and coverage 
         run: make cover
       - name: Push coverage result to Codecov
         uses: codecov/codecov-action@v1.0.13
 
+  compile-binary:
+    name: Compile go binary
+    if: github.event_name == 'push'
+    needs: [download-module]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16.x
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-module-${{ github.repository }}-${{ github.sha }}
+          restore-keys: |
+            go-module-${{ github.repository }}-${{ github.sha }}
+      - name: Compile go binary
+        run: |
+          make compile
+      - name: Upload go binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: go-binary-toggle-${{ github.sha }}
+          path: toggle
+          retention-days: 1
+
   build-docker:
     name: Build and push docker image
     if: github.event_name == 'push'
+    needs: [compile-binary]
     runs-on: ubuntu-latest
     container:
       image: docker:dind
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
+      - name: Download go binary
+        uses: actions/download-artifact@v2
+        with:
+          name: go-binary-toggle-${{ github.sha }}
       - name: Build and push image
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
+          docker tag ${{ github.repository }}:${{ github.sha }} ${{ github.repository }}:latest
           docker push ${{ github.repository }}:${{ github.sha }}
+          docker push ${{ github.repository }}:latest
 
   integration-test:
     name: Integration test

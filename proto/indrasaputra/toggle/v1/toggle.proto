@@ -5,40 +5,89 @@ package proto.indrasaputra.toggle.v1;
 option go_package = "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1;togglev1";
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info : {
+    title : "Feature-Toggle API",
+    version : "1.0.0",
+    contact : {
+      name : "Indra Saputra",
+      url : "https://github.com/indrasaputra",
+    },
+    license : {
+      name : "BSD 3-Clause License",
+      url : "https://github.com/indrasaputra/toggle/blob/main/LICENSE",
+    },
+  },
+  consumes : "application/json",
+  produces : "application/json",
+};
 
 service ToggleService {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
+    description : "This service provides basic command or use cases to work with feature-toggle."
+                  "A toggle is represented by a key as its unique identifier."
+  };
+
+  // Create a new toggle.
+  //
+  // This endpoint creates a new toggle with provided key and description.
+  // The description can be left empty, but the key must exists.
+  // The key must be unique and it can only contain alphanumeric and dash.
+  // The key will be converted to lower case.
   rpc CreateToggle(CreateToggleRequest) returns (CreateToggleResponse) {
     option (google.api.http) = {
       post : "/v1/toggles",
-      body : "*"
+      body : "toggle"
     };
   }
 
+  // Get a toggle.
+  //
+  // This endpoint gets a single toggle by its key.
   rpc GetToggleByKey(GetToggleByKeyRequest) returns (GetToggleByKeyResponse) {
     option (google.api.http) = {
       get : "/v1/toggles/{key}",
     };
   }
 
+  // Get many toggles.
+  //
+  // This endpoint gets all available toggles in the system.
+  // Currently, it only retrieves 10 toggles at most.
   rpc GetAllToggles(GetAllTogglesRequest) returns (GetAllTogglesResponse) {
     option (google.api.http) = {
       get : "/v1/toggles",
     };
   }
 
+  // Enable a toggle.
+  //
+  // This endpoint set toggle's usability to active.
+  // Its *isEnabled* attribute will be set to true.
   rpc Enable(EnableRequest) returns (EnableResponse) {
     option (google.api.http) = {
       put : "/v1/toggles/{key}/enable",
     };
   }
 
+  // Disable a toggle.
+  //
+  // This endpoint set toggle's usability to inactive.
+  // Its *isEnabled* attribute will be set to false.
   rpc Disable(DisableRequest) returns (DisableResponse) {
     option (google.api.http) = {
       put : "/v1/toggles/{key}/disable",
     };
   }
 
+  // Delete a toggle.
+  //
+  // This endpoint deletes a toggle by its key.
+  // The operation is hard-delete, thus the toggle will be gone forever.
   rpc DeleteToggle(DeleteToggleRequest) returns (DeleteToggleResponse) {
     option (google.api.http) = {
       delete : "/v1/toggles/{key}",
@@ -47,15 +96,20 @@ service ToggleService {
 }
 
 message CreateToggleRequest {
-  string key = 1;
-  string description = 2;
+  Toggle toggle = 1;
 }
 
 message CreateToggleResponse {
 }
 
 message GetToggleByKeyRequest {
-  string key = 1;
+  string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    required : "key",
+    description : "Unique identifier of a toggle",
+    min_length : 1,
+    max_length : 50,
+    example : "\"dropdown-menubar\"",
+  } ];
 }
 
 message GetToggleByKeyResponse {
@@ -70,32 +124,71 @@ message GetAllTogglesResponse {
 }
 
 message EnableRequest {
-  string key = 1;
+  string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    required : "key",
+    description : "Unique identifier of a toggle",
+    min_length : 1,
+    max_length : 50,
+    example : "\"dropdown-menubar\"",
+  } ];
 }
 
 message EnableResponse {
 }
 
 message DisableRequest {
-  string key = 1;
+  string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    required : "key",
+    description : "Unique identifier of a toggle",
+    min_length : 1,
+    max_length : 50,
+    example : "\"dropdown-menubar\"",
+  } ];
 }
 
 message DisableResponse {
 }
 
 message DeleteToggleRequest {
-  string key = 1;
+  string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    required : "key",
+    description : "Unique identifier of a toggle",
+    min_length : 1,
+    max_length : 50,
+    example : "\"dropdown-menubar\"",
+  } ];
 }
 
 message DeleteToggleResponse {
 }
 
 message Toggle {
-  string key = 1;
-  bool is_enabled = 2;
-  string description = 3;
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
+  string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    required : "key",
+    description : "Unique identifier of a toggle",
+    min_length : 1,
+    max_length : 50,
+    example : "\"dropdown-menubar\"",
+  } ];
+
+  bool is_enabled = 2 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description : "Toggle's usability status",
+      format : "boolean",
+      example : "true",
+    }
+  ];
+
+  string description = 3 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description : "A concise description of a toggle",
+    min_length : 1,
+    max_length : 255,
+    example : "\"toggle for showing/unshowing dropdown menubar\"",
+  } ];
+
+  google.protobuf.Timestamp created_at = 4 [ (google.api.field_behavior) = OUTPUT_ONLY ];
+  google.protobuf.Timestamp updated_at = 5 [ (google.api.field_behavior) = OUTPUT_ONLY ];
 }
 
 message ToggleError {

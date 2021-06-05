@@ -3,20 +3,27 @@ name: Test
 on: [push, pull_request]
   
 jobs:
-  import-linter:
-    name: Lint import block
-    if: github.event_name == 'push'
+  download-module:
+    name: Download go module
     runs-on: ubuntu-latest
-    container:
-      image: indrasaputra/protogen:0.0.1
     steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16.x
       - name: Clone repository
         uses: actions/checkout@v2
-      - name: Check import blocks
-        run: |
-          make format
-          make check-import
-
+      - name: Download module
+        run: go mod download
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-module-${{ github.repository }}-${{ github.sha }}
+          restore-keys: |
+            go-module-${{ github.repository }}-${{ github.sha }}
+  
   code-linter:
     name: Lint all codes and file format
     if: github.event_name == 'push'
@@ -36,13 +43,33 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.38.0
-      - name: Lint Dockerfile using hadolint
-        uses: hadolint/hadolint-action@v1.5.0
+
+  import-linter:
+    name: Lint import block
+    if: github.event_name == 'push'
+    needs: [download-module]
+    runs-on: ubuntu-latest
+    container:
+      image: indrasaputra/protogen:0.0.1
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
         with:
-          dockerfile: Dockerfile
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-module-${{ github.repository }}-${{ github.sha }}
+          restore-keys: |
+            go-module-${{ github.repository }}-${{ github.sha }}
+      - name: Check import blocks
+        run: |
+          make format
+          make check-import
 
   unit-test:
     name: Unit test and coverage
+    needs: [download-module]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
@@ -51,6 +78,14 @@ jobs:
           go-version: ^1.16.x
       - name: Clone repository
         uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: go-module-${{ github.repository }}-${{ github.sha }}
+          restore-keys: |
+            go-module-${{ github.repository }}-${{ github.sha }}
       - name: Run unit test and coverage 
         run: make cover
       - name: Push coverage result to Codecov

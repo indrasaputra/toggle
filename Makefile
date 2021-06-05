@@ -1,4 +1,4 @@
-GO_UNIT_TEST_FILES	= $(shell go list ./... | grep -v /features/)
+GO_UNIT_TEST_FILES	= $(shell go list ./... | grep -v /feature)
 PROTOGEN_IMAGE 		= indrasaputra/protogen:0.0.1
 
 .PHONY: format

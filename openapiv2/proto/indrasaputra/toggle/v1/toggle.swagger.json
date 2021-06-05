@@ -1,8 +1,16 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/indrasaputra/toggle/v1/toggle.proto",
-    "version": "version not set"
+    "title": "Feature-Toggle API",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Indra Saputra",
+      "url": "https://github.com/indrasaputra"
+    },
+    "license": {
+      "name": "BSD 3-Clause License",
+      "url": "https://github.com/indrasaputra/toggle/blob/main/LICENSE"
+    }
   },
   "tags": [
     {

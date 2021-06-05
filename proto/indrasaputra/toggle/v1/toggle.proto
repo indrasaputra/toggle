@@ -9,6 +9,23 @@ import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info : {
+    title : "Feature-Toggle API",
+    version : "1.0.0",
+    contact : {
+      name : "Indra Saputra",
+      url : "https://github.com/indrasaputra",
+    },
+    license : {
+      name : "BSD 3-Clause License",
+      url : "https://github.com/indrasaputra/toggle/blob/main/LICENSE",
+    },
+  },
+  consumes : "application/json",
+  produces : "application/json",
+};
+
 service ToggleService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
     description : "This service provides basic command or use cases to work with feature-toggle."
@@ -88,7 +105,7 @@ message CreateToggleResponse {
 message GetToggleByKeyRequest {
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
-    description : "Unique identifier of a toggle"
+    description : "Unique identifier of a toggle",
     min_length : 1,
     max_length : 50,
     example : "\"dropdown-menubar\"",
@@ -109,7 +126,7 @@ message GetAllTogglesResponse {
 message EnableRequest {
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
-    description : "Unique identifier of a toggle"
+    description : "Unique identifier of a toggle",
     min_length : 1,
     max_length : 50,
     example : "\"dropdown-menubar\"",
@@ -122,7 +139,7 @@ message EnableResponse {
 message DisableRequest {
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
-    description : "Unique identifier of a toggle"
+    description : "Unique identifier of a toggle",
     min_length : 1,
     max_length : 50,
     example : "\"dropdown-menubar\"",
@@ -135,7 +152,7 @@ message DisableResponse {
 message DeleteToggleRequest {
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
-    description : "Unique identifier of a toggle"
+    description : "Unique identifier of a toggle",
     min_length : 1,
     max_length : 50,
     example : "\"dropdown-menubar\"",
@@ -148,7 +165,7 @@ message DeleteToggleResponse {
 message Toggle {
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
-    description : "Unique identifier of a toggle"
+    description : "Unique identifier of a toggle",
     min_length : 1,
     max_length : 50,
     example : "\"dropdown-menubar\"",
@@ -157,14 +174,14 @@ message Toggle {
   bool is_enabled = 2 [
     (google.api.field_behavior) = OUTPUT_ONLY,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-      description : "Toggle's usability status"
+      description : "Toggle's usability status",
       format : "boolean",
       example : "true",
     }
   ];
 
   string description = 3 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    description : "A concise description of a toggle"
+    description : "A concise description of a toggle",
     min_length : 1,
     max_length : 255,
     example : "\"toggle for showing/unshowing dropdown menubar\"",

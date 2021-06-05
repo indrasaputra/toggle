@@ -42,6 +42,12 @@ Since we use Protocol Buffer, entity has a close (tightly coupled) relationship 
 
 ---
 
+### `infrastructure`
+
+This folder contains any configuration for deployment infrastructure, such as monitoring, logging, kubernetes, etc.
+
+---
+
 ### `feature`
 
 This folder contains all [Cucumber](https://cucumber.io/docs/guides/) definitions for the purpose of integration / API test.

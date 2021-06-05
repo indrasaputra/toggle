@@ -42,7 +42,7 @@
       },
       "post": {
         "summary": "Create a new toggle.",
-        "description": "This endpoint creates a new toggle with provided key and description.\nThe description can be left empty, but the key must exists.\nThe key must be unique.",
+        "description": "This endpoint creates a new toggle with provided key and description.\nThe description can be left empty, but the key must exists.\nThe key must be unique and it can only contain alphanumeric and dash.\nThe key will be converted to lower case.",
         "operationId": "ToggleService_CreateToggle",
         "responses": {
           "200": {

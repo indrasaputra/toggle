@@ -23,7 +23,8 @@ type ToggleServiceClient interface {
 	//
 	// This endpoint creates a new toggle with provided key and description.
 	// The description can be left empty, but the key must exists.
-	// The key must be unique.
+	// The key must be unique and it can only contain alphanumeric and dash.
+	// The key will be converted to lower case.
 	CreateToggle(ctx context.Context, in *CreateToggleRequest, opts ...grpc.CallOption) (*CreateToggleResponse, error)
 	// Get a toggle.
 	//
@@ -121,7 +122,8 @@ type ToggleServiceServer interface {
 	//
 	// This endpoint creates a new toggle with provided key and description.
 	// The description can be left empty, but the key must exists.
-	// The key must be unique.
+	// The key must be unique and it can only contain alphanumeric and dash.
+	// The key will be converted to lower case.
 	CreateToggle(context.Context, *CreateToggleRequest) (*CreateToggleResponse, error)
 	// Get a toggle.
 	//

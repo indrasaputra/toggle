@@ -19,5 +19,26 @@ services:
     networks:
       - toggle
 
+  prometheus:
+    image: prom/prometheus:v2.27.1
+    ports:
+      - 9090:9090
+    volumes:
+      - ${PWD}/infrastructure/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - toggle
+
+  grafana:
+    image: grafana/grafana:7.5.7
+    ports:
+      - 3000:3000
+    volumes:
+      - storage:/var/lib/grafana
+    networks:
+      - toggle
+
+volumes:
+  storage:
+
 networks:
   toggle:

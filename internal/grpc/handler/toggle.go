@@ -32,7 +32,7 @@ func NewToggle(creator service.CreateToggle, getter service.GetToggle, updater s
 
 // CreateToggle handles HTTP/2 gRPC request similar to POST in HTTP/1.1.
 func (th *Toggle) CreateToggle(ctx context.Context, request *togglev1.CreateToggleRequest) (*togglev1.CreateToggleResponse, error) {
-	if request == nil {
+	if request == nil || request.GetToggle() == nil {
 		return nil, entity.ErrEmptyToggle()
 	}
 
@@ -115,8 +115,8 @@ func (th *Toggle) DeleteToggle(ctx context.Context, request *togglev1.DeleteTogg
 
 func createToggleFromCreateToggleRequest(request *togglev1.CreateToggleRequest) *entity.Toggle {
 	return &entity.Toggle{
-		Key:         request.GetKey(),
-		Description: request.GetDescription(),
+		Key:         request.GetToggle().GetKey(),
+		Description: request.GetToggle().GetDescription(),
 	}
 }
 

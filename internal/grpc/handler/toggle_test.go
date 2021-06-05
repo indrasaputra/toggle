@@ -43,7 +43,7 @@ var (
 		CreatedAt:   timestamppb.New(testToggleCreatedAt),
 		UpdatedAt:   timestamppb.New(testToggleUpdatedAt),
 	}
-	testCreateToggleRequest    = &togglev1.CreateToggleRequest{Key: testToggleKey, Description: testToggleDescription}
+	testCreateToggleRequest    = &togglev1.CreateToggleRequest{Toggle: testToggleProto}
 	testGetToggleByKeyRequest  = &togglev1.GetToggleByKeyRequest{Key: testToggleKey}
 	testGetToggleByKeyResponse = &togglev1.GetToggleByKeyResponse{Toggle: testToggleProto}
 	testGetAllTogglesRequest   = &togglev1.GetAllTogglesRequest{}
@@ -80,6 +80,16 @@ func TestToggle_CreateToggle(t *testing.T) {
 		exec := createToggleExecutor(ctrl)
 
 		res, err := exec.handler.CreateToggle(testCtx, nil)
+
+		assert.NotNil(t, err)
+		assert.Equal(t, entity.ErrEmptyToggle(), err)
+		assert.Nil(t, res)
+	})
+
+	t.Run("empty toggle is prohibited", func(t *testing.T) {
+		exec := createToggleExecutor(ctrl)
+
+		res, err := exec.handler.CreateToggle(testCtx, &togglev1.CreateToggleRequest{})
 
 		assert.NotNil(t, err)
 		assert.Equal(t, entity.ErrEmptyToggle(), err)

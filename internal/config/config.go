@@ -12,7 +12,7 @@ type Config struct {
 	Port        Port
 	Postgres    Postgres
 	Redis       Redis
-	Tracing     Tracing
+	Jaeger      Jaeger
 }
 
 // Port holds configuration for project's port.
@@ -39,9 +39,15 @@ type Redis struct {
 	TTL     uint   `env:"REDIS_TTL,default=5"`
 }
 
-// Tracing holds configuration for the Tracing.
-type Tracing struct {
-	Enabled bool `env:"TRACING_ENABLED,default=false"`
+// Jaeger holds configuration for the Jaeger.
+type Jaeger struct {
+	Enabled       bool    `env:"JAEGER_ENABLED,default=false"`
+	Host          string  `env:"JAEGER_HOST,default=localhost"`
+	Port          string  `env:"JAEGER_PORT,default=6831"`
+	SamplingType  string  `env:"JAEGER_SAMPLING_TYPE,default=const"`
+	SamplingParam float64 `env:"JAEGER_SAMPLING_PARAM,default=1"`
+	LogSpans      bool    `env:"JAEGER_LOG_SPANS,default=true"`
+	FlushInterval uint    `env:"JAEGER_FLUSH_INTERVAL,default=1"`
 }
 
 // NewConfig creates an instance of Config.

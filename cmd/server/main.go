@@ -3,11 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
+	jaegerconf "github.com/uber/jaeger-client-go/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
@@ -33,6 +37,9 @@ func main() {
 	restServer := server.NewRest(cfg.Port.REST)
 	registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
 
+	closer := initTracing(cfg)
+	defer func() { _ = closer.Close() }()
+
 	_ = grpcServer.Run()
 	_ = restServer.Run()
 	_ = grpcServer.AwaitTermination()
@@ -54,6 +61,35 @@ func registerRestHandlers(ctx context.Context, server *runtime.ServeMux, grpcPor
 	checkError(err)
 	// end of register all module's REST handlers
 }
+
+func initTracing(cfg *config.Config) io.Closer {
+	if !cfg.Jaeger.Enabled {
+		return nopCloser{}
+	}
+
+	jaegerCfg := &jaegerconf.Configuration{
+		ServiceName: cfg.ServiceName,
+		Sampler: &jaegerconf.SamplerConfig{
+			Type:  cfg.Jaeger.SamplingType,
+			Param: cfg.Jaeger.SamplingParam,
+		},
+		Reporter: &jaegerconf.ReporterConfig{
+			LogSpans:            cfg.Jaeger.LogSpans,
+			LocalAgentHostPort:  fmt.Sprintf("%s:%s", cfg.Jaeger.Host, cfg.Jaeger.Port),
+			BufferFlushInterval: time.Duration(cfg.Jaeger.FlushInterval) * time.Second,
+		},
+	}
+	tracer, closer, err := jaegerCfg.NewTracer(jaegerconf.Logger(jaeger.StdLogger))
+	checkError(err)
+
+	opentracing.SetGlobalTracer(tracer)
+	return closer
+}
+
+type nopCloser struct{}
+
+// Closer closes nothing.
+func (nopCloser) Close() error { return nil }
 
 func checkError(err error) {
 	if err != nil {

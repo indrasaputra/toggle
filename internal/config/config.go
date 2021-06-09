@@ -8,9 +8,11 @@ import (
 
 // Config holds configuration for the project.
 type Config struct {
-	Port     Port
-	Postgres Postgres
-	Redis    Redis
+	ServiceName string `env:"SERVICE_NAME,default=toggle-api"`
+	Port        Port
+	Postgres    Postgres
+	Redis       Redis
+	Jaeger      Jaeger
 }
 
 // Port holds configuration for project's port.
@@ -35,6 +37,17 @@ type Postgres struct {
 type Redis struct {
 	Address string `env:"REDIS_ADDRESS,default=localhost:6379"`
 	TTL     uint   `env:"REDIS_TTL,default=5"`
+}
+
+// Jaeger holds configuration for the Jaeger.
+type Jaeger struct {
+	Enabled       bool    `env:"JAEGER_ENABLED,default=true"`
+	Host          string  `env:"JAEGER_HOST,default=localhost"`
+	Port          string  `env:"JAEGER_PORT,default=6831"`
+	SamplingType  string  `env:"JAEGER_SAMPLING_TYPE,default=const"`
+	SamplingParam float64 `env:"JAEGER_SAMPLING_PARAM,default=1"`
+	LogSpans      bool    `env:"JAEGER_LOG_SPANS,default=true"`
+	FlushInterval uint    `env:"JAEGER_FLUSH_INTERVAL,default=1"`
 }
 
 // NewConfig creates an instance of Config.

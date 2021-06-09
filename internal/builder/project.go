@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v4/pgxpool"
 
 	"github.com/indrasaputra/toggle/internal/config"
+	decorservice "github.com/indrasaputra/toggle/internal/decorator/service"
 	"github.com/indrasaputra/toggle/internal/grpc/handler"
 	"github.com/indrasaputra/toggle/internal/repository"
 	"github.com/indrasaputra/toggle/internal/repository/postgres"
@@ -31,7 +32,10 @@ func BuildToggleHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL ti
 	updater := service.NewToggleUpdater(updaterRepo)
 	deleter := service.NewToggleDeleter(deleterRepo)
 
-	return handler.NewToggle(creator, getter, updater, deleter)
+	decor := decorservice.NewTracing(creator, getter, updater, deleter)
+
+	// this one is not a good example, but I let it be for now since I compose all services in one decorator.
+	return handler.NewToggle(decor, decor, decor, decor)
 }
 
 // BuildPgxPool builds a pool of pgx client.
@@ -60,5 +64,7 @@ func BuildRedisClient(cfg *config.Redis) (*goredis.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	client.AddHook(redis.NewHookTracing())
+
 	return client, nil
 }

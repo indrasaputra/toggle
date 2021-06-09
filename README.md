@@ -48,9 +48,12 @@ To see the RESTful API contract, do the following:
 The application already emits necessary telemetry. If application's dependencies are run using [docker compose](doc/HOW_TO_RUN.md#docker), then monitoring is [provided by default](docker-compose.yaml). Otherwise, you have to provide them.
 These are stacks used as monitoring system.
 
-| Monitoring       | Stack                                | Address                                        |
-| ---              | ---                                  | ---                                            |
-| Metrics          | [Prometheus](https://prometheus.io/) | [http://localhost:9090](http://localhost:9090) |
-| Visualization    | [Grafana](https://grafana.com/)      | [http://localhost:3000](http://localhost:3000) |
+| Monitoring       | Stack                                      | Address                                           |
+| ---              | ---                                        | ---                                               |
+| Metrics          | [Prometheus](https://prometheus.io/)       | [http://localhost:9090](http://localhost:9090)    |
+| Visualization    | [Grafana](https://grafana.com/)            | [http://localhost:3000](http://localhost:3000)    |
+| Tracing          | [Jaeger](https://www.jaegertracing.io/)    | [http://localhost:16686](http://localhost:16686)  |
 
 Special for Grafana, there is [provided dashboard](infrastructure/grafana.dashboard.json) that can be imported. The dashboard contains some basic panels, such as throughput, latency, and error rate.
+
+Currently, tracing only works on gRPC server (handler), service/usecase, and redis. Postgres is not traced yet.

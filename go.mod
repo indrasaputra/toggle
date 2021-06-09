@@ -3,6 +3,7 @@ module github.com/indrasaputra/toggle
 go 1.16
 
 require (
+	github.com/HdrHistogram/hdrhistogram-go v1.1.0 // indirect
 	github.com/alicebob/miniredis/v2 v2.14.5
 	github.com/cucumber/godog v0.11.0
 	github.com/go-redis/redis/v8 v8.9.0
@@ -15,10 +16,14 @@ require (
 	github.com/jackc/pgx/v4 v4.11.0
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/joho/godotenv v1.3.0
+	github.com/opentracing-contrib/go-grpc v0.0.0-20210225150812-73cb765af46e
+	github.com/opentracing/opentracing-go v1.1.0
 	github.com/pashagolub/pgxmock v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.10.0
 	github.com/stretchr/testify v1.7.0
+	github.com/uber/jaeger-client-go v2.29.1+incompatible
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	go.uber.org/zap v1.17.0
 	google.golang.org/genproto v0.0.0-20210524171403-669157292da3
 	google.golang.org/grpc v1.38.0

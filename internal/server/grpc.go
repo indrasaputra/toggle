@@ -13,10 +13,14 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	otgrpc "github.com/opentracing-contrib/go-grpc"
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/indrasaputra/toggle/internal/grpc/interceptor"
 )
 
 const (
@@ -94,6 +98,8 @@ func defaultUnaryServerInterceptors() []grpc.UnaryServerInterceptor {
 		grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(recoveryHandler)),
 		grpc_zap.UnaryServerInterceptor(logger),
 		grpc_prometheus.UnaryServerInterceptor,
+		otgrpc.OpenTracingServerInterceptor(opentracing.GlobalTracer()),
+		interceptor.OpenTracingUnaryServerInterceptor(),
 	}
 	return options
 }

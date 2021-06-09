@@ -179,6 +179,7 @@ jobs:
           POSTGRES_MAX_IDLE_LIFETIME: 5m
           REDIS_ADDRESS: redis:6379
           REDIS_TTL: 5
+          JAEGER_ENABLED: false
         ports:
           - 8080:8080
           - 8081:8081

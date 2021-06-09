@@ -8,9 +8,11 @@ import (
 
 // Config holds configuration for the project.
 type Config struct {
-	Port     Port
-	Postgres Postgres
-	Redis    Redis
+	ServiceName string `env:"SERVICE_NAME,default=toggle-api"`
+	Port        Port
+	Postgres    Postgres
+	Redis       Redis
+	Tracing     Tracing
 }
 
 // Port holds configuration for project's port.
@@ -35,6 +37,11 @@ type Postgres struct {
 type Redis struct {
 	Address string `env:"REDIS_ADDRESS,default=localhost:6379"`
 	TTL     uint   `env:"REDIS_TTL,default=5"`
+}
+
+// Tracing holds configuration for the Tracing.
+type Tracing struct {
+	Enabled bool `env:"TRACING_ENABLED,default=false"`
 }
 
 // NewConfig creates an instance of Config.

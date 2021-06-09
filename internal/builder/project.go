@@ -64,5 +64,7 @@ func BuildRedisClient(cfg *config.Redis) (*goredis.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	client.AddHook(redis.NewHookTracing())
+
 	return client, nil
 }

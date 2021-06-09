@@ -14,18 +14,14 @@ import (
 )
 
 var (
-	// testSpan, testCtx     = opentracing.StartSpanFromContext(context.Background(), "toggle-api")
 	testCtx               = context.Background()
 	testToggleKey         = "test_key"
 	testToggleIsEnabled   = false
 	testToggleDescription = "description"
-	// testToggleCreatedAt   = time.Now()
-	// testToggleUpdatedAt   = time.Now()
-	testToggle = &entity.Toggle{
+	testToggle            = &entity.Toggle{
 		Key:         testToggleKey,
 		IsEnabled:   testToggleIsEnabled,
 		Description: testToggleDescription,
-		// Cr
 	}
 )
 

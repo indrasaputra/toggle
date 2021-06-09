@@ -41,7 +41,7 @@ type Redis struct {
 
 // Jaeger holds configuration for the Jaeger.
 type Jaeger struct {
-	Enabled       bool    `env:"JAEGER_ENABLED,default=false"`
+	Enabled       bool    `env:"JAEGER_ENABLED,default=true"`
 	Host          string  `env:"JAEGER_HOST,default=localhost"`
 	Port          string  `env:"JAEGER_PORT,default=6831"`
 	SamplingType  string  `env:"JAEGER_SAMPLING_TYPE,default=const"`

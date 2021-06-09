@@ -6,6 +6,12 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/status"
+)
+
+const (
+	tagMethod = "grpc.method"
+	tagCode   = "grpc.code"
 )
 
 // OpenTracingUnaryServerInterceptor intercepts the request and creates a span from the incoming context.
@@ -13,9 +19,14 @@ import (
 func OpenTracingUnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		method := path.Base(info.FullMethod)
-		span, _ := opentracing.StartSpanFromContext(ctx, method)
+		span, ctx := opentracing.StartSpanFromContext(ctx, method)
 		defer span.Finish()
 
-		return handler(ctx, req)
+		resp, err := handler(ctx, req)
+
+		span.SetTag(tagMethod, method)
+		span.SetTag(tagCode, status.Code(err))
+
+		return resp, err
 	}
 }

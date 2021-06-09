@@ -31,14 +31,14 @@ func main() {
 	rds, rerr := builder.BuildRedisClient(&cfg.Redis)
 	checkError(rerr)
 
+	closer := initTracing(cfg)
+	defer func() { _ = closer.Close() }()
+
 	grpcServer := server.NewGrpc(cfg.Port.GRPC)
 	registerGrpcHandlers(grpcServer.Server, psql, rds, cfg)
 
 	restServer := server.NewRest(cfg.Port.REST)
 	registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
-
-	closer := initTracing(cfg)
-	defer func() { _ = closer.Close() }()
 
 	_ = grpcServer.Run()
 	_ = restServer.Run()

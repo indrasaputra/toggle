@@ -19,6 +19,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/indrasaputra/toggle/internal/grpc/interceptor"
 )
 
 const (
@@ -97,6 +99,7 @@ func defaultUnaryServerInterceptors() []grpc.UnaryServerInterceptor {
 		grpc_zap.UnaryServerInterceptor(logger),
 		grpc_prometheus.UnaryServerInterceptor,
 		otgrpc.OpenTracingServerInterceptor(opentracing.GlobalTracer()),
+		interceptor.OpenTracingUnaryServerInterceptor(),
 	}
 	return options
 }

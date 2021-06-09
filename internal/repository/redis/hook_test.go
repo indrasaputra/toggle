@@ -4,9 +4,10 @@ import (
 	"testing"
 
 	goredis "github.com/go-redis/redis/v8"
-	"github.com/indrasaputra/toggle/internal/repository/redis"
 	"github.com/opentracing/opentracing-go"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/indrasaputra/toggle/internal/repository/redis"
 )
 
 func TestNewHookTracing(t *testing.T) {

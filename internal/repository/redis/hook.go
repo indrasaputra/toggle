@@ -56,7 +56,7 @@ func (ht *HookTracing) BeforeProcessPipeline(ctx context.Context, cmds []goredis
 	return ctx, nil
 }
 
-// AfterProcessPipelineruns the tracing after the pipeline executed.
+// AfterProcessPipeline runs the tracing after the pipeline executed.
 func (ht *HookTracing) AfterProcessPipeline(ctx context.Context, cmds []goredis.Cmder) error {
 	return nil
 }

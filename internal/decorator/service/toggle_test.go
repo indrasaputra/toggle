@@ -1,0 +1,159 @@
+package service_test
+
+import (
+	"context"
+	"testing"
+
+	"github.com/golang/mock/gomock"
+	"github.com/opentracing/opentracing-go"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/indrasaputra/toggle/entity"
+	"github.com/indrasaputra/toggle/internal/decorator/service"
+	mock_service "github.com/indrasaputra/toggle/test/mock/service"
+)
+
+var (
+	// testSpan, testCtx     = opentracing.StartSpanFromContext(context.Background(), "toggle-api")
+	testCtx               = context.Background()
+	testToggleKey         = "test_key"
+	testToggleIsEnabled   = false
+	testToggleDescription = "description"
+	// testToggleCreatedAt   = time.Now()
+	// testToggleUpdatedAt   = time.Now()
+	testToggle = &entity.Toggle{
+		Key:         testToggleKey,
+		IsEnabled:   testToggleIsEnabled,
+		Description: testToggleDescription,
+		// Cr
+	}
+)
+
+type TracingExecutor struct {
+	tracing *service.Tracing
+
+	creator *mock_service.MockCreateToggle
+	getter  *mock_service.MockGetToggle
+	updater *mock_service.MockUpdateToggle
+	deleter *mock_service.MockDeleteToggle
+}
+
+func TestTracing_Create(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("success decorate Create method", func(t *testing.T) {
+		span, ctx := opentracing.StartSpanFromContext(testCtx, "Create")
+		defer span.Finish()
+
+		exec := createTracingExecutor(ctrl)
+		exec.creator.EXPECT().Create(ctx, testToggle).Return(nil)
+
+		err := exec.tracing.Create(testCtx, testToggle)
+
+		assert.Nil(t, err)
+	})
+}
+
+func TestTracing_DeleteByKey(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("success decorate DeleteByKey method", func(t *testing.T) {
+		span, ctx := opentracing.StartSpanFromContext(testCtx, "DeleteByKey")
+		defer span.Finish()
+
+		exec := createTracingExecutor(ctrl)
+		exec.deleter.EXPECT().DeleteByKey(ctx, testToggleKey).Return(nil)
+
+		err := exec.tracing.DeleteByKey(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+	})
+}
+
+func TestTracing_Enable(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("success decorate Enable method", func(t *testing.T) {
+		span, ctx := opentracing.StartSpanFromContext(testCtx, "Enable")
+		defer span.Finish()
+
+		exec := createTracingExecutor(ctrl)
+		exec.updater.EXPECT().Enable(ctx, testToggleKey).Return(nil)
+
+		err := exec.tracing.Enable(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+	})
+}
+
+func TestTracing_Disable(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("success decorate Disable method", func(t *testing.T) {
+		span, ctx := opentracing.StartSpanFromContext(testCtx, "Disable")
+		defer span.Finish()
+
+		exec := createTracingExecutor(ctrl)
+		exec.updater.EXPECT().Disable(ctx, testToggleKey).Return(nil)
+
+		err := exec.tracing.Disable(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+	})
+}
+
+func TestTracing_GetByKey(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("success decorate GetByKey method", func(t *testing.T) {
+		span, ctx := opentracing.StartSpanFromContext(testCtx, "GetByKey")
+		defer span.Finish()
+
+		exec := createTracingExecutor(ctrl)
+		exec.getter.EXPECT().GetByKey(ctx, testToggleKey).Return(nil, nil)
+
+		resp, err := exec.tracing.GetByKey(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+		assert.Nil(t, resp)
+	})
+}
+
+func TestTracing_GetAll(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("success decorate GetAll method", func(t *testing.T) {
+		span, ctx := opentracing.StartSpanFromContext(testCtx, "GetAll")
+		defer span.Finish()
+
+		exec := createTracingExecutor(ctrl)
+		exec.getter.EXPECT().GetAll(ctx).Return(nil, nil)
+
+		resp, err := exec.tracing.GetAll(testCtx)
+
+		assert.Nil(t, err)
+		assert.Nil(t, resp)
+	})
+}
+
+func createTracingExecutor(ctrl *gomock.Controller) *TracingExecutor {
+	c := mock_service.NewMockCreateToggle(ctrl)
+	g := mock_service.NewMockGetToggle(ctrl)
+	u := mock_service.NewMockUpdateToggle(ctrl)
+	d := mock_service.NewMockDeleteToggle(ctrl)
+
+	t := service.NewTracing(c, g, u, d)
+	return &TracingExecutor{
+		tracing: t,
+		creator: c,
+		getter:  g,
+		updater: u,
+		deleter: d,
+	}
+}

@@ -3,11 +3,12 @@ package toggle
 import (
 	"context"
 
-	"github.com/indrasaputra/toggle/entity"
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/indrasaputra/toggle/entity"
+	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
 
 // Client acts as a client to connect to Toggle.

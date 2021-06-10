@@ -57,3 +57,7 @@ These are stacks used as monitoring system.
 Special for Grafana, there is [provided dashboard](infrastructure/grafana.dashboard.json) that can be imported. The dashboard contains some basic panels, such as throughput, latency, and error rate.
 
 Currently, tracing only works on gRPC server (handler), service/usecase, and redis. Postgres is not traced yet.
+
+## SDK
+
+There is already an SDK to access Toggle. Currently, the SDK only supports Go. The SDK codes are located in this very repository. Visit [Toggle SDK](pkg/sdk/toggle/client.go).

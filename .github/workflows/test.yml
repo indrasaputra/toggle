@@ -150,13 +150,6 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-      # - name: Build and push image
-      #   run: |
-      #     docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-      #     docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
-      #     docker tag ${{ github.repository }}:${{ github.sha }} ${{ github.repository }}:latest
-      #     docker push ${{ github.repository }}:${{ github.sha }}
-      #     docker push ${{ github.repository }}:latest
 
   integration-test:
     name: Integration test

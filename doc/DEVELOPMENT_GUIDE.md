@@ -23,20 +23,20 @@
 - If you want to generate files based on protocol buffer definition, run
 
     ```
-    $ make genproto
+    $ make gen.proto
     ```
 
     Alternatively, you can generate files using provided docker image.
     Run this command to use docker to generate files.
 
     ```
-    $ make genprotodocker
+    $ make gen.proto.docker
     ```
 
 - If you want to generate mock based on some interfaces, run
 
     ```
-    $ make mockgen
+    $ make gen.mock
     ```
 
 - Make sure you format/beautify the code by running

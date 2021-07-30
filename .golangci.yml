@@ -17,7 +17,6 @@ linters:
     - gocyclo
     - gofmt
     - goimports
-    - golint
     - gomnd
     - goprintffuncname
     - gosec
@@ -31,6 +30,7 @@ linters:
     - noctx
     - nolintlint
     - prealloc
+    - revive
     - rowserrcheck
     - staticcheck
     - structcheck
@@ -50,13 +50,9 @@ linters-settings:
     line-length: 200
   govet:
     check-shadowing: true
-  golint:
-    min-confidence: 0
 
 issues:
   exclude-use-default: false
-  exclude:
-    - should have a package comment, unless it's in another file for this package
   exclude-rules:
     - path: _test\.go
       linters:

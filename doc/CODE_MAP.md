@@ -42,16 +42,16 @@ Since we use Protocol Buffer, entity has a close (tightly coupled) relationship 
 
 ---
 
-### `infrastructure`
-
-This folder contains any configuration for deployment infrastructure, such as monitoring, logging, kubernetes, etc.
-
----
-
 ### `feature`
 
 This folder contains all [Cucumber](https://cucumber.io/docs/guides/) definitions for the purpose of integration / API test.
 We use [Gherkin syntax](https://cucumber.io/docs/gherkin/) to define the features.
+
+---
+
+### `infrastructure`
+
+This folder contains any configuration for deployment infrastructure, such as monitoring, logging, kubernetes, etc.
 
 ---
 
@@ -75,10 +75,22 @@ This folder contains configuration for the project.
 
 ---
 
+### `internal/decorator`
+
+This folder contains decorator pattern implementation.
+
+---
+
 ### `internal/grpc/handler`
 
 This folder contains the HTTP/2 gRPC handlers.
 Codes in this folder implement gRPC server interface.
+
+---
+
+### `internal/grpc/interceptor`
+
+This folder contains the HTTP/2 gRPC interceptors.
 
 ---
 

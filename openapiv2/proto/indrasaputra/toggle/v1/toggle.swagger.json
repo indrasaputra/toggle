@@ -14,8 +14,12 @@
   },
   "tags": [
     {
-      "name": "ToggleService",
-      "description": "This service provides basic command or use cases to work with feature-toggle.A toggle is represented by a key as its unique identifier."
+      "name": "ToggleCommandService",
+      "description": "This service provides basic command or state-changing use cases to work with feature-toggle.A toggle is represented by a key as its unique identifier."
+    },
+    {
+      "name": "ToggleQueryService",
+      "description": "This service provides basic query or data-retrieving use cases to work with feature-toggle.A toggle is represented by a key as its unique identifier."
     }
   ],
   "consumes": [
@@ -29,7 +33,7 @@
       "get": {
         "summary": "Get many toggles.",
         "description": "This endpoint gets all available toggles in the system.\nCurrently, it only retrieves 10 toggles at most.",
-        "operationId": "ToggleService_GetAllToggles",
+        "operationId": "ToggleQueryService_GetAllToggles",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -45,13 +49,13 @@
           }
         },
         "tags": [
-          "ToggleService"
+          "ToggleQueryService"
         ]
       },
       "post": {
         "summary": "Create a new toggle.",
         "description": "This endpoint creates a new toggle with provided key and description.\nThe description can be left empty, but the key must exists.\nThe key must be unique and it can only contain alphanumeric and dash.\nThe key will be converted to lower case.",
-        "operationId": "ToggleService_CreateToggle",
+        "operationId": "ToggleCommandService_CreateToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -77,7 +81,7 @@
           }
         ],
         "tags": [
-          "ToggleService"
+          "ToggleCommandService"
         ]
       }
     },
@@ -85,7 +89,7 @@
       "get": {
         "summary": "Get a toggle.",
         "description": "This endpoint gets a single toggle by its key.",
-        "operationId": "ToggleService_GetToggleByKey",
+        "operationId": "ToggleQueryService_GetToggleByKey",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -110,13 +114,13 @@
           }
         ],
         "tags": [
-          "ToggleService"
+          "ToggleQueryService"
         ]
       },
       "delete": {
         "summary": "Delete a toggle.",
         "description": "This endpoint deletes a toggle by its key.\nThe operation is hard-delete, thus the toggle will be gone forever.",
-        "operationId": "ToggleService_DeleteToggle",
+        "operationId": "ToggleCommandService_DeleteToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -141,7 +145,7 @@
           }
         ],
         "tags": [
-          "ToggleService"
+          "ToggleCommandService"
         ]
       }
     },
@@ -149,12 +153,12 @@
       "put": {
         "summary": "Disable a toggle.",
         "description": "This endpoint set toggle's usability to inactive.\nIts *isEnabled* attribute will be set to false.",
-        "operationId": "ToggleService_Disable",
+        "operationId": "ToggleCommandService_DisableToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1DisableResponse"
+              "$ref": "#/definitions/v1DisableToggleResponse"
             }
           },
           "default": {
@@ -174,7 +178,7 @@
           }
         ],
         "tags": [
-          "ToggleService"
+          "ToggleCommandService"
         ]
       }
     },
@@ -182,12 +186,12 @@
       "put": {
         "summary": "Enable a toggle.",
         "description": "This endpoint set toggle's usability to active.\nIts *isEnabled* attribute will be set to true.",
-        "operationId": "ToggleService_Enable",
+        "operationId": "ToggleCommandService_EnableToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1EnableResponse"
+              "$ref": "#/definitions/v1EnableToggleResponse"
             }
           },
           "default": {
@@ -207,7 +211,7 @@
           }
         ],
         "tags": [
-          "ToggleService"
+          "ToggleCommandService"
         ]
       }
     }
@@ -249,10 +253,10 @@
     "v1DeleteToggleResponse": {
       "type": "object"
     },
-    "v1DisableResponse": {
+    "v1DisableToggleResponse": {
       "type": "object"
     },
-    "v1EnableResponse": {
+    "v1EnableToggleResponse": {
       "type": "object"
     },
     "v1GetAllTogglesResponse": {

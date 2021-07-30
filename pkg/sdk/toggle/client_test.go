@@ -136,7 +136,8 @@ func createClientExecutor() *ClientExecutor {
 
 	grpcServer := grpc.NewServer()
 	toggleServer := &mock_server.MockToggleServiceServer{}
-	togglev1.RegisterToggleServiceServer(grpcServer, toggleServer)
+	togglev1.RegisterToggleCommandServiceServer(grpcServer, toggleServer)
+	togglev1.RegisterToggleQueryServiceServer(grpcServer, toggleServer)
 
 	go func() {
 		if err := grpcServer.Serve(listener); err != nil {

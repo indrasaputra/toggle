@@ -13,30 +13,30 @@ import (
 	entity "github.com/indrasaputra/toggle/entity"
 )
 
-// MockCreateToggle is a mock of CreateToggle interface
+// MockCreateToggle is a mock of CreateToggle interface.
 type MockCreateToggle struct {
 	ctrl     *gomock.Controller
 	recorder *MockCreateToggleMockRecorder
 }
 
-// MockCreateToggleMockRecorder is the mock recorder for MockCreateToggle
+// MockCreateToggleMockRecorder is the mock recorder for MockCreateToggle.
 type MockCreateToggleMockRecorder struct {
 	mock *MockCreateToggle
 }
 
-// NewMockCreateToggle creates a new mock instance
+// NewMockCreateToggle creates a new mock instance.
 func NewMockCreateToggle(ctrl *gomock.Controller) *MockCreateToggle {
 	mock := &MockCreateToggle{ctrl: ctrl}
 	mock.recorder = &MockCreateToggleMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCreateToggle) EXPECT() *MockCreateToggleMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
+// Create mocks base method.
 func (m *MockCreateToggle) Create(ctx context.Context, toggle *entity.Toggle) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", ctx, toggle)
@@ -44,36 +44,36 @@ func (m *MockCreateToggle) Create(ctx context.Context, toggle *entity.Toggle) er
 	return ret0
 }
 
-// Create indicates an expected call of Create
+// Create indicates an expected call of Create.
 func (mr *MockCreateToggleMockRecorder) Create(ctx, toggle interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockCreateToggle)(nil).Create), ctx, toggle)
 }
 
-// MockCreateToggleRepository is a mock of CreateToggleRepository interface
+// MockCreateToggleRepository is a mock of CreateToggleRepository interface.
 type MockCreateToggleRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockCreateToggleRepositoryMockRecorder
 }
 
-// MockCreateToggleRepositoryMockRecorder is the mock recorder for MockCreateToggleRepository
+// MockCreateToggleRepositoryMockRecorder is the mock recorder for MockCreateToggleRepository.
 type MockCreateToggleRepositoryMockRecorder struct {
 	mock *MockCreateToggleRepository
 }
 
-// NewMockCreateToggleRepository creates a new mock instance
+// NewMockCreateToggleRepository creates a new mock instance.
 func NewMockCreateToggleRepository(ctrl *gomock.Controller) *MockCreateToggleRepository {
 	mock := &MockCreateToggleRepository{ctrl: ctrl}
 	mock.recorder = &MockCreateToggleRepositoryMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockCreateToggleRepository) EXPECT() *MockCreateToggleRepositoryMockRecorder {
 	return m.recorder
 }
 
-// Insert mocks base method
+// Insert mocks base method.
 func (m *MockCreateToggleRepository) Insert(ctx context.Context, toggle *entity.Toggle) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Insert", ctx, toggle)
@@ -81,7 +81,7 @@ func (m *MockCreateToggleRepository) Insert(ctx context.Context, toggle *entity.
 	return ret0
 }
 
-// Insert indicates an expected call of Insert
+// Insert indicates an expected call of Insert.
 func (mr *MockCreateToggleRepositoryMockRecorder) Insert(ctx, toggle interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockCreateToggleRepository)(nil).Insert), ctx, toggle)

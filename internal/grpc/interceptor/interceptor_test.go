@@ -23,7 +23,7 @@ var (
 )
 
 type ToggleClientExecutor struct {
-	client togglev1.ToggleServiceClient
+	client togglev1.ToggleCommandServiceClient
 	closer func()
 }
 
@@ -44,7 +44,7 @@ func createClientExecutor(intercept grpc.UnaryServerInterceptor) *ToggleClientEx
 
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(intercept))
 	toggleServer := &mock_server.MockToggleServiceServer{}
-	togglev1.RegisterToggleServiceServer(grpcServer, toggleServer)
+	togglev1.RegisterToggleCommandServiceServer(grpcServer, toggleServer)
 
 	go func() {
 		if err := grpcServer.Serve(listener); err != nil {
@@ -66,7 +66,7 @@ func createClientExecutor(intercept grpc.UnaryServerInterceptor) *ToggleClientEx
 	}
 
 	return &ToggleClientExecutor{
-		client: togglev1.NewToggleServiceClient(conn),
+		client: togglev1.NewToggleCommandServiceClient(conn),
 		closer: closer,
 	}
 }

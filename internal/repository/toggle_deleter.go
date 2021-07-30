@@ -48,11 +48,8 @@ func (td *ToggleDeleter) GetByKey(ctx context.Context, key string) (*entity.Togg
 // DeleteByKey deletes the toggle from the storage.
 // It doesn't return any error if toggle is not found.
 func (td *ToggleDeleter) DeleteByKey(ctx context.Context, key string) error {
-	if cerr := td.cache.Delete(ctx, key); cerr != nil {
-		return cerr
+	if err := td.cache.Delete(ctx, key); err != nil {
+		return err
 	}
-	if derr := td.database.Delete(ctx, key); derr != nil {
-		return derr
-	}
-	return nil
+	return td.database.Delete(ctx, key)
 }

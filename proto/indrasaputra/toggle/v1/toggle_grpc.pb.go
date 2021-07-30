@@ -15,10 +15,10 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ToggleServiceClient is the client API for ToggleService service.
+// ToggleCommandServiceClient is the client API for ToggleCommandService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ToggleServiceClient interface {
+type ToggleCommandServiceClient interface {
 	// Create a new toggle.
 	//
 	// This endpoint creates a new toggle with provided key and description.
@@ -26,6 +26,229 @@ type ToggleServiceClient interface {
 	// The key must be unique and it can only contain alphanumeric and dash.
 	// The key will be converted to lower case.
 	CreateToggle(ctx context.Context, in *CreateToggleRequest, opts ...grpc.CallOption) (*CreateToggleResponse, error)
+	// Enable a toggle.
+	//
+	// This endpoint set toggle's usability to active.
+	// Its *isEnabled* attribute will be set to true.
+	EnableToggle(ctx context.Context, in *EnableToggleRequest, opts ...grpc.CallOption) (*EnableToggleResponse, error)
+	// Disable a toggle.
+	//
+	// This endpoint set toggle's usability to inactive.
+	// Its *isEnabled* attribute will be set to false.
+	DisableToggle(ctx context.Context, in *DisableToggleRequest, opts ...grpc.CallOption) (*DisableToggleResponse, error)
+	// Delete a toggle.
+	//
+	// This endpoint deletes a toggle by its key.
+	// The operation is hard-delete, thus the toggle will be gone forever.
+	DeleteToggle(ctx context.Context, in *DeleteToggleRequest, opts ...grpc.CallOption) (*DeleteToggleResponse, error)
+}
+
+type toggleCommandServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewToggleCommandServiceClient(cc grpc.ClientConnInterface) ToggleCommandServiceClient {
+	return &toggleCommandServiceClient{cc}
+}
+
+func (c *toggleCommandServiceClient) CreateToggle(ctx context.Context, in *CreateToggleRequest, opts ...grpc.CallOption) (*CreateToggleResponse, error) {
+	out := new(CreateToggleResponse)
+	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toggleCommandServiceClient) EnableToggle(ctx context.Context, in *EnableToggleRequest, opts ...grpc.CallOption) (*EnableToggleResponse, error) {
+	out := new(EnableToggleResponse)
+	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toggleCommandServiceClient) DisableToggle(ctx context.Context, in *DisableToggleRequest, opts ...grpc.CallOption) (*DisableToggleResponse, error) {
+	out := new(DisableToggleResponse)
+	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toggleCommandServiceClient) DeleteToggle(ctx context.Context, in *DeleteToggleRequest, opts ...grpc.CallOption) (*DeleteToggleResponse, error) {
+	out := new(DeleteToggleResponse)
+	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ToggleCommandServiceServer is the server API for ToggleCommandService service.
+// All implementations must embed UnimplementedToggleCommandServiceServer
+// for forward compatibility
+type ToggleCommandServiceServer interface {
+	// Create a new toggle.
+	//
+	// This endpoint creates a new toggle with provided key and description.
+	// The description can be left empty, but the key must exists.
+	// The key must be unique and it can only contain alphanumeric and dash.
+	// The key will be converted to lower case.
+	CreateToggle(context.Context, *CreateToggleRequest) (*CreateToggleResponse, error)
+	// Enable a toggle.
+	//
+	// This endpoint set toggle's usability to active.
+	// Its *isEnabled* attribute will be set to true.
+	EnableToggle(context.Context, *EnableToggleRequest) (*EnableToggleResponse, error)
+	// Disable a toggle.
+	//
+	// This endpoint set toggle's usability to inactive.
+	// Its *isEnabled* attribute will be set to false.
+	DisableToggle(context.Context, *DisableToggleRequest) (*DisableToggleResponse, error)
+	// Delete a toggle.
+	//
+	// This endpoint deletes a toggle by its key.
+	// The operation is hard-delete, thus the toggle will be gone forever.
+	DeleteToggle(context.Context, *DeleteToggleRequest) (*DeleteToggleResponse, error)
+	mustEmbedUnimplementedToggleCommandServiceServer()
+}
+
+// UnimplementedToggleCommandServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedToggleCommandServiceServer struct {
+}
+
+func (UnimplementedToggleCommandServiceServer) CreateToggle(context.Context, *CreateToggleRequest) (*CreateToggleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateToggle not implemented")
+}
+func (UnimplementedToggleCommandServiceServer) EnableToggle(context.Context, *EnableToggleRequest) (*EnableToggleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableToggle not implemented")
+}
+func (UnimplementedToggleCommandServiceServer) DisableToggle(context.Context, *DisableToggleRequest) (*DisableToggleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DisableToggle not implemented")
+}
+func (UnimplementedToggleCommandServiceServer) DeleteToggle(context.Context, *DeleteToggleRequest) (*DeleteToggleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteToggle not implemented")
+}
+func (UnimplementedToggleCommandServiceServer) mustEmbedUnimplementedToggleCommandServiceServer() {}
+
+// UnsafeToggleCommandServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ToggleCommandServiceServer will
+// result in compilation errors.
+type UnsafeToggleCommandServiceServer interface {
+	mustEmbedUnimplementedToggleCommandServiceServer()
+}
+
+func RegisterToggleCommandServiceServer(s grpc.ServiceRegistrar, srv ToggleCommandServiceServer) {
+	s.RegisterService(&ToggleCommandService_ServiceDesc, srv)
+}
+
+func _ToggleCommandService_CreateToggle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateToggleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToggleCommandServiceServer).CreateToggle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToggleCommandServiceServer).CreateToggle(ctx, req.(*CreateToggleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToggleCommandService_EnableToggle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableToggleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToggleCommandServiceServer).EnableToggle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToggleCommandServiceServer).EnableToggle(ctx, req.(*EnableToggleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToggleCommandService_DisableToggle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DisableToggleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToggleCommandServiceServer).DisableToggle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToggleCommandServiceServer).DisableToggle(ctx, req.(*DisableToggleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToggleCommandService_DeleteToggle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteToggleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToggleCommandServiceServer).DeleteToggle(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToggleCommandServiceServer).DeleteToggle(ctx, req.(*DeleteToggleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ToggleCommandService_ServiceDesc is the grpc.ServiceDesc for ToggleCommandService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ToggleCommandService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.indrasaputra.toggle.v1.ToggleCommandService",
+	HandlerType: (*ToggleCommandServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateToggle",
+			Handler:    _ToggleCommandService_CreateToggle_Handler,
+		},
+		{
+			MethodName: "EnableToggle",
+			Handler:    _ToggleCommandService_EnableToggle_Handler,
+		},
+		{
+			MethodName: "DisableToggle",
+			Handler:    _ToggleCommandService_DisableToggle_Handler,
+		},
+		{
+			MethodName: "DeleteToggle",
+			Handler:    _ToggleCommandService_DeleteToggle_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/indrasaputra/toggle/v1/toggle.proto",
+}
+
+// ToggleQueryServiceClient is the client API for ToggleQueryService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ToggleQueryServiceClient interface {
 	// Get a toggle.
 	//
 	// This endpoint gets a single toggle by its key.
@@ -35,96 +258,38 @@ type ToggleServiceClient interface {
 	// This endpoint gets all available toggles in the system.
 	// Currently, it only retrieves 10 toggles at most.
 	GetAllToggles(ctx context.Context, in *GetAllTogglesRequest, opts ...grpc.CallOption) (*GetAllTogglesResponse, error)
-	// Enable a toggle.
-	//
-	// This endpoint set toggle's usability to active.
-	// Its *isEnabled* attribute will be set to true.
-	Enable(ctx context.Context, in *EnableRequest, opts ...grpc.CallOption) (*EnableResponse, error)
-	// Disable a toggle.
-	//
-	// This endpoint set toggle's usability to inactive.
-	// Its *isEnabled* attribute will be set to false.
-	Disable(ctx context.Context, in *DisableRequest, opts ...grpc.CallOption) (*DisableResponse, error)
-	// Delete a toggle.
-	//
-	// This endpoint deletes a toggle by its key.
-	// The operation is hard-delete, thus the toggle will be gone forever.
-	DeleteToggle(ctx context.Context, in *DeleteToggleRequest, opts ...grpc.CallOption) (*DeleteToggleResponse, error)
 }
 
-type toggleServiceClient struct {
+type toggleQueryServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewToggleServiceClient(cc grpc.ClientConnInterface) ToggleServiceClient {
-	return &toggleServiceClient{cc}
+func NewToggleQueryServiceClient(cc grpc.ClientConnInterface) ToggleQueryServiceClient {
+	return &toggleQueryServiceClient{cc}
 }
 
-func (c *toggleServiceClient) CreateToggle(ctx context.Context, in *CreateToggleRequest, opts ...grpc.CallOption) (*CreateToggleResponse, error) {
-	out := new(CreateToggleResponse)
-	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleService/CreateToggle", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *toggleServiceClient) GetToggleByKey(ctx context.Context, in *GetToggleByKeyRequest, opts ...grpc.CallOption) (*GetToggleByKeyResponse, error) {
+func (c *toggleQueryServiceClient) GetToggleByKey(ctx context.Context, in *GetToggleByKeyRequest, opts ...grpc.CallOption) (*GetToggleByKeyResponse, error) {
 	out := new(GetToggleByKeyResponse)
-	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleService/GetToggleByKey", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *toggleServiceClient) GetAllToggles(ctx context.Context, in *GetAllTogglesRequest, opts ...grpc.CallOption) (*GetAllTogglesResponse, error) {
+func (c *toggleQueryServiceClient) GetAllToggles(ctx context.Context, in *GetAllTogglesRequest, opts ...grpc.CallOption) (*GetAllTogglesResponse, error) {
 	out := new(GetAllTogglesResponse)
-	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleService/GetAllToggles", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *toggleServiceClient) Enable(ctx context.Context, in *EnableRequest, opts ...grpc.CallOption) (*EnableResponse, error) {
-	out := new(EnableResponse)
-	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleService/Enable", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *toggleServiceClient) Disable(ctx context.Context, in *DisableRequest, opts ...grpc.CallOption) (*DisableResponse, error) {
-	out := new(DisableResponse)
-	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleService/Disable", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *toggleServiceClient) DeleteToggle(ctx context.Context, in *DeleteToggleRequest, opts ...grpc.CallOption) (*DeleteToggleResponse, error) {
-	out := new(DeleteToggleResponse)
-	err := c.cc.Invoke(ctx, "/proto.indrasaputra.toggle.v1.ToggleService/DeleteToggle", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ToggleServiceServer is the server API for ToggleService service.
-// All implementations must embed UnimplementedToggleServiceServer
+// ToggleQueryServiceServer is the server API for ToggleQueryService service.
+// All implementations must embed UnimplementedToggleQueryServiceServer
 // for forward compatibility
-type ToggleServiceServer interface {
-	// Create a new toggle.
-	//
-	// This endpoint creates a new toggle with provided key and description.
-	// The description can be left empty, but the key must exists.
-	// The key must be unique and it can only contain alphanumeric and dash.
-	// The key will be converted to lower case.
-	CreateToggle(context.Context, *CreateToggleRequest) (*CreateToggleResponse, error)
+type ToggleQueryServiceServer interface {
 	// Get a toggle.
 	//
 	// This endpoint gets a single toggle by its key.
@@ -134,197 +299,82 @@ type ToggleServiceServer interface {
 	// This endpoint gets all available toggles in the system.
 	// Currently, it only retrieves 10 toggles at most.
 	GetAllToggles(context.Context, *GetAllTogglesRequest) (*GetAllTogglesResponse, error)
-	// Enable a toggle.
-	//
-	// This endpoint set toggle's usability to active.
-	// Its *isEnabled* attribute will be set to true.
-	Enable(context.Context, *EnableRequest) (*EnableResponse, error)
-	// Disable a toggle.
-	//
-	// This endpoint set toggle's usability to inactive.
-	// Its *isEnabled* attribute will be set to false.
-	Disable(context.Context, *DisableRequest) (*DisableResponse, error)
-	// Delete a toggle.
-	//
-	// This endpoint deletes a toggle by its key.
-	// The operation is hard-delete, thus the toggle will be gone forever.
-	DeleteToggle(context.Context, *DeleteToggleRequest) (*DeleteToggleResponse, error)
-	mustEmbedUnimplementedToggleServiceServer()
+	mustEmbedUnimplementedToggleQueryServiceServer()
 }
 
-// UnimplementedToggleServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedToggleServiceServer struct {
+// UnimplementedToggleQueryServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedToggleQueryServiceServer struct {
 }
 
-func (UnimplementedToggleServiceServer) CreateToggle(context.Context, *CreateToggleRequest) (*CreateToggleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateToggle not implemented")
-}
-func (UnimplementedToggleServiceServer) GetToggleByKey(context.Context, *GetToggleByKeyRequest) (*GetToggleByKeyResponse, error) {
+func (UnimplementedToggleQueryServiceServer) GetToggleByKey(context.Context, *GetToggleByKeyRequest) (*GetToggleByKeyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetToggleByKey not implemented")
 }
-func (UnimplementedToggleServiceServer) GetAllToggles(context.Context, *GetAllTogglesRequest) (*GetAllTogglesResponse, error) {
+func (UnimplementedToggleQueryServiceServer) GetAllToggles(context.Context, *GetAllTogglesRequest) (*GetAllTogglesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllToggles not implemented")
 }
-func (UnimplementedToggleServiceServer) Enable(context.Context, *EnableRequest) (*EnableResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Enable not implemented")
-}
-func (UnimplementedToggleServiceServer) Disable(context.Context, *DisableRequest) (*DisableResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Disable not implemented")
-}
-func (UnimplementedToggleServiceServer) DeleteToggle(context.Context, *DeleteToggleRequest) (*DeleteToggleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteToggle not implemented")
-}
-func (UnimplementedToggleServiceServer) mustEmbedUnimplementedToggleServiceServer() {}
+func (UnimplementedToggleQueryServiceServer) mustEmbedUnimplementedToggleQueryServiceServer() {}
 
-// UnsafeToggleServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ToggleServiceServer will
+// UnsafeToggleQueryServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ToggleQueryServiceServer will
 // result in compilation errors.
-type UnsafeToggleServiceServer interface {
-	mustEmbedUnimplementedToggleServiceServer()
+type UnsafeToggleQueryServiceServer interface {
+	mustEmbedUnimplementedToggleQueryServiceServer()
 }
 
-func RegisterToggleServiceServer(s grpc.ServiceRegistrar, srv ToggleServiceServer) {
-	s.RegisterService(&ToggleService_ServiceDesc, srv)
+func RegisterToggleQueryServiceServer(s grpc.ServiceRegistrar, srv ToggleQueryServiceServer) {
+	s.RegisterService(&ToggleQueryService_ServiceDesc, srv)
 }
 
-func _ToggleService_CreateToggle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateToggleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ToggleServiceServer).CreateToggle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleService/CreateToggle",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToggleServiceServer).CreateToggle(ctx, req.(*CreateToggleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ToggleService_GetToggleByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ToggleQueryService_GetToggleByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetToggleByKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ToggleServiceServer).GetToggleByKey(ctx, in)
+		return srv.(ToggleQueryServiceServer).GetToggleByKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleService/GetToggleByKey",
+		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToggleServiceServer).GetToggleByKey(ctx, req.(*GetToggleByKeyRequest))
+		return srv.(ToggleQueryServiceServer).GetToggleByKey(ctx, req.(*GetToggleByKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ToggleService_GetAllToggles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ToggleQueryService_GetAllToggles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAllTogglesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ToggleServiceServer).GetAllToggles(ctx, in)
+		return srv.(ToggleQueryServiceServer).GetAllToggles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleService/GetAllToggles",
+		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToggleServiceServer).GetAllToggles(ctx, req.(*GetAllTogglesRequest))
+		return srv.(ToggleQueryServiceServer).GetAllToggles(ctx, req.(*GetAllTogglesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ToggleService_Enable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EnableRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ToggleServiceServer).Enable(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleService/Enable",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToggleServiceServer).Enable(ctx, req.(*EnableRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ToggleService_Disable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DisableRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ToggleServiceServer).Disable(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleService/Disable",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToggleServiceServer).Disable(ctx, req.(*DisableRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ToggleService_DeleteToggle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteToggleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ToggleServiceServer).DeleteToggle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.indrasaputra.toggle.v1.ToggleService/DeleteToggle",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToggleServiceServer).DeleteToggle(ctx, req.(*DeleteToggleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// ToggleService_ServiceDesc is the grpc.ServiceDesc for ToggleService service.
+// ToggleQueryService_ServiceDesc is the grpc.ServiceDesc for ToggleQueryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ToggleService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.indrasaputra.toggle.v1.ToggleService",
-	HandlerType: (*ToggleServiceServer)(nil),
+var ToggleQueryService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.indrasaputra.toggle.v1.ToggleQueryService",
+	HandlerType: (*ToggleQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateToggle",
-			Handler:    _ToggleService_CreateToggle_Handler,
-		},
-		{
 			MethodName: "GetToggleByKey",
-			Handler:    _ToggleService_GetToggleByKey_Handler,
+			Handler:    _ToggleQueryService_GetToggleByKey_Handler,
 		},
 		{
 			MethodName: "GetAllToggles",
-			Handler:    _ToggleService_GetAllToggles_Handler,
-		},
-		{
-			MethodName: "Enable",
-			Handler:    _ToggleService_Enable_Handler,
-		},
-		{
-			MethodName: "Disable",
-			Handler:    _ToggleService_Disable_Handler,
-		},
-		{
-			MethodName: "DeleteToggle",
-			Handler:    _ToggleService_DeleteToggle_Handler,
+			Handler:    _ToggleQueryService_GetAllToggles_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

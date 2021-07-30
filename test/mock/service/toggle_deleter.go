@@ -13,30 +13,30 @@ import (
 	entity "github.com/indrasaputra/toggle/entity"
 )
 
-// MockDeleteToggle is a mock of DeleteToggle interface
+// MockDeleteToggle is a mock of DeleteToggle interface.
 type MockDeleteToggle struct {
 	ctrl     *gomock.Controller
 	recorder *MockDeleteToggleMockRecorder
 }
 
-// MockDeleteToggleMockRecorder is the mock recorder for MockDeleteToggle
+// MockDeleteToggleMockRecorder is the mock recorder for MockDeleteToggle.
 type MockDeleteToggleMockRecorder struct {
 	mock *MockDeleteToggle
 }
 
-// NewMockDeleteToggle creates a new mock instance
+// NewMockDeleteToggle creates a new mock instance.
 func NewMockDeleteToggle(ctrl *gomock.Controller) *MockDeleteToggle {
 	mock := &MockDeleteToggle{ctrl: ctrl}
 	mock.recorder = &MockDeleteToggleMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDeleteToggle) EXPECT() *MockDeleteToggleMockRecorder {
 	return m.recorder
 }
 
-// DeleteByKey mocks base method
+// DeleteByKey mocks base method.
 func (m *MockDeleteToggle) DeleteByKey(ctx context.Context, key string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteByKey", ctx, key)
@@ -44,36 +44,50 @@ func (m *MockDeleteToggle) DeleteByKey(ctx context.Context, key string) error {
 	return ret0
 }
 
-// DeleteByKey indicates an expected call of DeleteByKey
+// DeleteByKey indicates an expected call of DeleteByKey.
 func (mr *MockDeleteToggleMockRecorder) DeleteByKey(ctx, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByKey", reflect.TypeOf((*MockDeleteToggle)(nil).DeleteByKey), ctx, key)
 }
 
-// MockDeleteToggleRepository is a mock of DeleteToggleRepository interface
+// MockDeleteToggleRepository is a mock of DeleteToggleRepository interface.
 type MockDeleteToggleRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MockDeleteToggleRepositoryMockRecorder
 }
 
-// MockDeleteToggleRepositoryMockRecorder is the mock recorder for MockDeleteToggleRepository
+// MockDeleteToggleRepositoryMockRecorder is the mock recorder for MockDeleteToggleRepository.
 type MockDeleteToggleRepositoryMockRecorder struct {
 	mock *MockDeleteToggleRepository
 }
 
-// NewMockDeleteToggleRepository creates a new mock instance
+// NewMockDeleteToggleRepository creates a new mock instance.
 func NewMockDeleteToggleRepository(ctrl *gomock.Controller) *MockDeleteToggleRepository {
 	mock := &MockDeleteToggleRepository{ctrl: ctrl}
 	mock.recorder = &MockDeleteToggleRepositoryMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDeleteToggleRepository) EXPECT() *MockDeleteToggleRepositoryMockRecorder {
 	return m.recorder
 }
 
-// GetByKey mocks base method
+// DeleteByKey mocks base method.
+func (m *MockDeleteToggleRepository) DeleteByKey(ctx context.Context, key string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteByKey", ctx, key)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteByKey indicates an expected call of DeleteByKey.
+func (mr *MockDeleteToggleRepositoryMockRecorder) DeleteByKey(ctx, key interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByKey", reflect.TypeOf((*MockDeleteToggleRepository)(nil).DeleteByKey), ctx, key)
+}
+
+// GetByKey mocks base method.
 func (m *MockDeleteToggleRepository) GetByKey(ctx context.Context, key string) (*entity.Toggle, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByKey", ctx, key)
@@ -82,22 +96,8 @@ func (m *MockDeleteToggleRepository) GetByKey(ctx context.Context, key string) (
 	return ret0, ret1
 }
 
-// GetByKey indicates an expected call of GetByKey
+// GetByKey indicates an expected call of GetByKey.
 func (mr *MockDeleteToggleRepositoryMockRecorder) GetByKey(ctx, key interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByKey", reflect.TypeOf((*MockDeleteToggleRepository)(nil).GetByKey), ctx, key)
-}
-
-// DeleteByKey mocks base method
-func (m *MockDeleteToggleRepository) DeleteByKey(ctx context.Context, key string) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteByKey", ctx, key)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DeleteByKey indicates an expected call of DeleteByKey
-func (mr *MockDeleteToggleRepositoryMockRecorder) DeleteByKey(ctx, key interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByKey", reflect.TypeOf((*MockDeleteToggleRepository)(nil).DeleteByKey), ctx, key)
 }

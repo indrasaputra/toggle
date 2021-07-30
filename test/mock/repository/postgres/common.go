@@ -13,30 +13,30 @@ import (
 	pgx "github.com/jackc/pgx/v4"
 )
 
-// MockPgxPoolIface is a mock of PgxPoolIface interface
+// MockPgxPoolIface is a mock of PgxPoolIface interface.
 type MockPgxPoolIface struct {
 	ctrl     *gomock.Controller
 	recorder *MockPgxPoolIfaceMockRecorder
 }
 
-// MockPgxPoolIfaceMockRecorder is the mock recorder for MockPgxPoolIface
+// MockPgxPoolIfaceMockRecorder is the mock recorder for MockPgxPoolIface.
 type MockPgxPoolIfaceMockRecorder struct {
 	mock *MockPgxPoolIface
 }
 
-// NewMockPgxPoolIface creates a new mock instance
+// NewMockPgxPoolIface creates a new mock instance.
 func NewMockPgxPoolIface(ctrl *gomock.Controller) *MockPgxPoolIface {
 	mock := &MockPgxPoolIface{ctrl: ctrl}
 	mock.recorder = &MockPgxPoolIfaceMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockPgxPoolIface) EXPECT() *MockPgxPoolIfaceMockRecorder {
 	return m.recorder
 }
 
-// Exec mocks base method
+// Exec mocks base method.
 func (m *MockPgxPoolIface) Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, sql}
@@ -49,14 +49,28 @@ func (m *MockPgxPoolIface) Exec(ctx context.Context, sql string, arguments ...in
 	return ret0, ret1
 }
 
-// Exec indicates an expected call of Exec
+// Exec indicates an expected call of Exec.
 func (mr *MockPgxPoolIfaceMockRecorder) Exec(ctx, sql interface{}, arguments ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, sql}, arguments...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Exec", reflect.TypeOf((*MockPgxPoolIface)(nil).Exec), varargs...)
 }
 
-// Query mocks base method
+// Ping mocks base method.
+func (m *MockPgxPoolIface) Ping(ctx context.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Ping", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Ping indicates an expected call of Ping.
+func (mr *MockPgxPoolIfaceMockRecorder) Ping(ctx interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockPgxPoolIface)(nil).Ping), ctx)
+}
+
+// Query mocks base method.
 func (m *MockPgxPoolIface) Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, sql}
@@ -69,14 +83,14 @@ func (m *MockPgxPoolIface) Query(ctx context.Context, sql string, args ...interf
 	return ret0, ret1
 }
 
-// Query indicates an expected call of Query
+// Query indicates an expected call of Query.
 func (mr *MockPgxPoolIfaceMockRecorder) Query(ctx, sql interface{}, args ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, sql}, args...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockPgxPoolIface)(nil).Query), varargs...)
 }
 
-// QueryRow mocks base method
+// QueryRow mocks base method.
 func (m *MockPgxPoolIface) QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{ctx, sql}
@@ -88,23 +102,9 @@ func (m *MockPgxPoolIface) QueryRow(ctx context.Context, sql string, args ...int
 	return ret0
 }
 
-// QueryRow indicates an expected call of QueryRow
+// QueryRow indicates an expected call of QueryRow.
 func (mr *MockPgxPoolIfaceMockRecorder) QueryRow(ctx, sql interface{}, args ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{ctx, sql}, args...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryRow", reflect.TypeOf((*MockPgxPoolIface)(nil).QueryRow), varargs...)
-}
-
-// Ping mocks base method
-func (m *MockPgxPoolIface) Ping(ctx context.Context) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Ping", ctx)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Ping indicates an expected call of Ping
-func (mr *MockPgxPoolIfaceMockRecorder) Ping(ctx interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Ping", reflect.TypeOf((*MockPgxPoolIface)(nil).Ping), ctx)
 }

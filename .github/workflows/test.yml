@@ -60,7 +60,7 @@ jobs:
 
   unit-test:
     name: Unit test and coverage
-    needs: [download-module]
+    needs: [download-module, code-linter, import-linter]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
@@ -85,7 +85,7 @@ jobs:
   compile-binary:
     name: Compile go binary
     if: github.event_name == 'push'
-    needs: [download-module]
+    needs: [download-module, code-linter, import-linter]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
@@ -115,10 +115,8 @@ jobs:
   build-docker:
     name: Build and push docker image
     if: github.event_name == 'push'
-    needs: [compile-binary]
+    needs: [compile-binary, unit-test]
     runs-on: ubuntu-latest
-    container:
-      image: docker:dind
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
@@ -126,13 +124,32 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: go-binary-toggle-${{ github.sha }}
-      - name: Build and push image
-        run: |
-          docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker build --no-cache -t ${{ github.repository }}:${{ github.sha }} -f Dockerfile .
-          docker tag ${{ github.repository }}:${{ github.sha }} ${{ github.repository }}:latest
-          docker push ${{ github.repository }}:${{ github.sha }}
-          docker push ${{ github.repository }}:latest
+      - name: Setup docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ github.repository }}
+          flavor: |
+            latest=true
+          tags: |
+            type=raw,value=${{ github.sha }}  
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
   integration-test:
     name: Integration test

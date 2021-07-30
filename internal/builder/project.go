@@ -27,13 +27,14 @@ func BuildToggleCommandHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rd
 	deleterRepo := repository.NewToggleDeleter(psql, rds)
 
 	creator := service.NewToggleCreator(inserterRepo)
-	updater := service.NewToggleUpdater(updaterRepo)
+	enabler := service.NewToggleEnabler(updaterRepo)
+	disabler := service.NewToggleDisabler(updaterRepo)
 	deleter := service.NewToggleDeleter(deleterRepo)
 
-	decor := decorservice.NewTracing(creator, nil, updater, deleter)
+	decor := decorservice.NewTracing(creator, nil, enabler, disabler, deleter)
 
 	// this one is not a good example, but I let it be for now since I compose all services in one decorator.
-	return handler.NewToggleCommand(decor, decor, decor)
+	return handler.NewToggleCommand(decor, decor, decor, decor)
 }
 
 // BuildToggleQueryHandler builds toggle query handler including all of its dependencies.
@@ -45,7 +46,7 @@ func BuildToggleQueryHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsT
 
 	getter := service.NewToggleGetter(getterRepo)
 
-	decor := decorservice.NewTracing(nil, getter, nil, nil)
+	decor := decorservice.NewTracing(nil, getter, nil, nil, nil)
 
 	// this one is not a good example, but I let it be for now since I compose all services in one decorator.
 	return handler.NewToggleQuery(decor)

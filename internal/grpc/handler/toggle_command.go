@@ -12,17 +12,19 @@ import (
 type ToggleCommand struct {
 	togglev1.UnimplementedToggleCommandServiceServer
 
-	creator service.CreateToggle
-	updater service.UpdateToggle
-	deleter service.DeleteToggle
+	creator  service.CreateToggle
+	enabler  service.EnableToggle
+	disabler service.DisableToggle
+	deleter  service.DeleteToggle
 }
 
 // NewToggleCommand creates an instance of ToggleCommand.
-func NewToggleCommand(creator service.CreateToggle, updater service.UpdateToggle, deleter service.DeleteToggle) *ToggleCommand {
+func NewToggleCommand(creator service.CreateToggle, enabler service.EnableToggle, disabler service.DisableToggle, deleter service.DeleteToggle) *ToggleCommand {
 	return &ToggleCommand{
-		creator: creator,
-		updater: updater,
-		deleter: deleter,
+		creator:  creator,
+		enabler:  enabler,
+		disabler: disabler,
+		deleter:  deleter,
 	}
 }
 
@@ -46,7 +48,7 @@ func (tc *ToggleCommand) EnableToggle(ctx context.Context, request *togglev1.Ena
 		return nil, entity.ErrEmptyToggle()
 	}
 
-	err := tc.updater.Enable(ctx, request.GetKey())
+	err := tc.enabler.Enable(ctx, request.GetKey())
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +62,7 @@ func (tc *ToggleCommand) DisableToggle(ctx context.Context, request *togglev1.Di
 		return nil, entity.ErrEmptyToggle()
 	}
 
-	err := tc.updater.Disable(ctx, request.GetKey())
+	err := tc.disabler.Disable(ctx, request.GetKey())
 	if err != nil {
 		return nil, err
 	}

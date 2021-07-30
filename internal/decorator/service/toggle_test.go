@@ -28,10 +28,11 @@ var (
 type TracingExecutor struct {
 	tracing *service.Tracing
 
-	creator *mock_service.MockCreateToggle
-	getter  *mock_service.MockGetToggle
-	updater *mock_service.MockUpdateToggle
-	deleter *mock_service.MockDeleteToggle
+	creator  *mock_service.MockCreateToggle
+	getter   *mock_service.MockGetToggle
+	enabler  *mock_service.MockEnableToggle
+	disabler *mock_service.MockDisableToggle
+	deleter  *mock_service.MockDeleteToggle
 }
 
 func TestTracing_Create(t *testing.T) {
@@ -77,7 +78,7 @@ func TestTracing_Enable(t *testing.T) {
 		defer span.Finish()
 
 		exec := createTracingExecutor(ctrl)
-		exec.updater.EXPECT().Enable(ctx, testToggleKey).Return(nil)
+		exec.enabler.EXPECT().Enable(ctx, testToggleKey).Return(nil)
 
 		err := exec.tracing.Enable(testCtx, testToggleKey)
 
@@ -94,7 +95,7 @@ func TestTracing_Disable(t *testing.T) {
 		defer span.Finish()
 
 		exec := createTracingExecutor(ctrl)
-		exec.updater.EXPECT().Disable(ctx, testToggleKey).Return(nil)
+		exec.disabler.EXPECT().Disable(ctx, testToggleKey).Return(nil)
 
 		err := exec.tracing.Disable(testCtx, testToggleKey)
 
@@ -141,15 +142,17 @@ func TestTracing_GetAll(t *testing.T) {
 func createTracingExecutor(ctrl *gomock.Controller) *TracingExecutor {
 	c := mock_service.NewMockCreateToggle(ctrl)
 	g := mock_service.NewMockGetToggle(ctrl)
-	u := mock_service.NewMockUpdateToggle(ctrl)
+	e := mock_service.NewMockEnableToggle(ctrl)
+	s := mock_service.NewMockDisableToggle(ctrl)
 	d := mock_service.NewMockDeleteToggle(ctrl)
 
-	t := service.NewTracing(c, g, u, d)
+	t := service.NewTracing(c, g, e, s, d)
 	return &TracingExecutor{
-		tracing: t,
-		creator: c,
-		getter:  g,
-		updater: u,
-		deleter: d,
+		tracing:  t,
+		creator:  c,
+		getter:   g,
+		enabler:  e,
+		disabler: s,
+		deleter:  d,
 	}
 }

@@ -52,9 +52,10 @@ var (
 type ToggleCommandExecutor struct {
 	handler *handler.ToggleCommand
 
-	creator *mock_service.MockCreateToggle
-	updater *mock_service.MockUpdateToggle
-	deleter *mock_service.MockDeleteToggle
+	creator  *mock_service.MockCreateToggle
+	enabler  *mock_service.MockEnableToggle
+	disabler *mock_service.MockDisableToggle
+	deleter  *mock_service.MockDeleteToggle
 }
 
 func TestNewToggleCommand(t *testing.T) {
@@ -144,7 +145,7 @@ func TestToggleCommand_EnableToggle(t *testing.T) {
 
 	t.Run("toggle not found", func(t *testing.T) {
 		exec := createToggleCommandExecutor(ctrl)
-		exec.updater.EXPECT().Enable(testCtx, testToggleKey).Return(entity.ErrNotFound())
+		exec.enabler.EXPECT().Enable(testCtx, testToggleKey).Return(entity.ErrNotFound())
 
 		res, err := exec.handler.EnableToggle(testCtx, testEnableToggleRequest)
 
@@ -155,7 +156,7 @@ func TestToggleCommand_EnableToggle(t *testing.T) {
 
 	t.Run("updater service returns internal error", func(t *testing.T) {
 		exec := createToggleCommandExecutor(ctrl)
-		exec.updater.EXPECT().Enable(testCtx, testToggleKey).Return(entity.ErrInternal(""))
+		exec.enabler.EXPECT().Enable(testCtx, testToggleKey).Return(entity.ErrInternal(""))
 
 		res, err := exec.handler.EnableToggle(testCtx, testEnableToggleRequest)
 
@@ -166,7 +167,7 @@ func TestToggleCommand_EnableToggle(t *testing.T) {
 
 	t.Run("success enable toggle", func(t *testing.T) {
 		exec := createToggleCommandExecutor(ctrl)
-		exec.updater.EXPECT().Enable(testCtx, testToggleKey).Return(nil)
+		exec.enabler.EXPECT().Enable(testCtx, testToggleKey).Return(nil)
 
 		res, err := exec.handler.EnableToggle(testCtx, testEnableToggleRequest)
 
@@ -191,7 +192,7 @@ func TestToggleCommand_DisableToggle(t *testing.T) {
 
 	t.Run("toggle not found", func(t *testing.T) {
 		exec := createToggleCommandExecutor(ctrl)
-		exec.updater.EXPECT().Disable(testCtx, testToggleKey).Return(entity.ErrNotFound())
+		exec.disabler.EXPECT().Disable(testCtx, testToggleKey).Return(entity.ErrNotFound())
 
 		res, err := exec.handler.DisableToggle(testCtx, testDisableToggleRequest)
 
@@ -202,7 +203,7 @@ func TestToggleCommand_DisableToggle(t *testing.T) {
 
 	t.Run("updater service returns internal error", func(t *testing.T) {
 		exec := createToggleCommandExecutor(ctrl)
-		exec.updater.EXPECT().Disable(testCtx, testToggleKey).Return(entity.ErrInternal(""))
+		exec.disabler.EXPECT().Disable(testCtx, testToggleKey).Return(entity.ErrInternal(""))
 
 		res, err := exec.handler.DisableToggle(testCtx, testDisableToggleRequest)
 
@@ -213,7 +214,7 @@ func TestToggleCommand_DisableToggle(t *testing.T) {
 
 	t.Run("success disable toggle", func(t *testing.T) {
 		exec := createToggleCommandExecutor(ctrl)
-		exec.updater.EXPECT().Disable(testCtx, testToggleKey).Return(nil)
+		exec.disabler.EXPECT().Disable(testCtx, testToggleKey).Return(nil)
 
 		res, err := exec.handler.DisableToggle(testCtx, testDisableToggleRequest)
 
@@ -260,14 +261,16 @@ func TestToggleCommand_DeleteToggle(t *testing.T) {
 
 func createToggleCommandExecutor(ctrl *gomock.Controller) *ToggleCommandExecutor {
 	c := mock_service.NewMockCreateToggle(ctrl)
-	u := mock_service.NewMockUpdateToggle(ctrl)
+	e := mock_service.NewMockEnableToggle(ctrl)
+	s := mock_service.NewMockDisableToggle(ctrl)
 	d := mock_service.NewMockDeleteToggle(ctrl)
 
-	h := handler.NewToggleCommand(c, u, d)
+	h := handler.NewToggleCommand(c, e, s, d)
 	return &ToggleCommandExecutor{
-		handler: h,
-		creator: c,
-		updater: u,
-		deleter: d,
+		handler:  h,
+		creator:  c,
+		enabler:  e,
+		disabler: s,
+		deleter:  d,
 	}
 }

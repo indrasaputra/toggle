@@ -15,19 +15,21 @@ const (
 
 // Tracing decorates toggle service and imbues it with tracing.
 type Tracing struct {
-	creator service.CreateToggle
-	getter  service.GetToggle
-	updater service.UpdateToggle
-	deleter service.DeleteToggle
+	creator  service.CreateToggle
+	getter   service.GetToggle
+	enabler  service.EnableToggle
+	disabler service.DisableToggle
+	deleter  service.DeleteToggle
 }
 
 // NewTracing creates an instance of Tracing.
-func NewTracing(creator service.CreateToggle, getter service.GetToggle, updater service.UpdateToggle, deleter service.DeleteToggle) *Tracing {
+func NewTracing(creator service.CreateToggle, getter service.GetToggle, enabler service.EnableToggle, disabler service.DisableToggle, deleter service.DeleteToggle) *Tracing {
 	return &Tracing{
-		creator: creator,
-		getter:  getter,
-		updater: updater,
-		deleter: deleter,
+		creator:  creator,
+		getter:   getter,
+		enabler:  enabler,
+		disabler: disabler,
+		deleter:  deleter,
 	}
 }
 
@@ -80,7 +82,7 @@ func (t *Tracing) Enable(ctx context.Context, key string) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Enable")
 	defer span.Finish()
 
-	err := t.updater.Enable(ctx, key)
+	err := t.enabler.Enable(ctx, key)
 
 	span.SetTag(tagService, "Enable")
 	return err
@@ -91,7 +93,7 @@ func (t *Tracing) Disable(ctx context.Context, key string) error {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "Disable")
 	defer span.Finish()
 
-	err := t.updater.Disable(ctx, key)
+	err := t.disabler.Disable(ctx, key)
 
 	span.SetTag(tagService, "Disable")
 	return err

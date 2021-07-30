@@ -12,7 +12,8 @@ import (
 )
 
 var (
-	testToggleIsEnabledTrue = true
+	testToggleIsEnabledTrue  = true
+	testToggleIsEnabledFalse = false
 )
 
 type ToggleUpdaterExecutor struct {
@@ -31,7 +32,7 @@ func TestNewToggleUpdater(t *testing.T) {
 	})
 }
 
-func TestToggleUpdater_UpdateIsEnabled(t *testing.T) {
+func TestToggleUpdater_Enable(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -39,7 +40,7 @@ func TestToggleUpdater_UpdateIsEnabled(t *testing.T) {
 		exec := createToggleUpdaterExecutor(ctrl)
 		exec.database.EXPECT().UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue).Return(entity.ErrInternal(""))
 
-		err := exec.updater.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
+		err := exec.updater.Enable(testCtx, testToggleKey, testToggleIsEnabledTrue)
 
 		assert.NotNil(t, err)
 	})
@@ -49,7 +50,7 @@ func TestToggleUpdater_UpdateIsEnabled(t *testing.T) {
 		exec.database.EXPECT().UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue).Return(nil)
 		exec.cache.EXPECT().SetIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue).Return(entity.ErrInternal(""))
 
-		err := exec.updater.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
+		err := exec.updater.Enable(testCtx, testToggleKey, testToggleIsEnabledTrue)
 
 		assert.Nil(t, err)
 	})
@@ -59,7 +60,41 @@ func TestToggleUpdater_UpdateIsEnabled(t *testing.T) {
 		exec.database.EXPECT().UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue).Return(nil)
 		exec.cache.EXPECT().SetIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue).Return(nil)
 
-		err := exec.updater.UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledTrue)
+		err := exec.updater.Enable(testCtx, testToggleKey, testToggleIsEnabledTrue)
+
+		assert.Nil(t, err)
+	})
+}
+
+func TestToggleUpdater_Disable(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("database returns error", func(t *testing.T) {
+		exec := createToggleUpdaterExecutor(ctrl)
+		exec.database.EXPECT().UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledFalse).Return(entity.ErrInternal(""))
+
+		err := exec.updater.Disable(testCtx, testToggleKey, testToggleIsEnabledFalse)
+
+		assert.NotNil(t, err)
+	})
+
+	t.Run("cache error is ignored", func(t *testing.T) {
+		exec := createToggleUpdaterExecutor(ctrl)
+		exec.database.EXPECT().UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledFalse).Return(nil)
+		exec.cache.EXPECT().SetIsEnabled(testCtx, testToggleKey, testToggleIsEnabledFalse).Return(entity.ErrInternal(""))
+
+		err := exec.updater.Disable(testCtx, testToggleKey, testToggleIsEnabledFalse)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("all steps are successful", func(t *testing.T) {
+		exec := createToggleUpdaterExecutor(ctrl)
+		exec.database.EXPECT().UpdateIsEnabled(testCtx, testToggleKey, testToggleIsEnabledFalse).Return(nil)
+		exec.cache.EXPECT().SetIsEnabled(testCtx, testToggleKey, testToggleIsEnabledFalse).Return(nil)
+
+		err := exec.updater.Disable(testCtx, testToggleKey, testToggleIsEnabledFalse)
 
 		assert.Nil(t, err)
 	})

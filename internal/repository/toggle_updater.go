@@ -29,11 +29,23 @@ func NewToggleUpdater(database UpdateToggleDatabase, cache UpdateToggleCache) *T
 	return &ToggleUpdater{database: database, cache: cache}
 }
 
-// UpdateIsEnabled updates the toggle's is_enabled value in the storage.
+// Enable updates the toggle's is_enabled value to be true in the storage.
 // First, it updates the data in database. If success, the data will be set to cache.
 // It ignores the error from cache since it can always be generated when retrieving the data.
 // But, it doesn't ignore the error from the database.
-func (ti *ToggleUpdater) UpdateIsEnabled(ctx context.Context, key string, value bool) error {
+func (ti *ToggleUpdater) Enable(ctx context.Context, key string, value bool) error {
+	return ti.updateIsEnabled(ctx, key, value)
+}
+
+// Disable updates the toggle's is_enabled value to be false in the storage.
+// First, it updates the data in database. If success, the data will be set to cache.
+// It ignores the error from cache since it can always be generated when retrieving the data.
+// But, it doesn't ignore the error from the database.
+func (ti *ToggleUpdater) Disable(ctx context.Context, key string, value bool) error {
+	return ti.updateIsEnabled(ctx, key, value)
+}
+
+func (ti *ToggleUpdater) updateIsEnabled(ctx context.Context, key string, value bool) error {
 	if err := ti.database.UpdateIsEnabled(ctx, key, value); err != nil {
 		return err
 	}

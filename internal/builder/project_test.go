@@ -13,13 +13,25 @@ import (
 	"github.com/indrasaputra/toggle/internal/config"
 )
 
-func TestBuildToggleHandler(t *testing.T) {
-	t.Run("success create toggle handler", func(t *testing.T) {
+func TestBuildToggleCommandHandler(t *testing.T) {
+	t.Run("success create toggle command handler", func(t *testing.T) {
 		psql := &pgxpool.Pool{}
 		rds := &goredis.Client{}
 		ttl := 5 * time.Minute
 
-		handler := builder.BuildToggleHandler(psql, rds, ttl)
+		handler := builder.BuildToggleCommandHandler(psql, rds, ttl)
+
+		assert.NotNil(t, handler)
+	})
+}
+
+func TestBuildToggleHandler(t *testing.T) {
+	t.Run("success create toggle query handler", func(t *testing.T) {
+		psql := &pgxpool.Pool{}
+		rds := &goredis.Client{}
+		ttl := 5 * time.Minute
+
+		handler := builder.BuildToggleQueryHandler(psql, rds, ttl)
 
 		assert.NotNil(t, handler)
 	})

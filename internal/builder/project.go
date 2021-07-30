@@ -17,25 +17,38 @@ import (
 	"github.com/indrasaputra/toggle/service"
 )
 
-// BuildToggleHandler builds toggle handler including all of its dependencies.
-func BuildToggleHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration) *handler.Toggle {
+// BuildToggleCommandHandler builds toggle command handler including all of its dependencies.
+func BuildToggleCommandHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration) *handler.ToggleCommand {
 	psql := postgres.NewToggle(pool)
 	rds := redis.NewToggle(rdsClient, rdsTTL)
 
 	inserterRepo := repository.NewToggleInserter(psql, rds)
-	getterRepo := repository.NewToggleGetter(psql, rds)
 	updaterRepo := repository.NewToggleUpdater(psql, rds)
 	deleterRepo := repository.NewToggleDeleter(psql, rds)
 
 	creator := service.NewToggleCreator(inserterRepo)
-	getter := service.NewToggleGetter(getterRepo)
 	updater := service.NewToggleUpdater(updaterRepo)
 	deleter := service.NewToggleDeleter(deleterRepo)
 
-	decor := decorservice.NewTracing(creator, getter, updater, deleter)
+	decor := decorservice.NewTracing(creator, nil, updater, deleter)
 
 	// this one is not a good example, but I let it be for now since I compose all services in one decorator.
-	return handler.NewToggle(decor, decor, decor, decor)
+	return handler.NewToggleCommand(decor, decor, decor)
+}
+
+// BuildToggleQueryHandler builds toggle query handler including all of its dependencies.
+func BuildToggleQueryHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration) *handler.ToggleQuery {
+	psql := postgres.NewToggle(pool)
+	rds := redis.NewToggle(rdsClient, rdsTTL)
+
+	getterRepo := repository.NewToggleGetter(psql, rds)
+
+	getter := service.NewToggleGetter(getterRepo)
+
+	decor := decorservice.NewTracing(nil, getter, nil, nil)
+
+	// this one is not a good example, but I let it be for now since I compose all services in one decorator.
+	return handler.NewToggleQuery(decor)
 }
 
 // BuildPgxPool builds a pool of pgx client.

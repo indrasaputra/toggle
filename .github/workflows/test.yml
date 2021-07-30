@@ -130,9 +130,9 @@ jobs:
         with:
           images: ${{ github.repository }}
           flavor: |
-            latest=auto
+            latest=true
           tags: |
-            type=sha,format=long  
+            type=raw,value=${{ github.sha }}  
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx

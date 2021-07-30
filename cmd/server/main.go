@@ -47,8 +47,10 @@ func main() {
 
 func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.Client, cfg *config.Config) {
 	// start register all module's gRPC handlers
-	toggle := builder.BuildToggleHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
-	togglev1.RegisterToggleServiceServer(server, toggle)
+	command := builder.BuildToggleCommandHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
+	togglev1.RegisterToggleCommandServiceServer(server, command)
+	query := builder.BuildToggleQueryHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
+	togglev1.RegisterToggleQueryServiceServer(server, query)
 
 	health := handler.NewHealth()
 	grpc_health_v1.RegisterHealthServer(server, health)
@@ -57,7 +59,9 @@ func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.
 
 func registerRestHandlers(ctx context.Context, server *runtime.ServeMux, grpcPort string, options ...grpc.DialOption) {
 	// start register all module's REST handlers
-	err := togglev1.RegisterToggleServiceHandlerFromEndpoint(ctx, server, grpcPort, options)
+	err := togglev1.RegisterToggleCommandServiceHandlerFromEndpoint(ctx, server, grpcPort, options)
+	checkError(err)
+	err = togglev1.RegisterToggleQueryServiceHandlerFromEndpoint(ctx, server, grpcPort, options)
 	checkError(err)
 	// end of register all module's REST handlers
 }

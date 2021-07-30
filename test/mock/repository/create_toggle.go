@@ -13,30 +13,30 @@ import (
 	entity "github.com/indrasaputra/toggle/entity"
 )
 
-// MockInsertToggleDatabase is a mock of InsertToggleDatabase interface
+// MockInsertToggleDatabase is a mock of InsertToggleDatabase interface.
 type MockInsertToggleDatabase struct {
 	ctrl     *gomock.Controller
 	recorder *MockInsertToggleDatabaseMockRecorder
 }
 
-// MockInsertToggleDatabaseMockRecorder is the mock recorder for MockInsertToggleDatabase
+// MockInsertToggleDatabaseMockRecorder is the mock recorder for MockInsertToggleDatabase.
 type MockInsertToggleDatabaseMockRecorder struct {
 	mock *MockInsertToggleDatabase
 }
 
-// NewMockInsertToggleDatabase creates a new mock instance
+// NewMockInsertToggleDatabase creates a new mock instance.
 func NewMockInsertToggleDatabase(ctrl *gomock.Controller) *MockInsertToggleDatabase {
 	mock := &MockInsertToggleDatabase{ctrl: ctrl}
 	mock.recorder = &MockInsertToggleDatabaseMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockInsertToggleDatabase) EXPECT() *MockInsertToggleDatabaseMockRecorder {
 	return m.recorder
 }
 
-// Insert mocks base method
+// Insert mocks base method.
 func (m *MockInsertToggleDatabase) Insert(ctx context.Context, toggle *entity.Toggle) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Insert", ctx, toggle)
@@ -44,36 +44,36 @@ func (m *MockInsertToggleDatabase) Insert(ctx context.Context, toggle *entity.To
 	return ret0
 }
 
-// Insert indicates an expected call of Insert
+// Insert indicates an expected call of Insert.
 func (mr *MockInsertToggleDatabaseMockRecorder) Insert(ctx, toggle interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockInsertToggleDatabase)(nil).Insert), ctx, toggle)
 }
 
-// MockSetToggleCache is a mock of SetToggleCache interface
+// MockSetToggleCache is a mock of SetToggleCache interface.
 type MockSetToggleCache struct {
 	ctrl     *gomock.Controller
 	recorder *MockSetToggleCacheMockRecorder
 }
 
-// MockSetToggleCacheMockRecorder is the mock recorder for MockSetToggleCache
+// MockSetToggleCacheMockRecorder is the mock recorder for MockSetToggleCache.
 type MockSetToggleCacheMockRecorder struct {
 	mock *MockSetToggleCache
 }
 
-// NewMockSetToggleCache creates a new mock instance
+// NewMockSetToggleCache creates a new mock instance.
 func NewMockSetToggleCache(ctrl *gomock.Controller) *MockSetToggleCache {
 	mock := &MockSetToggleCache{ctrl: ctrl}
 	mock.recorder = &MockSetToggleCacheMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockSetToggleCache) EXPECT() *MockSetToggleCacheMockRecorder {
 	return m.recorder
 }
 
-// Set mocks base method
+// Set mocks base method.
 func (m *MockSetToggleCache) Set(ctx context.Context, toggle *entity.Toggle) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Set", ctx, toggle)
@@ -81,7 +81,7 @@ func (m *MockSetToggleCache) Set(ctx context.Context, toggle *entity.Toggle) err
 	return ret0
 }
 
-// Set indicates an expected call of Set
+// Set indicates an expected call of Set.
 func (mr *MockSetToggleCacheMockRecorder) Set(ctx, toggle interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Set", reflect.TypeOf((*MockSetToggleCache)(nil).Set), ctx, toggle)

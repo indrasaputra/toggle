@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_ToggleService_CreateToggle_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ToggleCommandService_CreateToggle_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleCommandServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateToggleRequest
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_ToggleService_CreateToggle_0(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_ToggleService_CreateToggle_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ToggleCommandService_CreateToggle_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleCommandServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateToggleRequest
 	var metadata runtime.ServerMetadata
 
@@ -65,8 +65,8 @@ func local_request_ToggleService_CreateToggle_0(ctx context.Context, marshaler r
 
 }
 
-func request_ToggleService_GetToggleByKey_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetToggleByKeyRequest
+func request_ToggleCommandService_EnableToggle_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleCommandServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq EnableToggleRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -86,13 +86,13 @@ func request_ToggleService_GetToggleByKey_0(ctx context.Context, marshaler runti
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
 	}
 
-	msg, err := client.GetToggleByKey(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.EnableToggle(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ToggleService_GetToggleByKey_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetToggleByKeyRequest
+func local_request_ToggleCommandService_EnableToggle_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleCommandServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq EnableToggleRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -112,31 +112,13 @@ func local_request_ToggleService_GetToggleByKey_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
 	}
 
-	msg, err := server.GetToggleByKey(ctx, &protoReq)
+	msg, err := server.EnableToggle(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_ToggleService_GetAllToggles_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetAllTogglesRequest
-	var metadata runtime.ServerMetadata
-
-	msg, err := client.GetAllToggles(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_ToggleService_GetAllToggles_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq GetAllTogglesRequest
-	var metadata runtime.ServerMetadata
-
-	msg, err := server.GetAllToggles(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-func request_ToggleService_Enable_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq EnableRequest
+func request_ToggleCommandService_DisableToggle_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleCommandServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DisableToggleRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -156,13 +138,13 @@ func request_ToggleService_Enable_0(ctx context.Context, marshaler runtime.Marsh
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
 	}
 
-	msg, err := client.Enable(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DisableToggle(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_ToggleService_Enable_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq EnableRequest
+func local_request_ToggleCommandService_DisableToggle_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleCommandServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DisableToggleRequest
 	var metadata runtime.ServerMetadata
 
 	var (
@@ -182,64 +164,12 @@ func local_request_ToggleService_Enable_0(ctx context.Context, marshaler runtime
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
 	}
 
-	msg, err := server.Enable(ctx, &protoReq)
+	msg, err := server.DisableToggle(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_ToggleService_Disable_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DisableRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["key"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key")
-	}
-
-	protoReq.Key, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
-	}
-
-	msg, err := client.Disable(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_ToggleService_Disable_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DisableRequest
-	var metadata runtime.ServerMetadata
-
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["key"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key")
-	}
-
-	protoReq.Key, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
-	}
-
-	msg, err := server.Disable(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
-func request_ToggleService_DeleteToggle_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_ToggleCommandService_DeleteToggle_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleCommandServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteToggleRequest
 	var metadata runtime.ServerMetadata
 
@@ -265,7 +195,7 @@ func request_ToggleService_DeleteToggle_0(ctx context.Context, marshaler runtime
 
 }
 
-func local_request_ToggleService_DeleteToggle_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_ToggleCommandService_DeleteToggle_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleCommandServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq DeleteToggleRequest
 	var metadata runtime.ServerMetadata
 
@@ -291,24 +221,94 @@ func local_request_ToggleService_DeleteToggle_0(ctx context.Context, marshaler r
 
 }
 
-// RegisterToggleServiceHandlerServer registers the http handlers for service ToggleService to "mux".
-// UnaryRPC     :call ToggleServiceServer directly.
+func request_ToggleQueryService_GetToggleByKey_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleQueryServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetToggleByKeyRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["key"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key")
+	}
+
+	protoReq.Key, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
+	}
+
+	msg, err := client.GetToggleByKey(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ToggleQueryService_GetToggleByKey_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleQueryServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetToggleByKeyRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["key"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "key")
+	}
+
+	protoReq.Key, err = runtime.String(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "key", err)
+	}
+
+	msg, err := server.GetToggleByKey(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_ToggleQueryService_GetAllToggles_0(ctx context.Context, marshaler runtime.Marshaler, client ToggleQueryServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAllTogglesRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := client.GetAllToggles(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ToggleQueryService_GetAllToggles_0(ctx context.Context, marshaler runtime.Marshaler, server ToggleQueryServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAllTogglesRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := server.GetAllToggles(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+// RegisterToggleCommandServiceHandlerServer registers the http handlers for service ToggleCommandService to "mux".
+// UnaryRPC     :call ToggleCommandServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterToggleServiceHandlerFromEndpoint instead.
-func RegisterToggleServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ToggleServiceServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterToggleCommandServiceHandlerFromEndpoint instead.
+func RegisterToggleCommandServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ToggleCommandServiceServer) error {
 
-	mux.Handle("POST", pattern_ToggleService_CreateToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ToggleCommandService_CreateToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/CreateToggle")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleService_CreateToggle_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_CreateToggle_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -316,22 +316,22 @@ func RegisterToggleServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_ToggleService_CreateToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_CreateToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ToggleService_GetToggleByKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_ToggleCommandService_EnableToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/GetToggleByKey")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleService_GetToggleByKey_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_EnableToggle_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -339,22 +339,22 @@ func RegisterToggleServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_ToggleService_GetToggleByKey_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_EnableToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ToggleService_GetAllToggles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_ToggleCommandService_DisableToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/GetAllToggles")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleService_GetAllToggles_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_DisableToggle_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -362,22 +362,22 @@ func RegisterToggleServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_ToggleService_GetAllToggles_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_DisableToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_ToggleService_Enable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_ToggleCommandService_DeleteToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/Enable")
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleService_Enable_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_DeleteToggle_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -385,62 +385,71 @@ func RegisterToggleServiceHandlerServer(ctx context.Context, mux *runtime.ServeM
 			return
 		}
 
-		forward_ToggleService_Enable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("PUT", pattern_ToggleService_Disable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/Disable")
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_ToggleService_Disable_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_ToggleService_Disable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("DELETE", pattern_ToggleService_DeleteToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/DeleteToggle")
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_ToggleService_DeleteToggle_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_ToggleService_DeleteToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_DeleteToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterToggleServiceHandlerFromEndpoint is same as RegisterToggleServiceHandler but
+// RegisterToggleQueryServiceHandlerServer registers the http handlers for service ToggleQueryService to "mux".
+// UnaryRPC     :call ToggleQueryServiceServer directly.
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterToggleQueryServiceHandlerFromEndpoint instead.
+func RegisterToggleQueryServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ToggleQueryServiceServer) error {
+
+	mux.Handle("GET", pattern_ToggleQueryService_GetToggleByKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey")
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ToggleQueryService_GetToggleByKey_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ToggleQueryService_GetToggleByKey_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ToggleQueryService_GetAllToggles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles")
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ToggleQueryService_GetAllToggles_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ToggleQueryService_GetAllToggles_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	return nil
+}
+
+// RegisterToggleCommandServiceHandlerFromEndpoint is same as RegisterToggleCommandServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterToggleServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterToggleCommandServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -460,139 +469,99 @@ func RegisterToggleServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.
 		}()
 	}()
 
-	return RegisterToggleServiceHandler(ctx, mux, conn)
+	return RegisterToggleCommandServiceHandler(ctx, mux, conn)
 }
 
-// RegisterToggleServiceHandler registers the http handlers for service ToggleService to "mux".
+// RegisterToggleCommandServiceHandler registers the http handlers for service ToggleCommandService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterToggleServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterToggleServiceHandlerClient(ctx, mux, NewToggleServiceClient(conn))
+func RegisterToggleCommandServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterToggleCommandServiceHandlerClient(ctx, mux, NewToggleCommandServiceClient(conn))
 }
 
-// RegisterToggleServiceHandlerClient registers the http handlers for service ToggleService
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ToggleServiceClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ToggleServiceClient"
+// RegisterToggleCommandServiceHandlerClient registers the http handlers for service ToggleCommandService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ToggleCommandServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ToggleCommandServiceClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "ToggleServiceClient" to call the correct interceptors.
-func RegisterToggleServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ToggleServiceClient) error {
+// "ToggleCommandServiceClient" to call the correct interceptors.
+func RegisterToggleCommandServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ToggleCommandServiceClient) error {
 
-	mux.Handle("POST", pattern_ToggleService_CreateToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ToggleCommandService_CreateToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/CreateToggle")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleService_CreateToggle_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_CreateToggle_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ToggleService_CreateToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_CreateToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ToggleService_GetToggleByKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_ToggleCommandService_EnableToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/GetToggleByKey")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleService_GetToggleByKey_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_EnableToggle_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ToggleService_GetToggleByKey_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_EnableToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("GET", pattern_ToggleService_GetAllToggles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("PUT", pattern_ToggleCommandService_DisableToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/GetAllToggles")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleService_GetAllToggles_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_DisableToggle_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ToggleService_GetAllToggles_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_DisableToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("PUT", pattern_ToggleService_Enable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("DELETE", pattern_ToggleCommandService_DeleteToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/Enable")
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle")
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleService_Enable_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_DeleteToggle_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_ToggleService_Enable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("PUT", pattern_ToggleService_Disable_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/Disable")
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_ToggleService_Disable_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_ToggleService_Disable_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("DELETE", pattern_ToggleService_DeleteToggle_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleService/DeleteToggle")
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_ToggleService_DeleteToggle_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_ToggleService_DeleteToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_ToggleCommandService_DeleteToggle_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -600,29 +569,114 @@ func RegisterToggleServiceHandlerClient(ctx context.Context, mux *runtime.ServeM
 }
 
 var (
-	pattern_ToggleService_CreateToggle_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "toggles"}, ""))
+	pattern_ToggleCommandService_CreateToggle_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "toggles"}, ""))
 
-	pattern_ToggleService_GetToggleByKey_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "toggles", "key"}, ""))
+	pattern_ToggleCommandService_EnableToggle_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "toggles", "key", "enable"}, ""))
 
-	pattern_ToggleService_GetAllToggles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "toggles"}, ""))
+	pattern_ToggleCommandService_DisableToggle_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "toggles", "key", "disable"}, ""))
 
-	pattern_ToggleService_Enable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "toggles", "key", "enable"}, ""))
-
-	pattern_ToggleService_Disable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"v1", "toggles", "key", "disable"}, ""))
-
-	pattern_ToggleService_DeleteToggle_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "toggles", "key"}, ""))
+	pattern_ToggleCommandService_DeleteToggle_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "toggles", "key"}, ""))
 )
 
 var (
-	forward_ToggleService_CreateToggle_0 = runtime.ForwardResponseMessage
+	forward_ToggleCommandService_CreateToggle_0 = runtime.ForwardResponseMessage
 
-	forward_ToggleService_GetToggleByKey_0 = runtime.ForwardResponseMessage
+	forward_ToggleCommandService_EnableToggle_0 = runtime.ForwardResponseMessage
 
-	forward_ToggleService_GetAllToggles_0 = runtime.ForwardResponseMessage
+	forward_ToggleCommandService_DisableToggle_0 = runtime.ForwardResponseMessage
 
-	forward_ToggleService_Enable_0 = runtime.ForwardResponseMessage
+	forward_ToggleCommandService_DeleteToggle_0 = runtime.ForwardResponseMessage
+)
 
-	forward_ToggleService_Disable_0 = runtime.ForwardResponseMessage
+// RegisterToggleQueryServiceHandlerFromEndpoint is same as RegisterToggleQueryServiceHandler but
+// automatically dials to "endpoint" and closes the connection when "ctx" gets done.
+func RegisterToggleQueryServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+	conn, err := grpc.Dial(endpoint, opts...)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+			return
+		}
+		go func() {
+			<-ctx.Done()
+			if cerr := conn.Close(); cerr != nil {
+				grpclog.Infof("Failed to close conn to %s: %v", endpoint, cerr)
+			}
+		}()
+	}()
 
-	forward_ToggleService_DeleteToggle_0 = runtime.ForwardResponseMessage
+	return RegisterToggleQueryServiceHandler(ctx, mux, conn)
+}
+
+// RegisterToggleQueryServiceHandler registers the http handlers for service ToggleQueryService to "mux".
+// The handlers forward requests to the grpc endpoint over "conn".
+func RegisterToggleQueryServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterToggleQueryServiceHandlerClient(ctx, mux, NewToggleQueryServiceClient(conn))
+}
+
+// RegisterToggleQueryServiceHandlerClient registers the http handlers for service ToggleQueryService
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "ToggleQueryServiceClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "ToggleQueryServiceClient"
+// doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
+// "ToggleQueryServiceClient" to call the correct interceptors.
+func RegisterToggleQueryServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ToggleQueryServiceClient) error {
+
+	mux.Handle("GET", pattern_ToggleQueryService_GetToggleByKey_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey")
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ToggleQueryService_GetToggleByKey_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ToggleQueryService_GetToggleByKey_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_ToggleQueryService_GetAllToggles_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles")
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ToggleQueryService_GetAllToggles_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ToggleQueryService_GetAllToggles_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	return nil
+}
+
+var (
+	pattern_ToggleQueryService_GetToggleByKey_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "toggles", "key"}, ""))
+
+	pattern_ToggleQueryService_GetAllToggles_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "toggles"}, ""))
+)
+
+var (
+	forward_ToggleQueryService_GetToggleByKey_0 = runtime.ForwardResponseMessage
+
+	forward_ToggleQueryService_GetAllToggles_0 = runtime.ForwardResponseMessage
 )

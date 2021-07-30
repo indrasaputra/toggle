@@ -22,7 +22,8 @@ var (
 
 // MockToggleServiceServer must be embedded to have forward compatible implementations.
 type MockToggleServiceServer struct {
-	togglev1.UnimplementedToggleServiceServer
+	togglev1.UnimplementedToggleCommandServiceServer
+	togglev1.UnimplementedToggleQueryServiceServer
 }
 
 func (MockToggleServiceServer) CreateToggle(ctx context.Context, _ *togglev1.CreateToggleRequest) (*togglev1.CreateToggleResponse, error) {
@@ -52,20 +53,20 @@ func (MockToggleServiceServer) GetAllToggles(ctx context.Context, _ *togglev1.Ge
 	return &togglev1.GetAllTogglesResponse{}, nil
 }
 
-func (MockToggleServiceServer) Enable(ctx context.Context, _ *togglev1.EnableRequest) (*togglev1.EnableResponse, error) {
+func (MockToggleServiceServer) EnableToggle(ctx context.Context, _ *togglev1.EnableToggleRequest) (*togglev1.EnableToggleResponse, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	if len(md[keyErr]) > 0 && md[keyErr][0] != "" {
 		return nil, errInternal
 	}
-	return &togglev1.EnableResponse{}, nil
+	return &togglev1.EnableToggleResponse{}, nil
 }
 
-func (MockToggleServiceServer) Disable(ctx context.Context, _ *togglev1.DisableRequest) (*togglev1.DisableResponse, error) {
+func (MockToggleServiceServer) DisableToggle(ctx context.Context, _ *togglev1.DisableToggleRequest) (*togglev1.DisableToggleResponse, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	if len(md[keyErr]) > 0 && md[keyErr][0] != "" {
 		return nil, errInternal
 	}
-	return &togglev1.DisableResponse{}, nil
+	return &togglev1.DisableToggleResponse{}, nil
 }
 
 func (MockToggleServiceServer) DeleteToggle(ctx context.Context, _ *togglev1.DeleteToggleRequest) (*togglev1.DeleteToggleResponse, error) {

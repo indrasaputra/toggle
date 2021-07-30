@@ -13,7 +13,8 @@ import (
 
 // Client acts as a client to connect to Toggle.
 type Client struct {
-	client togglev1.ToggleServiceClient
+	command togglev1.ToggleCommandServiceClient
+	query   togglev1.ToggleQueryServiceClient
 }
 
 // NewClient creates an instance of Client.
@@ -24,7 +25,8 @@ func NewClient(ctx context.Context, host string, options ...grpc.DialOption) (*C
 	}
 
 	return &Client{
-		client: togglev1.NewToggleServiceClient(conn),
+		command: togglev1.NewToggleCommandServiceClient(conn),
+		query:   togglev1.NewToggleQueryServiceClient(conn),
 	}, nil
 }
 
@@ -34,14 +36,14 @@ func (c *Client) Create(ctx context.Context, toggle *entity.Toggle) error {
 		Key:         toggle.Key,
 		Description: toggle.Description,
 	}}
-	_, err := c.client.CreateToggle(ctx, req)
+	_, err := c.command.CreateToggle(ctx, req)
 	return err
 }
 
 // Get gets a single toggle by its key.
 func (c *Client) Get(ctx context.Context, key string) (*entity.Toggle, error) {
 	req := &togglev1.GetToggleByKeyRequest{Key: key}
-	resp, err := c.client.GetToggleByKey(ctx, req)
+	resp, err := c.query.GetToggleByKey(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -62,16 +64,16 @@ func (c *Client) Get(ctx context.Context, key string) (*entity.Toggle, error) {
 // Enable enables a toggle.
 // It sets toggle's `is_enabled` attribute to be true.
 func (c *Client) Enable(ctx context.Context, key string) error {
-	req := &togglev1.EnableRequest{Key: key}
-	_, err := c.client.Enable(ctx, req)
+	req := &togglev1.EnableToggleRequest{Key: key}
+	_, err := c.command.EnableToggle(ctx, req)
 	return err
 }
 
 // Disable disables a toggle.
 // It sets toggle's `is_enabled` attribute to be false.
 func (c *Client) Disable(ctx context.Context, key string) error {
-	req := &togglev1.DisableRequest{Key: key}
-	_, err := c.client.Disable(ctx, req)
+	req := &togglev1.DisableToggleRequest{Key: key}
+	_, err := c.command.DisableToggle(ctx, req)
 	return err
 }
 
@@ -79,6 +81,6 @@ func (c *Client) Disable(ctx context.Context, key string) error {
 // It only deletes a nonactive toggle (is_enabled == false).
 func (c *Client) Delete(ctx context.Context, key string) error {
 	req := &togglev1.DeleteToggleRequest{Key: key}
-	_, err := c.client.DeleteToggle(ctx, req)
+	_, err := c.command.DeleteToggle(ctx, req)
 	return err
 }

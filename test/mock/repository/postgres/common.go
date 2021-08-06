@@ -37,11 +37,9 @@ func (m *MockPgxPoolIface) EXPECT() *MockPgxPoolIfaceMockRecorder {
 }
 
 // Close mocks base method.
-func (m *MockPgxPoolIface) Close() error {
+func (m *MockPgxPoolIface) Close() {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Close")
-	ret0, _ := ret[0].(error)
-	return ret0
+	m.ctrl.Call(m, "Close")
 }
 
 // Close indicates an expected call of Close.

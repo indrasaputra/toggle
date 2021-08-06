@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -16,8 +17,9 @@ var (
 )
 
 type ToggleEnablerExecutor struct {
-	enabler *service.ToggleEnabler
-	repo    *mock_service.MockEnableToggleRepository
+	enabler   *service.ToggleEnabler
+	repo      *mock_service.MockEnableToggleRepository
+	publisher *mock_service.MockTogglePublisher
 }
 
 func TestNewToggleEnabler(t *testing.T) {
@@ -54,9 +56,20 @@ func TestToggleEnabler_Enable(t *testing.T) {
 		assert.Equal(t, entity.ErrNotFound(), err)
 	})
 
-	t.Run("successfully enable a toggle", func(t *testing.T) {
+	t.Run("successfully enable a toggle, but fail to publish", func(t *testing.T) {
 		exec := createToggleEnablerExecutor(ctrl)
 		exec.repo.EXPECT().Enable(testCtx, testToggleKey, testToggleIsEnabledTrue).Return(nil)
+		exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(errors.New("error"))
+
+		err := exec.enabler.Enable(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("successfully enable and publish a toggle", func(t *testing.T) {
+		exec := createToggleEnablerExecutor(ctrl)
+		exec.repo.EXPECT().Enable(testCtx, testToggleKey, testToggleIsEnabledTrue).Return(nil)
+		exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(nil)
 
 		err := exec.enabler.Enable(testCtx, testToggleKey)
 
@@ -66,9 +79,11 @@ func TestToggleEnabler_Enable(t *testing.T) {
 
 func createToggleEnablerExecutor(ctrl *gomock.Controller) *ToggleEnablerExecutor {
 	r := mock_service.NewMockEnableToggleRepository(ctrl)
-	u := service.NewToggleEnabler(r)
+	p := mock_service.NewMockTogglePublisher(ctrl)
+	u := service.NewToggleEnabler(r, p)
 	return &ToggleEnablerExecutor{
-		enabler: u,
-		repo:    r,
+		enabler:   u,
+		repo:      r,
+		publisher: p,
 	}
 }

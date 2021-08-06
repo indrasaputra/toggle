@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -18,8 +19,9 @@ var (
 )
 
 type ToggleCreatorExecutor struct {
-	creator *service.ToggleCreator
-	repo    *mock_service.MockCreateToggleRepository
+	creator   *service.ToggleCreator
+	repo      *mock_service.MockCreateToggleRepository
+	publisher *mock_service.MockTogglePublisher
 }
 
 func TestNewToggleCreator(t *testing.T) {
@@ -86,12 +88,27 @@ func TestToggleCreator_Create(t *testing.T) {
 		}
 	})
 
-	t.Run("successfully create and save a new toggle", func(t *testing.T) {
+	t.Run("successfully save a new toggle, but fail to publish event", func(t *testing.T) {
 		exec := createToggleCreatorExecutor(ctrl)
 
 		for _, key := range testToggleKeys {
 			toggle := &entity.Toggle{Key: key}
 			exec.repo.EXPECT().Insert(testCtx, toggle).Return(nil)
+			exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(errors.New("error"))
+
+			err := exec.creator.Create(testCtx, toggle)
+
+			assert.Nil(t, err)
+		}
+	})
+
+	t.Run("successfully save and publish a new toggle", func(t *testing.T) {
+		exec := createToggleCreatorExecutor(ctrl)
+
+		for _, key := range testToggleKeys {
+			toggle := &entity.Toggle{Key: key}
+			exec.repo.EXPECT().Insert(testCtx, toggle).Return(nil)
+			exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(nil)
 
 			err := exec.creator.Create(testCtx, toggle)
 
@@ -102,9 +119,11 @@ func TestToggleCreator_Create(t *testing.T) {
 
 func createToggleCreatorExecutor(ctrl *gomock.Controller) *ToggleCreatorExecutor {
 	r := mock_service.NewMockCreateToggleRepository(ctrl)
-	c := service.NewToggleCreator(r)
+	p := mock_service.NewMockTogglePublisher(ctrl)
+	c := service.NewToggleCreator(r, p)
 	return &ToggleCreatorExecutor{
-		creator: c,
-		repo:    r,
+		creator:   c,
+		repo:      r,
+		publisher: p,
 	}
 }

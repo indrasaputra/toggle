@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"log"
 	"regexp"
 	"strings"
 
 	"github.com/indrasaputra/toggle/entity"
+	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
 
 var (
@@ -30,14 +32,24 @@ type CreateToggleRepository interface {
 	Insert(ctx context.Context, toggle *entity.Toggle) error
 }
 
+// TogglePublisher defines the interface to publish toggle to message queue.
+type TogglePublisher interface {
+	// Publish publishes event toggle to message queue.
+	Publish(ctx context.Context, event *togglev1.EventToggle) error
+}
+
 // ToggleCreator is responsible for creating a new toggle.
 type ToggleCreator struct {
-	repo CreateToggleRepository
+	repo      CreateToggleRepository
+	publisher TogglePublisher
 }
 
 // NewToggleCreator creates an instance of ToggleCreator.
-func NewToggleCreator(repo CreateToggleRepository) *ToggleCreator {
-	return &ToggleCreator{repo: repo}
+func NewToggleCreator(repo CreateToggleRepository, publisher TogglePublisher) *ToggleCreator {
+	return &ToggleCreator{
+		repo:      repo,
+		publisher: publisher,
+	}
 }
 
 // Create creates a new toggle.
@@ -49,7 +61,13 @@ func (tc *ToggleCreator) Create(ctx context.Context, toggle *entity.Toggle) erro
 	}
 	sanitizeToggle(toggle)
 
-	return tc.repo.Insert(ctx, toggle)
+	if err := tc.repo.Insert(ctx, toggle); err != nil {
+		return err
+	}
+	if err := tc.publisher.Publish(ctx, entity.EventToggleCreated(toggle)); err != nil {
+		log.Printf("publish on toggle creator error: %v", err)
+	}
+	return nil
 }
 
 func sanitizeToggle(toggle *entity.Toggle) {

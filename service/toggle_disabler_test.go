@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -16,8 +17,9 @@ var (
 )
 
 type ToggleDisablerExecutor struct {
-	updater *service.ToggleDisabler
-	repo    *mock_service.MockDisableToggleRepository
+	updater   *service.ToggleDisabler
+	repo      *mock_service.MockDisableToggleRepository
+	publisher *mock_service.MockTogglePublisher
 }
 
 func TestNewToggleDisabler(t *testing.T) {
@@ -54,9 +56,20 @@ func TestToggleDisabler_Disable(t *testing.T) {
 		assert.Equal(t, entity.ErrNotFound(), err)
 	})
 
-	t.Run("successfully disable a toggle", func(t *testing.T) {
+	t.Run("successfully disable a toggle, but fail to publish", func(t *testing.T) {
 		exec := createToggleDisablerExecutor(ctrl)
 		exec.repo.EXPECT().Disable(testCtx, testToggleKey, testToggleIsEnabledFalse).Return(nil)
+		exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(errors.New("error"))
+
+		err := exec.updater.Disable(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("successfully disable and publish a toggle", func(t *testing.T) {
+		exec := createToggleDisablerExecutor(ctrl)
+		exec.repo.EXPECT().Disable(testCtx, testToggleKey, testToggleIsEnabledFalse).Return(nil)
+		exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(nil)
 
 		err := exec.updater.Disable(testCtx, testToggleKey)
 
@@ -66,9 +79,11 @@ func TestToggleDisabler_Disable(t *testing.T) {
 
 func createToggleDisablerExecutor(ctrl *gomock.Controller) *ToggleDisablerExecutor {
 	r := mock_service.NewMockDisableToggleRepository(ctrl)
-	u := service.NewToggleDisabler(r)
+	p := mock_service.NewMockTogglePublisher(ctrl)
+	u := service.NewToggleDisabler(r, p)
 	return &ToggleDisablerExecutor{
-		updater: u,
-		repo:    r,
+		updater:   u,
+		repo:      r,
+		publisher: p,
 	}
 }

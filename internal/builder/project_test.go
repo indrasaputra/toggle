@@ -7,6 +7,7 @@ import (
 	"github.com/alicebob/miniredis/v2"
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/segmentio/kafka-go"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/indrasaputra/toggle/internal/builder"
@@ -18,8 +19,9 @@ func TestBuildToggleCommandHandler(t *testing.T) {
 		psql := &pgxpool.Pool{}
 		rds := &goredis.Client{}
 		ttl := 5 * time.Minute
+		wrt := &kafka.Writer{}
 
-		handler := builder.BuildToggleCommandHandler(psql, rds, ttl)
+		handler := builder.BuildToggleCommandHandler(psql, rds, ttl, wrt)
 
 		assert.NotNil(t, handler)
 	})
@@ -84,5 +86,22 @@ func TestBuildRedisClient(t *testing.T) {
 
 		assert.Nil(t, err)
 		assert.NotNil(t, client)
+	})
+}
+
+func TestBuildKafkaWriter(t *testing.T) {
+	cfg := &config.Kafka{
+		Address:      "localhost:9092",
+		Topic:        "toggle",
+		MaxAttempts:  10,
+		BatchSize:    100,
+		BatchTimeout: 1,
+		WriteTimeout: 10,
+	}
+
+	t.Run("success build kafka writer", func(t *testing.T) {
+		writer := builder.BuildKafkaWriter(cfg)
+
+		assert.NotNil(t, writer)
 	})
 }

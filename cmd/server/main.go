@@ -10,6 +10,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/opentracing/opentracing-go"
+	"github.com/segmentio/kafka-go"
 	"github.com/uber/jaeger-client-go"
 	jaegerconf "github.com/uber/jaeger-client-go/config"
 	"google.golang.org/grpc"
@@ -30,24 +31,30 @@ func main() {
 	checkError(perr)
 	rds, rerr := builder.BuildRedisClient(&cfg.Redis)
 	checkError(rerr)
-
-	closer := initTracing(cfg)
-	defer func() { _ = closer.Close() }()
+	kfk := builder.BuildKafkaWriter(&cfg.Kafka)
+	trc := initTracing(cfg)
 
 	grpcServer := server.NewGrpc(cfg.Port.GRPC)
-	registerGrpcHandlers(grpcServer.Server, psql, rds, cfg)
+	registerGrpcHandlers(grpcServer.Server, psql, rds, kfk, cfg)
 
 	restServer := server.NewRest(cfg.Port.REST)
 	registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
 
+	closer := func() {
+		_ = trc.Close()
+		_ = kfk.Close()
+		_ = rds.Close()
+		psql.Close()
+	}
+
 	_ = grpcServer.Run()
 	_ = restServer.Run()
-	_ = grpcServer.AwaitTermination()
+	_ = grpcServer.AwaitTermination(closer)
 }
 
-func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.Client, cfg *config.Config) {
+func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.Client, kfk *kafka.Writer, cfg *config.Config) {
 	// start register all module's gRPC handlers
-	command := builder.BuildToggleCommandHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
+	command := builder.BuildToggleCommandHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute, kfk)
 	togglev1.RegisterToggleCommandServiceServer(server, command)
 	query := builder.BuildToggleQueryHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
 	togglev1.RegisterToggleQueryServiceServer(server, query)

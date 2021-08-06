@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	"github.com/indrasaputra/toggle/entity"
 )
@@ -24,12 +25,16 @@ type DeleteToggleRepository interface {
 
 // ToggleDeleter is responsible for deleting a toggle.
 type ToggleDeleter struct {
-	repo DeleteToggleRepository
+	repo      DeleteToggleRepository
+	publisher TogglePublisher
 }
 
 // NewToggleDeleter creates an instance of ToggleDeleter.
-func NewToggleDeleter(repo DeleteToggleRepository) *ToggleDeleter {
-	return &ToggleDeleter{repo: repo}
+func NewToggleDeleter(repo DeleteToggleRepository, publisher TogglePublisher) *ToggleDeleter {
+	return &ToggleDeleter{
+		repo:      repo,
+		publisher: publisher,
+	}
 }
 
 // DeleteByKey deletes a toggle by its key.
@@ -42,5 +47,11 @@ func (td *ToggleDeleter) DeleteByKey(ctx context.Context, key string) error {
 	if toggle.IsEnabled {
 		return entity.ErrProhibitedToDelete()
 	}
-	return td.repo.DeleteByKey(ctx, key)
+	if err := td.repo.DeleteByKey(ctx, key); err != nil {
+		return err
+	}
+	if err := td.publisher.Publish(ctx, entity.EventToggleDeleted(toggle)); err != nil {
+		log.Printf("publish on toggle deleter error: %v", err)
+	}
+	return nil
 }

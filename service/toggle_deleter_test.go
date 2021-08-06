@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -18,8 +19,9 @@ var (
 )
 
 type ToggleDeleterExecutor struct {
-	deleter *service.ToggleDeleter
-	repo    *mock_service.MockDeleteToggleRepository
+	deleter   *service.ToggleDeleter
+	repo      *mock_service.MockDeleteToggleRepository
+	publisher *mock_service.MockTogglePublisher
 }
 
 func TestNewToggleDeleter(t *testing.T) {
@@ -67,10 +69,22 @@ func TestToggleDeleter_DeleteByKey(t *testing.T) {
 		assert.Equal(t, entity.ErrInternal(""), err)
 	})
 
-	t.Run("successfully delete a single toggle", func(t *testing.T) {
+	t.Run("successfully delete a single toggle, but fail to publish event", func(t *testing.T) {
 		exec := createToggleDeleterExecutor(ctrl)
 		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(testToggleDisabled, nil)
 		exec.repo.EXPECT().DeleteByKey(testCtx, testToggleKey).Return(nil)
+		exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(errors.New("error"))
+
+		err := exec.deleter.DeleteByKey(testCtx, testToggleKey)
+
+		assert.Nil(t, err)
+	})
+
+	t.Run("successfully delete and publish a single toggle", func(t *testing.T) {
+		exec := createToggleDeleterExecutor(ctrl)
+		exec.repo.EXPECT().GetByKey(testCtx, testToggleKey).Return(testToggleDisabled, nil)
+		exec.repo.EXPECT().DeleteByKey(testCtx, testToggleKey).Return(nil)
+		exec.publisher.EXPECT().Publish(testCtx, gomock.Any()).Return(nil)
 
 		err := exec.deleter.DeleteByKey(testCtx, testToggleKey)
 
@@ -80,9 +94,11 @@ func TestToggleDeleter_DeleteByKey(t *testing.T) {
 
 func createToggleDeleterExecutor(ctrl *gomock.Controller) *ToggleDeleterExecutor {
 	r := mock_service.NewMockDeleteToggleRepository(ctrl)
-	d := service.NewToggleDeleter(r)
+	p := mock_service.NewMockTogglePublisher(ctrl)
+	d := service.NewToggleDeleter(r, p)
 	return &ToggleDeleterExecutor{
-		deleter: d,
-		repo:    r,
+		deleter:   d,
+		repo:      r,
+		publisher: p,
 	}
 }

@@ -12,6 +12,7 @@ type Config struct {
 	Port        Port
 	Postgres    Postgres
 	Redis       Redis
+	Kafka       Kafka
 	Jaeger      Jaeger
 }
 
@@ -33,13 +34,23 @@ type Postgres struct {
 	MaxIdleLifetime string `env:"POSTGRES_MAX_IDLE_LIFETIME,default=5m"`
 }
 
-// Redis holds configuration for the Redis.
+// Redis holds configuration for Redis.
 type Redis struct {
 	Address string `env:"REDIS_ADDRESS,default=localhost:6379"`
 	TTL     uint   `env:"REDIS_TTL,default=5"`
 }
 
-// Jaeger holds configuration for the Jaeger.
+// Kafka holds configuration for Kafka.
+type Kafka struct {
+	Address      string `env:"KAFKA_ADDRESS,default=localhost:9092"`
+	Topic        string `env:"KAFKA_TOPIC,default=toggle"`
+	WriteTimeout int    `env:"KAFKA_WRITE_TIMEOUT,default=10"`
+	MaxAttempts  int    `env:"KAFKA_MAX_ATTEMPTS,default=10"`
+	BatchSize    int    `env:"KAFKA_BATCH_SIZE,default=100"`
+	BatchTimeout int    `env:"KAFKA_BATCH_TIMEOUT,default=1"`
+}
+
+// Jaeger holds configuration for Jaeger.
 type Jaeger struct {
 	Enabled       bool    `env:"JAEGER_ENABLED,default=true"`
 	Host          string  `env:"JAEGER_HOST,default=localhost"`

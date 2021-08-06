@@ -50,6 +50,8 @@ linters-settings:
     line-length: 200
   govet:
     check-shadowing: true
+  dupl:
+    threshold: 200
 
 issues:
   exclude-use-default: false

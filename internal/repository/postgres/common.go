@@ -15,4 +15,5 @@ type PgxPoolIface interface {
 	Query(ctx context.Context, sql string, args ...interface{}) (pgx.Rows, error)
 	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
 	Ping(ctx context.Context) error
+	Close()
 }

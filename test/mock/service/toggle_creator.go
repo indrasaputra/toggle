@@ -11,6 +11,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 
 	entity "github.com/indrasaputra/toggle/entity"
+	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
 
 // MockCreateToggle is a mock of CreateToggle interface.
@@ -85,4 +86,41 @@ func (m *MockCreateToggleRepository) Insert(ctx context.Context, toggle *entity.
 func (mr *MockCreateToggleRepositoryMockRecorder) Insert(ctx, toggle interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Insert", reflect.TypeOf((*MockCreateToggleRepository)(nil).Insert), ctx, toggle)
+}
+
+// MockTogglePublisher is a mock of TogglePublisher interface.
+type MockTogglePublisher struct {
+	ctrl     *gomock.Controller
+	recorder *MockTogglePublisherMockRecorder
+}
+
+// MockTogglePublisherMockRecorder is the mock recorder for MockTogglePublisher.
+type MockTogglePublisherMockRecorder struct {
+	mock *MockTogglePublisher
+}
+
+// NewMockTogglePublisher creates a new mock instance.
+func NewMockTogglePublisher(ctrl *gomock.Controller) *MockTogglePublisher {
+	mock := &MockTogglePublisher{ctrl: ctrl}
+	mock.recorder = &MockTogglePublisherMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTogglePublisher) EXPECT() *MockTogglePublisherMockRecorder {
+	return m.recorder
+}
+
+// Publish mocks base method.
+func (m *MockTogglePublisher) Publish(ctx context.Context, event *togglev1.EventToggle) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Publish", ctx, event)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Publish indicates an expected call of Publish.
+func (mr *MockTogglePublisherMockRecorder) Publish(ctx, event interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Publish", reflect.TypeOf((*MockTogglePublisher)(nil).Publish), ctx, event)
 }

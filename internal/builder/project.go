@@ -7,10 +7,12 @@ import (
 
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/segmentio/kafka-go"
 
 	"github.com/indrasaputra/toggle/internal/config"
 	decorservice "github.com/indrasaputra/toggle/internal/decorator/service"
 	"github.com/indrasaputra/toggle/internal/grpc/handler"
+	"github.com/indrasaputra/toggle/internal/messaging"
 	"github.com/indrasaputra/toggle/internal/repository"
 	"github.com/indrasaputra/toggle/internal/repository/postgres"
 	"github.com/indrasaputra/toggle/internal/repository/redis"
@@ -18,18 +20,19 @@ import (
 )
 
 // BuildToggleCommandHandler builds toggle command handler including all of its dependencies.
-func BuildToggleCommandHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration) *handler.ToggleCommand {
+func BuildToggleCommandHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration, kafkaWriter *kafka.Writer) *handler.ToggleCommand {
 	psql := postgres.NewToggle(pool)
 	rds := redis.NewToggle(rdsClient, rdsTTL)
+	writer := messaging.NewKafkaPublisher(kafkaWriter)
 
 	inserterRepo := repository.NewToggleInserter(psql, rds)
 	updaterRepo := repository.NewToggleUpdater(psql, rds)
 	deleterRepo := repository.NewToggleDeleter(psql, rds)
 
-	creator := service.NewToggleCreator(inserterRepo)
-	enabler := service.NewToggleEnabler(updaterRepo)
-	disabler := service.NewToggleDisabler(updaterRepo)
-	deleter := service.NewToggleDeleter(deleterRepo)
+	creator := service.NewToggleCreator(inserterRepo, writer)
+	enabler := service.NewToggleEnabler(updaterRepo, writer)
+	disabler := service.NewToggleDisabler(updaterRepo, writer)
+	deleter := service.NewToggleDeleter(deleterRepo, writer)
 
 	decor := decorservice.NewTracing(creator, nil, enabler, disabler, deleter)
 
@@ -81,4 +84,16 @@ func BuildRedisClient(cfg *config.Redis) (*goredis.Client, error) {
 	client.AddHook(redis.NewHookTracing())
 
 	return client, nil
+}
+
+// BuildKafkaWriter builds an instance of kafka writer.
+func BuildKafkaWriter(cfg *config.Kafka) *kafka.Writer {
+	return &kafka.Writer{
+		Addr:         kafka.TCP(cfg.Address),
+		Topic:        cfg.Topic,
+		MaxAttempts:  cfg.MaxAttempts,
+		BatchSize:    cfg.BatchSize,
+		BatchTimeout: time.Duration(cfg.BatchTimeout) * time.Second,
+		WriteTimeout: time.Duration(cfg.WriteTimeout) * time.Second,
+	}
 }

@@ -234,3 +234,34 @@ enum ToggleErrorCode {
   // It must be disabled (is_enabled set to false) first before deletion.
   PROHIBITED_TO_DELETE = 7;
 }
+
+enum EventName {
+  // Default enum code according to
+  // https://medium.com/@akhaku/protobuf-definition-best-practices-87f281576f31.
+  EVENT_UNSPECIFIED = 0;
+
+  // Occur when toggle is created.
+  EVENT_CREATED = 1;
+
+  // Occur when toggle is enabled.
+  EVENT_ENABLED = 2;
+
+  // Occur when toggle is disabled.
+  EVENT_DISABLED = 3;
+
+  // Occur when toggle is deleted.
+  EVENT_DELETED = 4;
+}
+
+message EventToggle {
+  EventName name = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    description : "A concise identifier of an event",
+    min_length : 1,
+    max_length : 255,
+    example : "\"EVENT_CREATED\"",
+  } ];
+
+  Toggle toggle = 2;
+
+  google.protobuf.Timestamp created_at = 3 [ (google.api.field_behavior) = OUTPUT_ONLY ];
+}

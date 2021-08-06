@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"log"
+
+	"github.com/indrasaputra/toggle/entity"
 )
 
 // EnableToggle defines the interface to enable a toggle.
@@ -22,18 +25,28 @@ type EnableToggleRepository interface {
 
 // ToggleEnabler is responsible for enabling a toggle.
 type ToggleEnabler struct {
-	repo EnableToggleRepository
+	repo      EnableToggleRepository
+	publisher TogglePublisher
 }
 
 // NewToggleEnabler creates an instance of ToggleEnabler.
-func NewToggleEnabler(repo EnableToggleRepository) *ToggleEnabler {
-	return &ToggleEnabler{repo: repo}
+func NewToggleEnabler(repo EnableToggleRepository, publisher TogglePublisher) *ToggleEnabler {
+	return &ToggleEnabler{
+		repo:      repo,
+		publisher: publisher,
+	}
 }
 
 // Enable enables a toggle.
 // It just sets the toogle's is_enabled to be true.
 // It doesn't validate toggle's key like ToggleCreator.Create does.
 // But, it returns NotFound error if the toggle doesn't exist.
-func (tc *ToggleEnabler) Enable(ctx context.Context, key string) error {
-	return tc.repo.Enable(ctx, key, true)
+func (te *ToggleEnabler) Enable(ctx context.Context, key string) error {
+	if err := te.repo.Enable(ctx, key, true); err != nil {
+		return err
+	}
+	if err := te.publisher.Publish(ctx, entity.EventToggleEnabled(&entity.Toggle{Key: key})); err != nil {
+		log.Printf("publish on toggle deleter error: %v", err)
+	}
+	return nil
 }

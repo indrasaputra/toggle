@@ -57,3 +57,7 @@
 - Redis
 
     Follow [Redis installation](https://redis.io/topics/quickstart).
+
+- Kafka
+
+    Follow [Kafka installation](https://kafka.apache.org/quickstart).

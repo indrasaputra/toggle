@@ -94,6 +94,12 @@ This folder contains the HTTP/2 gRPC interceptors.
 
 ---
 
+### `internal/messaging`
+
+This folder contains codes that connect to the message queue system, such as Kafka.
+
+---
+
 ### `internal/repository`
 
 This folder contains codes that connect to the repository, such as database.

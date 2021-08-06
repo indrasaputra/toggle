@@ -7,7 +7,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=indrasaputra_toggle&metric=alert_status)](https://sonarcloud.io/dashboard?id=indrasaputra_toggle)
 [![Go Reference](https://pkg.go.dev/badge/github.com/indrasaputra/toggle.svg)](https://pkg.go.dev/github.com/indrasaputra/toggle)
 
-Toggle is a [Feature-Flag](https://martinfowler.com/articles/feature-toggles.html) application.
+Toggle is a [Feature-Flag](https://martinfowler.com/articles/feature-toggles.html) application. It uses event-driven paradigm.
 
 ## Owner
 

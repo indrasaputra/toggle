@@ -27,6 +27,8 @@ The second is to use docker image and docker compose.
     `PORT_GRPC` is a port for HTTP/2 gRPC. `PORT_REST` is port for HTTP/1.1 REST.
     We encourage to let both values as default
 
+- Run or start Kafka
+
 - Download the dependencies
 
     ```

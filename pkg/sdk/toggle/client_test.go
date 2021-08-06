@@ -145,13 +145,17 @@ func createClientExecutor() *ClientExecutor {
 		}
 	}()
 
-	client, err := toggle.NewClient(testCtxError,
-		"",
-		grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
-			return listener.Dial()
-		}),
-		grpc.WithInsecure(),
-	)
+	cfg := &toggle.DialConfig{
+		Host: "",
+		Options: []grpc.DialOption{
+			grpc.WithContextDialer(func(context.Context, string) (net.Conn, error) {
+				return listener.Dial()
+			}),
+			grpc.WithInsecure(),
+		},
+	}
+
+	client, err := toggle.NewClient(cfg, nil)
 
 	if err != nil {
 		grpcServer.Stop()

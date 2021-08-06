@@ -12,6 +12,7 @@ type Config struct {
 	Port        Port
 	Postgres    Postgres
 	Redis       Redis
+	Kafka       Kafka
 	Jaeger      Jaeger
 }
 

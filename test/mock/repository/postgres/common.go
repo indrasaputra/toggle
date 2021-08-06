@@ -36,6 +36,20 @@ func (m *MockPgxPoolIface) EXPECT() *MockPgxPoolIfaceMockRecorder {
 	return m.recorder
 }
 
+// Close mocks base method.
+func (m *MockPgxPoolIface) Close() error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Close")
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Close indicates an expected call of Close.
+func (mr *MockPgxPoolIfaceMockRecorder) Close() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Close", reflect.TypeOf((*MockPgxPoolIface)(nil).Close))
+}
+
 // Exec mocks base method.
 func (m *MockPgxPoolIface) Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error) {
 	m.ctrl.T.Helper()

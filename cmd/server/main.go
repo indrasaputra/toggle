@@ -40,9 +40,16 @@ func main() {
 	restServer := server.NewRest(cfg.Port.REST)
 	registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
 
+	closer := func() {
+		_ = trc.Close()
+		_ = kfk.Close()
+		_ = rds.Close()
+		psql.Close()
+	}
+
 	_ = grpcServer.Run()
 	_ = restServer.Run()
-	_ = grpcServer.AwaitTermination(trc, kfk, rds)
+	_ = grpcServer.AwaitTermination(closer)
 }
 
 func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.Client, kfk *kafka.Writer, cfg *config.Config) {

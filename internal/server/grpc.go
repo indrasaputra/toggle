@@ -28,9 +28,7 @@ const (
 )
 
 // Closer is responsible to close any open or available resource.
-type Closer interface {
-	Close() error
-}
+type Closer func()
 
 // Grpc is responsible to act as gRPC server.
 // It composes grpc.Server.
@@ -81,14 +79,12 @@ func (g *Grpc) Run() error {
 // Once it receives one of those signals, the gRPC server will perform graceful stop and close the listener.
 //
 // It receives Closer and will perform all closers before closing itself.
-func (g *Grpc) AwaitTermination(closers ...Closer) error {
+func (g *Grpc) AwaitTermination(closer Closer) error {
 	sign := make(chan os.Signal, 1)
 	signal.Notify(sign, syscall.SIGINT, syscall.SIGTERM)
 	<-sign
 
-	for _, closer := range closers {
-		_ = closer.Close()
-	}
+	closer()
 	g.GracefulStop()
 	return g.listener.Close()
 }

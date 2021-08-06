@@ -9,15 +9,20 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/indrasaputra/toggle/entity"
-
-	"github.com/indrasaputra/toggle/pkg/sdk/toggle"
 	"google.golang.org/grpc"
+
+	"github.com/indrasaputra/toggle/entity"
+	"github.com/indrasaputra/toggle/pkg/sdk/toggle"
 )
 
 func main() {
+	// start of non-circuit breaker client
 	ctx := context.Background()
-	client, err := toggle.NewClient(ctx, "localhost:8080", grpc.WithInsecure())
+	config := &toggle.DialConfig{
+		Host:    "localhost:8080",
+		Options: []grpc.DialOption{grpc.WithInsecure()},
+	}
+	client, err := toggle.NewClient(config, nil)
 	if err != nil {
 		log.Printf("err init client: %v\n", err)
 		return
@@ -37,6 +42,26 @@ func main() {
 	get(client, key, "after disable")
 	_ = client.Delete(ctx, key)
 	get(client, key, "after delete")
+
+	// end of non-circuit breaker client
+	//
+	// start of circuit-breaker client
+
+	setting := gobreaker.Settings{
+		ReadyToTrip: func(counts gobreaker.Counts) bool {
+			failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
+			return counts.Requests >= 100 && failureRatio >= 0.6
+		},
+		Timeout: 2 * time.Second,
+	}
+	breaker := gobreaker.NewCircuitBreaker(setting)
+
+	client, err = toggle.NewClient(config, breaker)
+	if err != nil {
+		log.Printf("err init client: %v\n", err)
+		return
+	}
+	// end of circuit-breaker client
 }
 
 func get(client *toggle.Client, key, msg string) {

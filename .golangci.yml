@@ -52,6 +52,8 @@ linters-settings:
     check-shadowing: true
   dupl:
     threshold: 200
+  exhaustive:
+    default-signifies-exhaustive: true
 
 issues:
   exclude-use-default: false

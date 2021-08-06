@@ -45,7 +45,7 @@ func (td *ToggleDisabler) Disable(ctx context.Context, key string) error {
 	if err := td.repo.Disable(ctx, key, false); err != nil {
 		return err
 	}
-	if err := td.publisher.Publish(ctx, entity.EventToggleDeleted(&entity.Toggle{Key: key})); err != nil {
+	if err := td.publisher.Publish(ctx, entity.EventToggleDisabled(&entity.Toggle{Key: key})); err != nil {
 		log.Printf("publish on toggle deleter error: %v", err)
 	}
 	return nil

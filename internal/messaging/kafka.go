@@ -3,6 +3,7 @@ package messaging
 import (
 	"context"
 	"encoding/json"
+	"log"
 
 	"github.com/segmentio/kafka-go"
 
@@ -16,7 +17,6 @@ type KafkaPublisher struct {
 }
 
 // NewKafkaPublisher creates an instance of KafkaPublisher.
-// It sets 10 seconds as default deadline.
 func NewKafkaPublisher(writer Writer) *KafkaPublisher {
 	return &KafkaPublisher{writer: writer}
 }
@@ -40,4 +40,33 @@ func (kp *KafkaPublisher) Publish(ctx context.Context, event *togglev1.EventTogg
 		return entity.ErrInternal(err.Error())
 	}
 	return nil
+}
+
+// KafkaSubscriber is responsible to subscribe message from Kafka.
+type KafkaSubscriber struct {
+	reader Reader
+}
+
+// NewKafkaSubscriber creates an instance of KafkaSubscriber.
+func NewKafkaSubscriber(reader Reader) *KafkaSubscriber {
+	return &KafkaSubscriber{reader: reader}
+}
+
+// Subscribe subscribes to a certain topic and process the incoming message using the fn parameter.
+// This method is blocking.
+func (ks *KafkaSubscriber) Subscribe(ctx context.Context, fn func(*togglev1.EventToggle) error) error {
+	for {
+		msg, err := ks.reader.ReadMessage(ctx)
+		if err != nil {
+			return err
+		}
+		var event *togglev1.EventToggle
+		if err := json.Unmarshal(msg.Value, &event); err != nil {
+			log.Printf("error unmarshal message: %v\n", err)
+			continue
+		}
+		if err := fn(event); err != nil {
+			log.Printf("error process event in fn: %v\n", err)
+		}
+	}
 }

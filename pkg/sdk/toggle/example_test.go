@@ -6,10 +6,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/segmentio/kafka-go"
 	"github.com/sony/gobreaker"
 	"google.golang.org/grpc"
 
 	"github.com/indrasaputra/toggle/entity"
+	"github.com/indrasaputra/toggle/internal/messaging"
 	"github.com/indrasaputra/toggle/pkg/sdk/toggle"
 )
 
@@ -26,11 +28,20 @@ func ExampleNewClient() {
 		return
 	}
 
-	key := "toggle-test"
+	key := "toggle-test-1"
 	req := &entity.Toggle{
 		Key:         key,
 		Description: "first try using toggle",
 	}
+
+	reader := kafka.NewReader(kafka.ReaderConfig{
+		Brokers: []string{"localhost:9092"},
+		Topic:   "toggle",
+	})
+	subscriber := messaging.NewKafkaSubscriber(reader)
+	go func() {
+		_ = client.Subscribe(ctx, subscriber, []string{"toggle-test-1", "toggle-test-2", "toggle-test-3"})
+	}()
 
 	_ = client.Create(ctx, req)
 
@@ -39,9 +50,7 @@ func ExampleNewClient() {
 	fmt.Println(resp)
 
 	_ = client.Enable(ctx, key)
-
 	_ = client.Disable(ctx, key)
-
 	_ = client.Delete(ctx, key)
 
 	// end of non-circuit breaker client

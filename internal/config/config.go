@@ -48,6 +48,7 @@ type Kafka struct {
 	MaxAttempts  int    `env:"KAFKA_MAX_ATTEMPTS,default=10"`
 	BatchSize    int    `env:"KAFKA_BATCH_SIZE,default=100"`
 	BatchTimeout int    `env:"KAFKA_BATCH_TIMEOUT,default=1"`
+	WriteAsync   bool   `env:"KAFKA_WRITE_ASYNC,default=false"`
 }
 
 // Jaeger holds configuration for Jaeger.

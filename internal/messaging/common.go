@@ -13,3 +13,11 @@ type Writer interface {
 	WriteMessages(ctx context.Context, messages ...kafka.Message) error
 	Close() error
 }
+
+// Reader defines a little interface for Kafka reader/subscriber functionality.
+// Since in the real implementation we can use kafka.Reader,
+// this interface exists mostly for resting purpose.
+type Reader interface {
+	ReadMessage(ctx context.Context) (kafka.Message, error)
+	Close() error
+}

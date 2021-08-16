@@ -39,9 +39,7 @@ func ExampleNewClient() {
 	fmt.Println(resp)
 
 	_ = client.Enable(ctx, key)
-
 	_ = client.Disable(ctx, key)
-
 	_ = client.Delete(ctx, key)
 
 	// end of non-circuit breaker client

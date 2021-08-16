@@ -95,5 +95,6 @@ func BuildKafkaWriter(cfg *config.Kafka) *kafka.Writer {
 		BatchSize:    cfg.BatchSize,
 		BatchTimeout: time.Duration(cfg.BatchTimeout) * time.Second,
 		WriteTimeout: time.Duration(cfg.WriteTimeout) * time.Second,
+		Async:        cfg.WriteAsync,
 	}
 }

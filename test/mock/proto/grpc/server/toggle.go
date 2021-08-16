@@ -40,7 +40,7 @@ func (MockToggleServiceServer) GetToggleByKey(ctx context.Context, _ *togglev1.G
 		return nil, errInternal
 	}
 	if len(md[keyReturn]) > 0 && md[keyReturn][0] != "" {
-		return &togglev1.GetToggleByKeyResponse{Toggle: &togglev1.Toggle{}}, nil
+		return &togglev1.GetToggleByKeyResponse{Toggle: &togglev1.Toggle{Key: md[keyReturn][0], IsEnabled: true}}, nil
 	}
 	return &togglev1.GetToggleByKeyResponse{}, nil
 }

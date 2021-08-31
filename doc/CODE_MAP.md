@@ -107,6 +107,12 @@ Repository is not limited to databases. Anything that can be a repository can be
 
 ---
 
+### `internal/script`
+
+This folder contains all scripts related to the service.
+
+---
+
 ### `internal/server`
 
 This folder contains all codes needed to define a gRPC and its REST Gateway server.

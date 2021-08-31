@@ -48,6 +48,12 @@
 - As a reminder, always run the command above before add and commit changes.
     That command will be run in CI Pipeline to verify the format.
 
+- Test your changes
+
+    ```
+    $ make test.unit
+    ```
+
 - Add, commit, and push the changes to repository
 
     ```

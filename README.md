@@ -63,13 +63,13 @@ $ k6 run <path to script file>
 e.g:
 
 ```sh
-$ k6 run internal/script/loadtest/smoke_test.js
+$ k6 run internal/script/loadtest/load_test.js
 ```
 
 or use docker
 
 ```sh
-$ make test.smoke
+$ make test.load
 ```
 
 ## Monitoring

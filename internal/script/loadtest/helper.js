@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { check } from 'k6';
 
 const CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789'
-const BASE_URL = 'http://host.docker.internal:8081/'
+const BASE_URL = 'http://host.docker.internal:8081/' // or change to 'http://localhost:8081/'
 const KEY_PREFIX = 'loadtest-k6-'
 const KEY_LENGTH = 10
 

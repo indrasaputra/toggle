@@ -61,3 +61,7 @@
 - Kafka
 
     Follow [Kafka installation](https://kafka.apache.org/quickstart).
+
+- k6 (optional)
+
+    Follow [k6 installation](https://k6.io/docs/getting-started/installation/).

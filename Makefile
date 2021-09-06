@@ -68,6 +68,24 @@ test.cleancache:
 test.integration:
 	bin/godog.sh
 
+.PHONY: test.smoke
+test.smoke:
+	docker run -it --rm \
+	--mount "type=bind,source=$(PWD),destination=/work" \
+	-w /work loadimpact/k6:0.33.0 run internal/script/loadtest/smoke_test.js
+
+.PHONY: test.load
+test.load:
+	docker run -it --rm \
+	--mount "type=bind,source=$(PWD),destination=/work" \
+	-w /work loadimpact/k6:0.33.0 run internal/script/loadtest/load_test.js
+
+.PHONY: test.stress
+test.stress:
+	docker run -it --rm \
+	--mount "type=bind,source=$(PWD),destination=/work" \
+	-w /work loadimpact/k6:0.33.0 run internal/script/loadtest/stress_test.js
+
 .PHONY: migration
 migration:
 	migrate create -ext sql -dir db/migrations $(name)

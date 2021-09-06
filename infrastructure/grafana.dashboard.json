@@ -92,7 +92,7 @@
             "steppedLine":false,
             "targets":[
                 {
-                    "expr":"sum(rate(grpc_server_handled_total{grpc_service!=\"grpc.health.v1.Health\"}[5m])) by (grpc_service, grpc_method)",
+                    "expr":"sum(rate(grpc_server_handled_total{grpc_service!=\"grpc.health.v1.Health\"}[$__rate_interval])) by (grpc_service, grpc_method)",
                     "interval":"",
                     "legendFormat":"{{grpc_service}} - {{grpc_method}}",
                     "refId":"Average per Service per Method"
@@ -203,7 +203,7 @@
             "steppedLine":false,
             "targets":[
                 {
-                    "expr":"1000 * sum(rate(grpc_server_handling_seconds_sum{grpc_service!=\"grpc.health.v1.Health\"}[5m])) by (grpc_service, grpc_method)/ sum(rate(grpc_server_handling_seconds_count{grpc_service!=\"grpc.health.v1.Health\"}[5m])) by (grpc_service, grpc_method)",
+                    "expr":"1000 * sum(rate(grpc_server_handling_seconds_sum{grpc_service!=\"grpc.health.v1.Health\"}[$__rate_interval])) by (grpc_service, grpc_method)/ sum(rate(grpc_server_handling_seconds_count{grpc_service!=\"grpc.health.v1.Health\"}[$__rate_interval])) by (grpc_service, grpc_method)",
                     "interval":"",
                     "legendFormat":"{{grpc_service}} - {{grpc_method}}",
                     "refId":"Average per Service per Method"
@@ -314,7 +314,7 @@
             "steppedLine":false,
             "targets":[
                 {
-                    "expr":"sum(rate(grpc_server_handled_total{grpc_service!=\"grpc.health.v1.Health\",grpc_code!=\"OK\"}[5m])) by (grpc_service, grpc_method) / sum(rate(grpc_server_handled_total{grpc_service!=\"grpc.health.v1.Health\"}[5m])) by (grpc_service, grpc_method)",
+                    "expr":"sum(rate(grpc_server_handled_total{grpc_service!=\"grpc.health.v1.Health\",grpc_code!=\"OK\"}[$__rate_interval])) by (grpc_service, grpc_method) / sum(rate(grpc_server_handled_total{grpc_service!=\"grpc.health.v1.Health\"}[$__rate_interval])) by (grpc_service, grpc_method)",
                     "interval":"",
                     "legendFormat":"{{grpc_service}} - {{grpc_method}}",
                     "refId":"Average per Service per Method"
@@ -539,7 +539,7 @@
             "targets":[
                 {
                     "exemplar":true,
-                    "expr":"1000 * sum(rate(go_gc_duration_seconds_sum{job=\"toggle\"}[5m])) by (instance) / sum(rate(go_gc_duration_seconds_count{job=\"toggle\"}[5m])) by (instance)",
+                    "expr":"1000 * sum(rate(go_gc_duration_seconds_sum{job=\"toggle\"}[$__rate_interval])) by (instance) / sum(rate(go_gc_duration_seconds_count{job=\"toggle\"}[$__rate_interval])) by (instance)",
                     "interval":"",
                     "legendFormat":"{{instance}}",
                     "refId":"Average per Service per Method"
@@ -763,7 +763,7 @@
             "targets":[
                 {
                     "exemplar":true,
-                    "expr":"sum(rate(grpc_server_handled_total{grpc_code=\"OK\"}[5m])) / sum(rate(grpc_server_handled_total[5m]))",
+                    "expr":"sum(rate(grpc_server_handled_total{grpc_code=\"OK\"}[$__rate_interval])) / sum(rate(grpc_server_handled_total[$__rate_interval]))",
                     "interval":"",
                     "legendFormat":"Uptime",
                     "refId":"Average per Service per Method"

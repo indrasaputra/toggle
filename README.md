@@ -43,6 +43,35 @@ To see the RESTful API contract, do the following:
 
 - Read [Code Map](doc/CODE_MAP.md)
 
+## Testing
+
+### Unit Test
+
+```
+$ make test.unit
+```
+
+### Load Test
+
+Running smoke test, load test, and stress test is encouraged to know the sanity, performance, and stability of the service.
+[k6](https://k6.io/docs/) is used as load test executor.
+
+```sh
+$ k6 run <path to script file>
+```
+
+e.g:
+
+```sh
+$ k6 run internal/script/loadtest/load_test.js
+```
+
+or use docker
+
+```sh
+$ make test.load
+```
+
 ## Monitoring
 
 The application already emits necessary telemetry. If application's dependencies are run using [docker compose](doc/HOW_TO_RUN.md#docker), then monitoring is [provided by default](docker-compose.yaml). Otherwise, you have to provide them.

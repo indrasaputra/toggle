@@ -12,6 +12,7 @@ linters:
     - exportloopref
     - exhaustive
     - funlen
+    - gocognit
     - goconst
     - gocritic
     - gocyclo
@@ -43,23 +44,25 @@ linters:
     - whitespace
 
 linters-settings:
-  funlen:
-    lines: 70
-    statements: 40
-  lll:
-    line-length: 200
-  govet:
-    check-shadowing: true
   dupl:
     threshold: 200
   exhaustive:
     default-signifies-exhaustive: true
+  funlen:
+    lines: 70
+    statements: 40
+  gocognit:
+    min-complexity: 10
+  govet:
+    check-shadowing: true
+  lll:
+    line-length: 200
 
 issues:
   exclude-use-default: false
   exclude-rules:
     - path: _test\.go
       linters:
-        - lll
-        - funlen
         - dupl
+        - funlen
+        - lll

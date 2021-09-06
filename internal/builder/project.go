@@ -87,6 +87,10 @@ func BuildRedisClient(cfg *config.Redis) (*goredis.Client, error) {
 }
 
 // BuildKafkaWriter builds an instance of kafka writer.
+//
+// Currently, the writer is having issue on auto-creating topic.
+// Follow more on https://github.com/segmentio/kafka-go/issues/683 and https://github.com/segmentio/kafka-go/pull/700.
+// Once the PR is submitted and the package is updated, this configuration should work.
 func BuildKafkaWriter(cfg *config.Kafka) *kafka.Writer {
 	return &kafka.Writer{
 		Addr:         kafka.TCP(cfg.Address),

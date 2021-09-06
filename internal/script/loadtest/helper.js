@@ -33,7 +33,7 @@ export function createToggle() {
 
     let resp = http.post(url, payload, params);
     check(resp, {
-        'success create toggle': (resp) => resp.status === 200,
+        'success create toggle': () => resp.status === 200,
     })
 }
 
@@ -43,7 +43,7 @@ export function enableToggle() {
 
     let resp = http.put(url);
     check(resp, {
-        'success enable toggle': (resp) => resp.status === 200,
+        'success enable toggle': () => resp.status === 200,
     })
 }
 
@@ -53,7 +53,7 @@ export function disableToggle() {
 
     let resp = http.put(url);
     check(resp, {
-        'success disable toggle': (resp) => resp.status === 200,
+        'success disable toggle': () => resp.status === 200,
     })
 }
 
@@ -63,7 +63,7 @@ export function getToggle() {
 
     let resp = http.get(url);
     check(resp, {
-        'success get toggle': (resp) => resp.status === 200,
+        'success get toggle': () => resp.status === 200,
     })
 }
 

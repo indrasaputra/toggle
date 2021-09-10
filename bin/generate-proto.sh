@@ -4,7 +4,7 @@ set -euo pipefail
 
 IMAGE_DIR=bin
 
-buf beta mod update
+buf mod update
 buf lint
 buf breaking --against '.git#branch=main'
 buf generate

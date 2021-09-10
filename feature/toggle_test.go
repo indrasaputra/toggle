@@ -51,9 +51,10 @@ func TestMain(_ *testing.M) {
 	os.Exit(status)
 }
 
-func restoreDefaultState(sc *godog.Scenario) {
+func restoreDefaultState(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 	err := disableAndDeleteAll()
 	checkErr(err)
+	return ctx, nil
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
@@ -63,7 +64,7 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 		toggleURL = url
 	}
 
-	ctx.BeforeScenario(restoreDefaultState)
+	ctx.Before(restoreDefaultState)
 
 	ctx.Step(`^there are toggles with$`, thereAreTogglesWith)
 	ctx.Step(`^the toggle is empty$`, theToggleIsEmpty)

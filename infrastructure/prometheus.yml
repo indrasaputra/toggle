@@ -23,7 +23,9 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       # Use host.docker.internal for mac.
-      # We can change this to localhost if we use docker-compose.
       - targets: ['host.docker.internal:8081']
+        labels:
+          group: 'development'
+      - targets: ['localhost:8081']
         labels:
           group: 'development'

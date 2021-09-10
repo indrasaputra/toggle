@@ -5,7 +5,7 @@ Feature: Create new toggle
 
     Scenario: Invalid json request body (string)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | string |
         Then response status code must be 400
         And response must match json
@@ -19,7 +19,7 @@ Feature: Create new toggle
 
     Scenario: Invalid json request body (integer)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | integer |
         Then response status code must be 400
         And response must match json
@@ -33,7 +33,7 @@ Feature: Create new toggle
 
     Scenario: Invalid json request body (double)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | double |
         Then response status code must be 400
         And response must match json
@@ -47,7 +47,7 @@ Feature: Create new toggle
 
     Scenario: Invalid json request body (key doesn't exist)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | {"toggle": "toggle"} |
         Then response status code must be 400
         And response must match json
@@ -75,7 +75,7 @@ Feature: Create new toggle
 
     Scenario: Invalid json request body (key doesn't exist)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | {"value": "value"} |
         Then response status code must be 400
         And response must match json
@@ -103,7 +103,7 @@ Feature: Create new toggle
 
     Scenario: Invalid json request body (key doesn't contain alphanumeric or dash)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | {"key": "___"} |
         Then response status code must be 400
         And response must match json
@@ -131,7 +131,7 @@ Feature: Create new toggle
 
     Scenario: Invalid json request body (key doesn't contain alphanumeric or dash)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | {"key": "-!@"} |
         Then response status code must be 400
         And response must match json
@@ -159,7 +159,7 @@ Feature: Create new toggle
     
     Scenario: Invalid json request body (key doesn't contain alphanumeric or dash)
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | {"key": "%^&*!@#$%^&*()"} |
         Then response status code must be 400
         And response must match json
@@ -187,7 +187,7 @@ Feature: Create new toggle
 
     Scenario: Valid json request body
         Given the toggle is empty
-        When I create example with body
+        When I create toggle with body
             | {"key": "toggle-1", "description": "description 1"} |
             | {"key": "toggle-2", "description": "description 2"} |
             | {"key": "toggle-3", "description": "description 3"} |
@@ -206,7 +206,7 @@ Feature: Create new toggle
             | {"key": "toggle-3"} |
             | {"key": "toggle-4"} |
             | {"key": "toggle-5"} |
-        When I create example with body
+        When I create toggle with body
             | {"key": "toggle-1"} |
             | {"key": "toggle-2"} |
             | {"key": "toggle-3"} |

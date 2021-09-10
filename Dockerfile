@@ -1,7 +1,7 @@
-FROM golang:1.16 AS builder
+FROM golang:1.17 AS builder
 WORKDIR /app
 COPY . .
-RUN GRPC_HEALTH_PROBE_VERSION=v0.3.6 && \
+RUN GRPC_HEALTH_PROBE_VERSION=v0.4.5 && \
     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
     chmod +x /bin/grpc_health_probe
 RUN WAIT_FOR_VERSION=v2.1.2 && \

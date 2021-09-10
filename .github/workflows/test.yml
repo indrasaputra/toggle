@@ -10,7 +10,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: ^1.16.x
+          go-version: ^1.17.x
       - name: Clone repository
         uses: actions/checkout@v2
       - name: Download module
@@ -42,14 +42,14 @@ jobs:
       - name: Lint using golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.38.0
+          version: v1.42.1
 
   import-linter:
     name: Lint import block
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     container:
-      image: indrasaputra/protogen:0.0.1
+      image: indrasaputra/protogen:2021-09-07
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
@@ -66,7 +66,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: ^1.16.x
+          go-version: ^1.17.x
       - name: Clone repository
         uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -91,7 +91,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: ^1.16.x
+          go-version: ^1.17.x
       - name: Clone repository
         uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -157,10 +157,10 @@ jobs:
     needs: [build-docker]
     runs-on: ubuntu-latest
     container:
-      image: indrasaputra/golang:0.0.1
+      image: indrasaputra/golang:2021-09-07
     services:
       postgres:
-        image: postgres:13.2-alpine
+        image: postgres:13.4-alpine
         env:
           POSTGRES_USER: postgresuser
           POSTGRES_PASSWORD: postgrespassword

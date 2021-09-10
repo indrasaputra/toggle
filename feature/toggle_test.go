@@ -51,9 +51,10 @@ func TestMain(_ *testing.M) {
 	os.Exit(status)
 }
 
-func restoreDefaultState(sc *godog.Scenario) {
+func restoreDefaultState(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 	err := disableAndDeleteAll()
 	checkErr(err)
+	return ctx, nil
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
@@ -63,11 +64,11 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 		toggleURL = url
 	}
 
-	ctx.BeforeScenario(restoreDefaultState)
+	ctx.Before(restoreDefaultState)
 
 	ctx.Step(`^there are toggles with$`, thereAreTogglesWith)
 	ctx.Step(`^the toggle is empty$`, theToggleIsEmpty)
-	ctx.Step(`^I create example with body$`, iCreateExampleWithBody)
+	ctx.Step(`^I create toggle with body$`, iCreateToggleWithBody)
 	ctx.Step(`^I enable toggle with key "([^"]*)"$`, iEnableToggleWithKey)
 	ctx.Step(`^I disable toggle with key "([^"]*)"$`, iDisableToggleWithKey)
 	ctx.Step(`^I delete toggle with key "([^"]*)"$`, iDeleteToggleWithKey)
@@ -80,7 +81,7 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 }
 
 func thereAreTogglesWith(requests *godog.Table) error {
-	return iCreateExampleWithBody(requests)
+	return iCreateToggleWithBody(requests)
 }
 
 func theToggleIsEmpty() error {
@@ -88,7 +89,7 @@ func theToggleIsEmpty() error {
 	return err
 }
 
-func iCreateExampleWithBody(requests *godog.Table) error {
+func iCreateToggleWithBody(requests *godog.Table) error {
 	for _, row := range requests.Rows {
 		body := strings.NewReader(row.Cells[0].Value)
 		if err := callEndpoint(http.MethodPost, toggleURL, body); err != nil {

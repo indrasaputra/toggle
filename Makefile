@@ -52,6 +52,10 @@ gen.mock: ## Generate mock from all golang interfaces.
 compile: ## Compile golang code to binary.
 	GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-extldflags "-static"' -o toggle cmd/server/main.go
 
+.PHONY: build.envoy
+build.envoy: ## Build docker envoy.
+	docker build --no-cache -t envoy/toggle:latest -f envoy.dockerfile .
+
 ##@ Test
 .PHONY: test.unit
 test.unit: ## Run unit test.

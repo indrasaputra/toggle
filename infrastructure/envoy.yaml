@@ -39,6 +39,7 @@ static_resources:
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
               proto_descriptor: "/etc/envoy/toggle.pb"
+              convert_grpc_status: true
               services:
                 - "proto.indrasaputra.toggle.v1.ToggleCommandService"
                 - "proto.indrasaputra.toggle.v1.ToggleQueryService"

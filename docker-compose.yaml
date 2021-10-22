@@ -78,6 +78,13 @@ services:
     depends_on:
       - zookeeper
 
+  proxy:
+    image: envoy:toggle
+    ports:
+      - 8082:8082
+    networks:
+      - toggle
+
 volumes:
   storage:
 

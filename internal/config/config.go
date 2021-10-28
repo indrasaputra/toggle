@@ -11,6 +11,7 @@ type Config struct {
 	ServiceName string `env:"SERVICE_NAME,default=toggle-api"`
 	Port        Port
 	Postgres    Postgres
+	CockroachDB CockroachDB
 	Redis       Redis
 	Kafka       Kafka
 	Jaeger      Jaeger
@@ -32,6 +33,22 @@ type Postgres struct {
 	MaxOpenConns    string `env:"POSTGRES_MAX_OPEN_CONNS,default=5"`
 	MaxConnLifetime string `env:"POSTGRES_MAX_CONN_LIFETIME,default=10m"`
 	MaxIdleLifetime string `env:"POSTGRES_MAX_IDLE_LIFETIME,default=5m"`
+	SSLMode         string `env:"POSTGRES_SSL_MODE,default=disable"`
+}
+
+// CockroachDB holds all configuration for CockroachDB.
+type CockroachDB struct {
+	Host            string `env:"COCKROACHDB_HOST,default=localhost"`
+	Port            string `env:"COCKROACHDB_PORT,default=26257"`
+	User            string `env:"COCKROACHDB_USER,default=username"`
+	Password        string `env:"COCKROACHDB_PASSWORD,default=password"`
+	Name            string `env:"COCKROACHDB_NAME,default=toggle"`
+	MaxOpenConns    string `env:"COCKROACHDB_MAX_OPEN_CONNS,default=5"`
+	MaxConnLifetime string `env:"COCKROACHDB_MAX_CONN_LIFETIME,default=10m"`
+	MaxIdleLifetime string `env:"COCKROACHDB_MAX_IDLE_LIFETIME,default=5m"`
+	SSLMode         string `env:"COCKROACHDB_SSL_MODE,default=verify-full"`
+	SSLRootCert     string `env:"COCKROACHDB_SSL_ROOT_CERT,default=$HOME"`
+	Options         string `env:"COCKROACHDB_OPTIONS"`
 }
 
 // Redis holds configuration for Redis.

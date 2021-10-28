@@ -108,19 +108,19 @@ migration: ## Create database migration.
 
 .PHONY: migrate
 migrate: ## Run database migrations.
-	migrate -path db/migrations -database "$(url)?sslmode=disable" -verbose up
+	migrate -path db/migrations -database "$(url)" -verbose up
 
 .PHONY: rollback
 rollback: ## Rollback one migration.
-	migrate -path db/migrations -database "$(url)?sslmode=disable" -verbose down 1
+	migrate -path db/migrations -database "$(url)" -verbose down 1
 
 .PHONY: rollback.all
 rollback.all: ## Rollback all migrations.
-	migrate -path db/migrations -database "$(url)?sslmode=disable" -verbose down -all
+	migrate -path db/migrations -database "$(url)" -verbose down -all
 
 .PHONY: migrate.force
 migrate.force: ## Force migrate specific version.
-	migrate -path db/migrations -database "$(url)?sslmode=disable" -verbose force $(version)
+	migrate -path db/migrations -database "$(url)" -verbose force $(version)
 
 .PHONY: validate.migration
 validate.migration: ## Validate migration files.

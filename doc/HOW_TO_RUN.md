@@ -45,10 +45,10 @@ The second is to use docker image and docker compose.
     e.g:
 
     ```
-    $ make migrate url="postgres://user:password@host:port/dbname"
+    $ make migrate url="postgres://user:password@host:port/dbname?sslmode=disable"
     ```
 
-    **DON'T FORGET** to supply/change the `user`, `password`, `host`, `port`, and `dbname` according to your database settings.
+    **DON'T FORGET** to supply/change the `user`, `password`, `host`, `port`, `dbname`, and `sslmode` according to your database settings.
 
 - Run the application
 

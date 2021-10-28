@@ -40,9 +40,9 @@ type Postgres struct {
 type CockroachDB struct {
 	Host            string `env:"COCKROACHDB_HOST,default=localhost"`
 	Port            string `env:"COCKROACHDB_PORT,default=26257"`
-	User            string `env:"COCKROACHDB_USER,required"`
-	Password        string `env:"COCKROACHDB_PASSWORD,required"`
-	Name            string `env:"COCKROACHDB_NAME,required"`
+	User            string `env:"COCKROACHDB_USER,default=username"`
+	Password        string `env:"COCKROACHDB_PASSWORD,default=password"`
+	Name            string `env:"COCKROACHDB_NAME,default=toggle"`
 	MaxOpenConns    string `env:"COCKROACHDB_MAX_OPEN_CONNS,default=5"`
 	MaxConnLifetime string `env:"COCKROACHDB_MAX_CONN_LIFETIME,default=10m"`
 	MaxIdleLifetime string `env:"COCKROACHDB_MAX_IDLE_LIFETIME,default=5m"`

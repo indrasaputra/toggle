@@ -17,7 +17,7 @@ Toggle is a [Feature-Flag](https://martinfowler.com/articles/feature-toggles.htm
 
 ### gRPC
 
-The API can be seen in proto files (`*.proto`) in directory [proto](proto).
+The API can be seen in proto files (`*.proto`) in directory [proto](proto/indrasaputra/toggle/v1/toggle.proto).
 
 ### RESTful JSON
 

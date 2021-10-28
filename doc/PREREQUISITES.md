@@ -2,7 +2,7 @@
 
 - Install Go
 
-    We use version 1.16. Follow [Golang installation guideline](https://golang.org/doc/install).
+    We use version 1.17. Follow [Golang installation guideline](https://golang.org/doc/install).
 
 - Install golangci-lint
 
@@ -53,6 +53,10 @@
 - PostgreSQL
 
     Follow [PostgreSQL download](https://www.postgresql.org/download/).
+
+- CockroachDB (alternative for PostgreSQL, ignore if you prefer to use PostreSQL)
+
+    Follow [CockroachDB Website](https://www.cockroachlabs.com/docs/cockroachcloud/quickstart.html).
 
 - Redis
 

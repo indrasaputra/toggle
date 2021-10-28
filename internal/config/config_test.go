@@ -22,7 +22,7 @@ func TestNewConfig(t *testing.T) {
 	})
 
 	t.Run("successfully read config", func(t *testing.T) {
-		cfg, err := config.NewConfig("../../test/fixture/env.valid")
+		cfg, err := config.NewConfig("../../env.example")
 		assert.Nil(t, err)
 		assert.NotNil(t, cfg)
 	})

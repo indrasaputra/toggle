@@ -19,6 +19,11 @@ import (
 	"github.com/indrasaputra/toggle/service"
 )
 
+var (
+	postgresConnFormat  = "host=%s port=%s user=%s password=%s dbname=%s sslmode=disable pool_max_conns=%s pool_max_conn_lifetime=%s pool_max_conn_idle_time=%s sslmode=%s"
+	cockroachConnFormat = postgresConnFormat + " sslrootcert=%s options=%s"
+)
+
 // BuildToggleCommandHandler builds toggle command handler including all of its dependencies.
 func BuildToggleCommandHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration, kafkaWriter *kafka.Writer) *handler.ToggleCommand {
 	psql := postgres.NewToggle(pool)
@@ -57,7 +62,7 @@ func BuildToggleQueryHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsT
 
 // BuildPgxPool builds a pool of pgx client.
 func BuildPgxPool(cfg *config.Postgres) (*pgxpool.Pool, error) {
-	connCfg := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable pool_max_conns=%s pool_max_conn_lifetime=%s pool_max_conn_idle_time=%s",
+	connCfg := fmt.Sprintf(postgresConnFormat,
 		cfg.Host,
 		cfg.Port,
 		cfg.User,
@@ -66,6 +71,25 @@ func BuildPgxPool(cfg *config.Postgres) (*pgxpool.Pool, error) {
 		cfg.MaxOpenConns,
 		cfg.MaxConnLifetime,
 		cfg.MaxIdleLifetime,
+		cfg.SSLMode,
+	)
+	return pgxpool.Connect(context.Background(), connCfg)
+}
+
+// BuildCockroachPgxPool builds a pool of cockroachdb client using pgx.
+func BuildCockroachPgxPool(cfg *config.CockroachDB) (*pgxpool.Pool, error) {
+	connCfg := fmt.Sprintf(cockroachConnFormat,
+		cfg.Host,
+		cfg.Port,
+		cfg.User,
+		cfg.Password,
+		cfg.Name,
+		cfg.MaxOpenConns,
+		cfg.MaxConnLifetime,
+		cfg.MaxIdleLifetime,
+		cfg.SSLMode,
+		cfg.SSLRootCert,
+		cfg.Options,
 	)
 	return pgxpool.Connect(context.Background(), connCfg)
 }

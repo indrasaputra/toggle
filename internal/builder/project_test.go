@@ -49,10 +49,34 @@ func TestBuildPgxPool(t *testing.T) {
 		MaxOpenConns:    "10",
 		MaxConnLifetime: "10m",
 		MaxIdleLifetime: "5m",
+		SSLMode:         "disable",
 	}
 
-	t.Run("fail build sql client", func(t *testing.T) {
+	t.Run("fail build postgres pgxpool client", func(t *testing.T) {
 		client, err := builder.BuildPgxPool(cfg)
+
+		assert.NotNil(t, err)
+		assert.Nil(t, client)
+	})
+}
+
+func TestBuildCockroachPgxPool(t *testing.T) {
+	cfg := &config.CockroachDB{
+		Host:            "localhost",
+		Port:            "5432",
+		Name:            "guru",
+		User:            "user",
+		Password:        "password",
+		MaxOpenConns:    "10",
+		MaxConnLifetime: "10m",
+		MaxIdleLifetime: "5m",
+		SSLMode:         "verify-full",
+		SSLRootCert:     "/root",
+		Options:         "--cluster%3Dtoggle",
+	}
+
+	t.Run("fail build cockroachdb pgx pool client", func(t *testing.T) {
+		client, err := builder.BuildCockroachPgxPool(cfg)
 
 		assert.NotNil(t, err)
 		assert.Nil(t, client)

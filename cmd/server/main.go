@@ -24,18 +24,18 @@ import (
 )
 
 func main() {
-	cfg, cerr := config.NewConfig(".env")
-	checkError(cerr)
+	cfg, err := config.NewConfig(".env")
+	checkError(err)
 
-	psql, perr := builder.BuildPgxPool(&cfg.Postgres)
-	checkError(perr)
-	rds, rerr := builder.BuildRedisClient(&cfg.Redis)
-	checkError(rerr)
+	dbpool, err := builder.BuildPgxPool(&cfg.Postgres)
+	checkError(err)
+	rds, err := builder.BuildRedisClient(&cfg.Redis)
+	checkError(err)
 	kfk := builder.BuildKafkaWriter(&cfg.Kafka)
 	trc := initTracing(cfg)
 
 	grpcServer := server.NewGrpc(cfg.Port.GRPC)
-	registerGrpcHandlers(grpcServer.Server, psql, rds, kfk, cfg)
+	registerGrpcHandlers(grpcServer.Server, dbpool, rds, kfk, cfg)
 
 	restServer := server.NewRest(cfg.Port.REST)
 	registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
@@ -44,7 +44,7 @@ func main() {
 		_ = trc.Close()
 		_ = kfk.Close()
 		_ = rds.Close()
-		psql.Close()
+		dbpool.Close()
 	}
 
 	_ = grpcServer.Run()
@@ -52,11 +52,11 @@ func main() {
 	_ = grpcServer.AwaitTermination(closer)
 }
 
-func registerGrpcHandlers(server *grpc.Server, psql *pgxpool.Pool, rds *goredis.Client, kfk *kafka.Writer, cfg *config.Config) {
+func registerGrpcHandlers(server *grpc.Server, dbpool *pgxpool.Pool, rds *goredis.Client, kfk *kafka.Writer, cfg *config.Config) {
 	// start register all module's gRPC handlers
-	command := builder.BuildToggleCommandHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute, kfk)
+	command := builder.BuildToggleCommandHandler(dbpool, rds, time.Duration(cfg.Redis.TTL)*time.Minute, kfk)
 	togglev1.RegisterToggleCommandServiceServer(server, command)
-	query := builder.BuildToggleQueryHandler(psql, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
+	query := builder.BuildToggleQueryHandler(dbpool, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
 	togglev1.RegisterToggleQueryServiceServer(server, query)
 
 	health := handler.NewHealth()

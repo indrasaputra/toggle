@@ -57,6 +57,16 @@ jobs:
         run: |
           make format
           make check.import
+  
+  security-checking:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: returntocorp/semgrep-action@v1
+        with:
+          publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
 
   unit-test:
     name: Unit test and coverage

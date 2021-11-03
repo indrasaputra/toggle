@@ -19,8 +19,8 @@ type Config struct {
 
 // Port holds configuration for project's port.
 type Port struct {
-	GRPC string `env:"PORT_GRPC,default=8080"`
-	REST string `env:"PORT_REST,default=8081"`
+	Grpc        string `env:"PORT_GRPC,default=8080"`
+	GrpcGateway string `env:"PORT_GRPC_GATEWAY,default=8081"`
 }
 
 // Postgres holds all configuration for PostgreSQL.
@@ -54,7 +54,8 @@ type CockroachDB struct {
 // Redis holds configuration for Redis.
 type Redis struct {
 	Address string `env:"REDIS_ADDRESS,default=localhost:6379"`
-	TTL     uint   `env:"REDIS_TTL,default=5"`
+	// TTL in minute.
+	TTL uint `env:"REDIS_TTL,default=5"`
 }
 
 // Kafka holds configuration for Kafka.

@@ -6,11 +6,8 @@ import (
 	"io"
 	"time"
 
-	goredis "github.com/go-redis/redis/v8"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/opentracing/opentracing-go"
-	"github.com/segmentio/kafka-go"
 	"github.com/uber/jaeger-client-go"
 	jaegerconf "github.com/uber/jaeger-client-go/config"
 	"google.golang.org/grpc"
@@ -18,8 +15,10 @@ import (
 
 	"github.com/indrasaputra/toggle/internal/builder"
 	"github.com/indrasaputra/toggle/internal/config"
+	gwayserver "github.com/indrasaputra/toggle/internal/grpc-gateway/server"
 	"github.com/indrasaputra/toggle/internal/grpc/handler"
-	"github.com/indrasaputra/toggle/internal/server"
+	grpcserver "github.com/indrasaputra/toggle/internal/grpc/server"
+	manserver "github.com/indrasaputra/toggle/internal/server"
 	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
 
@@ -34,11 +33,18 @@ func main() {
 	kfk := builder.BuildKafkaWriter(&cfg.Kafka)
 	trc := initTracing(cfg)
 
-	grpcServer := server.NewGrpc(cfg.Port.GRPC)
-	registerGrpcHandlers(grpcServer.Server, dbpool, rds, kfk, cfg)
+	dep := &builder.Dependency{
+		PgxPool:     dbpool,
+		RedisClient: rds,
+		KafkaWriter: kfk,
+		Config:      cfg,
+	}
 
-	restServer := server.NewRest(cfg.Port.REST)
-	registerRestHandlers(context.Background(), restServer.ServeMux, fmt.Sprintf(":%s", cfg.Port.GRPC), grpc.WithInsecure())
+	grpcServer := grpcserver.NewGrpcServer(cfg.Port.Grpc)
+	registerGrpcService(grpcServer, dep)
+
+	gatewayServer := gwayserver.NewGrpcGateway(cfg.Port.GrpcGateway)
+	registerGrpcGatewayService(context.Background(), gatewayServer, fmt.Sprintf(":%s", cfg.Port.Grpc), grpc.WithInsecure())
 
 	closer := func() {
 		_ = trc.Close()
@@ -46,31 +52,37 @@ func main() {
 		_ = rds.Close()
 		dbpool.Close()
 	}
+	defer closer()
 
-	_ = grpcServer.Run()
-	_ = restServer.Run()
-	_ = grpcServer.AwaitTermination(closer)
+	man := manserver.NewManager([]manserver.Server{grpcServer, gatewayServer})
+	man.Serve()
+	man.GracefulStop()
 }
 
-func registerGrpcHandlers(server *grpc.Server, dbpool *pgxpool.Pool, rds *goredis.Client, kfk *kafka.Writer, cfg *config.Config) {
+func registerGrpcService(grpcServer *grpcserver.GrpcServer, dep *builder.Dependency) {
 	// start register all module's gRPC handlers
-	command := builder.BuildToggleCommandHandler(dbpool, rds, time.Duration(cfg.Redis.TTL)*time.Minute, kfk)
-	togglev1.RegisterToggleCommandServiceServer(server, command)
-	query := builder.BuildToggleQueryHandler(dbpool, rds, time.Duration(cfg.Redis.TTL)*time.Minute)
-	togglev1.RegisterToggleQueryServiceServer(server, query)
-
+	command := builder.BuildToggleCommandHandler(dep)
+	query := builder.BuildToggleQueryHandler(dep)
 	health := handler.NewHealth()
-	grpc_health_v1.RegisterHealthServer(server, health)
+
+	grpcServer.AttachService(func(server *grpc.Server) {
+		togglev1.RegisterToggleCommandServiceServer(server, command)
+		togglev1.RegisterToggleQueryServiceServer(server, query)
+		grpc_health_v1.RegisterHealthServer(server, health)
+	})
 	// end of register all module's gRPC handlers
 }
 
-func registerRestHandlers(ctx context.Context, server *runtime.ServeMux, grpcPort string, options ...grpc.DialOption) {
-	// start register all module's REST handlers
-	err := togglev1.RegisterToggleCommandServiceHandlerFromEndpoint(ctx, server, grpcPort, options)
-	checkError(err)
-	err = togglev1.RegisterToggleQueryServiceHandlerFromEndpoint(ctx, server, grpcPort, options)
-	checkError(err)
-	// end of register all module's REST handlers
+func registerGrpcGatewayService(ctx context.Context, gatewayServer *gwayserver.GrpcGateway, grpcPort string, options ...grpc.DialOption) {
+	gatewayServer.AttachService(func(server *runtime.ServeMux) error {
+		if err := togglev1.RegisterToggleCommandServiceHandlerFromEndpoint(ctx, server, grpcPort, options); err != nil {
+			return err
+		}
+		if err := togglev1.RegisterToggleQueryServiceHandlerFromEndpoint(ctx, server, grpcPort, options); err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 func initTracing(cfg *config.Config) io.Closer {

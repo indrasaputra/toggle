@@ -94,6 +94,18 @@ This folder contains the HTTP/2 gRPC interceptors.
 
 ---
 
+### `internal/grpc/server`
+
+This folder contains the HTTP/2 gRPC server.
+
+---
+
+### `internal/grpc-gateway/server`
+
+This folder contains the HTTP/1.1 grpc gateway server.
+
+---
+
 ### `internal/messaging`
 
 This folder contains codes that connect to the message queue system, such as Kafka.
@@ -115,7 +127,7 @@ This folder contains all scripts related to the service.
 
 ### `internal/server`
 
-This folder contains all codes needed to define a gRPC and its REST Gateway server.
+This folder contains high-level interface to define a server. It also contains server manager.
 
 ---
 

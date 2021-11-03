@@ -2,11 +2,7 @@ package server
 
 import (
 	"fmt"
-	"log"
 	"net"
-	"os"
-	"os/signal"
-	"syscall"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logsettable "github.com/grpc-ecosystem/go-grpc-middleware/logging/settable"
@@ -24,75 +20,88 @@ import (
 )
 
 const (
-	connProtocol = "tcp"
+	connProtocol   = "tcp"
+	grpcServerName = "grpc server"
 )
 
-// Closer is responsible to close any open or available resource.
-type Closer func()
-
-// Grpc is responsible to act as gRPC server.
+// GrpcServer is responsible to act as gRPC server.
 // It composes grpc.Server.
-type Grpc struct {
-	*grpc.Server
-	listener net.Listener
-	port     string
+type GrpcServer struct {
+	server      *grpc.Server
+	serviceFunc []func(*grpc.Server)
+	listener    net.Listener
+	port        string
 }
 
-// newGrpc creates an instance of Grpc.
-func newGrpc(port string, options ...grpc.ServerOption) *Grpc {
-	srv := grpc.NewServer(options...)
-	return &Grpc{
-		Server: srv,
+// newGrpc creates an instance of GrpcServer.
+func newGrpcServer(port string, options ...grpc.ServerOption) *GrpcServer {
+	return &GrpcServer{
+		server: grpc.NewServer(options...),
 		port:   port,
 	}
 }
 
-// NewGrpc creates an instance of Grpc for used in development environment.
+// NewGrpcServer creates an instance of GrpcServer for used in development environment.
 //
 // These are list of interceptors that are attached (from innermost to outermost):
 // 	- Metrics, using Prometheus.
 // 	- Logging, using zap logger.
 // 	- Recoverer, using grpc_recovery.
-func NewGrpc(port string) *Grpc {
+func NewGrpcServer(port string) *GrpcServer {
 	options := grpc_middleware.WithUnaryServerChain(defaultUnaryServerInterceptors()...)
-	srv := newGrpc(port, options)
-	grpc_prometheus.Register(srv.Server)
+	srv := newGrpcServer(port, options)
+	grpc_prometheus.Register(srv.server)
 	return srv
 }
 
-// Run runs the server.
+// Name returns server's name.
+func (gs *GrpcServer) Name() string {
+	return grpcServerName
+}
+
+// Port returns server's port.
+func (gs *GrpcServer) Port() string {
+	return gs.port
+}
+
+// AttachService attaches service to gRPC server.
+// It will be called before serve.
+func (gs *GrpcServer) AttachService(fn func(*grpc.Server)) {
+	gs.serviceFunc = append(gs.serviceFunc, fn)
+}
+
+// Serve runs the server.
 // It basically runs grpc.Server.Serve and is a blocking.
-func (g *Grpc) Run() error {
+func (gs *GrpcServer) Serve() error {
+	for _, service := range gs.serviceFunc {
+		service(gs.server)
+	}
+
 	var err error
-	g.listener, err = net.Listen(connProtocol, fmt.Sprintf(":%s", g.port))
+	gs.listener, err = net.Listen(connProtocol, fmt.Sprintf(":%s", gs.port))
 	if err != nil {
 		return err
 	}
-
-	go g.serve()
-	log.Printf("grpc server is running on port %s\n", g.port)
-	return nil
+	return gs.server.Serve(gs.listener)
 }
 
-// AwaitTermination blocks the server and wait for termination signal.
+// GracefulStop blocks the server and wait for termination signal.
 // The termination signal must be one of SIGINT or SIGTERM.
 // Once it receives one of those signals, the gRPC server will perform graceful stop and close the listener.
 //
 // It receives Closer and will perform all closers before closing itself.
-func (g *Grpc) AwaitTermination(closer Closer) error {
-	sign := make(chan os.Signal, 1)
-	signal.Notify(sign, syscall.SIGINT, syscall.SIGTERM)
-	<-sign
-
-	closer()
-	g.GracefulStop()
-	return g.listener.Close()
+func (gs *GrpcServer) GracefulStop() {
+	gs.server.GracefulStop()
+	if gs.listener != nil {
+		_ = gs.listener.Close()
+	}
 }
 
-func (g *Grpc) serve() {
-	if err := g.Serve(g.listener); err != nil {
-		panic(err)
-	}
+// Stop immediately stops the gRPC server.
+// Currently, this method exists just for the sake of testing.
+// For production purpose, use GracefulStop().
+func (gs *GrpcServer) Stop() {
+	gs.server.Stop()
 }
 
 func defaultUnaryServerInterceptors() []grpc.UnaryServerInterceptor {

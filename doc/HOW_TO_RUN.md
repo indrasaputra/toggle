@@ -23,8 +23,8 @@ The second is to use docker image and docker compose.
 
 - Run or start Redis
 
-- Fill `PORT_GRPC` and `PORT_REST` value as you wish. We use `8080` as default value for `PORT_GRPC` and `8081` for `PORT_REST`.
-    `PORT_GRPC` is a port for HTTP/2 gRPC. `PORT_REST` is port for HTTP/1.1 REST.
+- Fill `PORT_GRPC` and `PORT_GRPC_GATEWAY` value as you wish. We use `8080` as default value for `PORT_GRPC` and `8081` for `PORT_GRPC_GATEWAY`.
+    `PORT_GRPC` is a port for HTTP/2 gRPC. `PORT_GRPC_GATEWAY` is port for HTTP/1.1.
     We encourage to let both values as default
 
 - Run or start Kafka

@@ -185,7 +185,7 @@ jobs:
         image: ${{ github.repository }}:${{ github.sha }}
         env:
           PORT_GRPC: 8080
-          PORT_REST: 8081
+          PORT_GRPC_GATEWAY: 8081
           POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
           POSTGRES_USER: postgresuser

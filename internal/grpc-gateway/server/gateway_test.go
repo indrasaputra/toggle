@@ -61,3 +61,10 @@ func TestNewGrpcGateway_Port(t *testing.T) {
 		assert.Equal(t, testGrpcGatewayPort, srv.Port())
 	})
 }
+
+func TestNewGrpcGateway_GracefulStop(t *testing.T) {
+	t.Run("success stop server", func(t *testing.T) {
+		srv := server.NewGrpcGateway(testGrpcGatewayPort)
+		assert.NotPanics(t, func() { srv.GracefulStop() })
+	})
+}

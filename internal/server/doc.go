@@ -1,2 +1,3 @@
-// Package server provides HTTP/2 gRCP server functionality.
+// Package server provides high-level contract about server
+// and also provides a manager to manage all servers.
 package server

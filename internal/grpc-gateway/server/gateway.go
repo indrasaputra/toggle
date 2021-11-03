@@ -75,6 +75,7 @@ func (gg *GrpcGateway) AttachService(fn func(*runtime.ServeMux) error) {
 // GracefulStop exists just for the sake implementing server interface.
 // It does nothing.
 func (gg *GrpcGateway) GracefulStop() {
+	// It does nothing. This comment exists due to the "Functions should not be empty" rule.
 }
 
 func prometheusHandler() runtime.HandlerFunc {

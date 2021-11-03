@@ -24,11 +24,19 @@ var (
 	cockroachConnFormat = postgresConnFormat + " sslrootcert=%s options=%s"
 )
 
+// Dependency holds any dependency to build full use cases.
+type Dependency struct {
+	PgxPool     *pgxpool.Pool
+	RedisClient goredis.Cmdable
+	KafkaWriter *kafka.Writer
+	Config      *config.Config
+}
+
 // BuildToggleCommandHandler builds toggle command handler including all of its dependencies.
-func BuildToggleCommandHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration, kafkaWriter *kafka.Writer) *handler.ToggleCommand {
-	psql := postgres.NewToggle(pool)
-	rds := redis.NewToggle(rdsClient, rdsTTL)
-	writer := messaging.NewKafkaPublisher(kafkaWriter)
+func BuildToggleCommandHandler(dep *Dependency) *handler.ToggleCommand {
+	psql := postgres.NewToggle(dep.PgxPool)
+	rds := redis.NewToggle(dep.RedisClient, time.Duration(dep.Config.Redis.TTL)*time.Minute)
+	writer := messaging.NewKafkaPublisher(dep.KafkaWriter)
 
 	inserterRepo := repository.NewToggleInserter(psql, rds)
 	updaterRepo := repository.NewToggleUpdater(psql, rds)
@@ -46,9 +54,9 @@ func BuildToggleCommandHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rd
 }
 
 // BuildToggleQueryHandler builds toggle query handler including all of its dependencies.
-func BuildToggleQueryHandler(pool *pgxpool.Pool, rdsClient goredis.Cmdable, rdsTTL time.Duration) *handler.ToggleQuery {
-	psql := postgres.NewToggle(pool)
-	rds := redis.NewToggle(rdsClient, rdsTTL)
+func BuildToggleQueryHandler(dep *Dependency) *handler.ToggleQuery {
+	psql := postgres.NewToggle(dep.PgxPool)
+	rds := redis.NewToggle(dep.RedisClient, time.Duration(dep.Config.Redis.TTL)*time.Minute)
 
 	getterRepo := repository.NewToggleGetter(psql, rds)
 

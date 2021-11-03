@@ -2,7 +2,6 @@ package builder_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/alicebob/miniredis/v2"
 	goredis "github.com/go-redis/redis/v8"
@@ -16,12 +15,16 @@ import (
 
 func TestBuildToggleCommandHandler(t *testing.T) {
 	t.Run("success create toggle command handler", func(t *testing.T) {
-		psql := &pgxpool.Pool{}
-		rds := &goredis.Client{}
-		ttl := 5 * time.Minute
-		wrt := &kafka.Writer{}
+		dep := &builder.Dependency{
+			PgxPool:     &pgxpool.Pool{},
+			RedisClient: &goredis.Client{},
+			KafkaWriter: &kafka.Writer{},
+			Config: &config.Config{
+				Redis: config.Redis{},
+			},
+		}
 
-		handler := builder.BuildToggleCommandHandler(psql, rds, ttl, wrt)
+		handler := builder.BuildToggleCommandHandler(dep)
 
 		assert.NotNil(t, handler)
 	})
@@ -29,11 +32,15 @@ func TestBuildToggleCommandHandler(t *testing.T) {
 
 func TestBuildToggleHandler(t *testing.T) {
 	t.Run("success create toggle query handler", func(t *testing.T) {
-		psql := &pgxpool.Pool{}
-		rds := &goredis.Client{}
-		ttl := 5 * time.Minute
+		dep := &builder.Dependency{
+			PgxPool:     &pgxpool.Pool{},
+			RedisClient: &goredis.Client{},
+			Config: &config.Config{
+				Redis: config.Redis{},
+			},
+		}
 
-		handler := builder.BuildToggleQueryHandler(psql, rds, ttl)
+		handler := builder.BuildToggleQueryHandler(dep)
 
 		assert.NotNil(t, handler)
 	})

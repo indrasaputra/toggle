@@ -20,6 +20,7 @@ lint.cleancache: ## Clean golangci-lint cache.
 lint: ## Lint proto files using buf and golang files using golangci-lint.
 lint: lint.cleancache
 	buf lint
+	protolint lint -fix .
 	golangci-lint run ./...
 
 .PHONY: pretty

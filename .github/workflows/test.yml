@@ -57,10 +57,19 @@ jobs:
         run: |
           make format
           make check.import
+  
+  security-checking:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: returntocorp/semgrep-action@v1
+        with:
+          publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
 
   unit-test:
     name: Unit test and coverage
-    needs: [download-module, code-linter, import-linter]
+    needs: [download-module, code-linter, import-linter, security-checking]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
@@ -85,7 +94,7 @@ jobs:
   compile-binary:
     name: Compile go binary
     if: github.event_name == 'push'
-    needs: [download-module, code-linter, import-linter]
+    needs: [download-module, code-linter, import-linter, security-checking]
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go

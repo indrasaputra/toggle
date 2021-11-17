@@ -75,7 +75,7 @@ func (m *MockSubscriber) EXPECT() *MockSubscriberMockRecorder {
 }
 
 // Subscribe mocks base method.
-func (m *MockSubscriber) Subscribe(ctx context.Context, fn func(*togglev1.EventToggle) error) error {
+func (m *MockSubscriber) Subscribe(ctx context.Context, fn func(*togglev1.ToggleEvent) error) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Subscribe", ctx, fn)
 	ret0, _ := ret[0].(error)

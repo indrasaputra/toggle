@@ -24,36 +24,36 @@ type Toggle struct {
 }
 
 // EventToggleCreated creates an event for created toggle.
-func EventToggleCreated(toggle *Toggle) *togglev1.EventToggle {
-	return &togglev1.EventToggle{
-		Name:      togglev1.EventName_EVENT_CREATED,
+func EventToggleCreated(toggle *Toggle) *togglev1.ToggleEvent {
+	return &togglev1.ToggleEvent{
+		Name:      togglev1.ToggleEventName_TOGGLE_EVENT_NAME_CREATED,
 		Toggle:    createAPIToggle(toggle),
 		CreatedAt: timestamppb.Now(),
 	}
 }
 
 // EventToggleEnabled creates an event for enabled toggle.
-func EventToggleEnabled(toggle *Toggle) *togglev1.EventToggle {
-	return &togglev1.EventToggle{
-		Name:      togglev1.EventName_EVENT_ENABLED,
+func EventToggleEnabled(toggle *Toggle) *togglev1.ToggleEvent {
+	return &togglev1.ToggleEvent{
+		Name:      togglev1.ToggleEventName_TOGGLE_EVENT_NAME_ENABLED,
 		Toggle:    createAPIToggle(toggle),
 		CreatedAt: timestamppb.Now(),
 	}
 }
 
 // EventToggleDisabled creates an event for disabled toggle.
-func EventToggleDisabled(toggle *Toggle) *togglev1.EventToggle {
-	return &togglev1.EventToggle{
-		Name:      togglev1.EventName_EVENT_DISABLED,
+func EventToggleDisabled(toggle *Toggle) *togglev1.ToggleEvent {
+	return &togglev1.ToggleEvent{
+		Name:      togglev1.ToggleEventName_TOGGLE_EVENT_NAME_DISABLED,
 		Toggle:    createAPIToggle(toggle),
 		CreatedAt: timestamppb.Now(),
 	}
 }
 
 // EventToggleDeleted creates an event for deleted toggle.
-func EventToggleDeleted(toggle *Toggle) *togglev1.EventToggle {
-	return &togglev1.EventToggle{
-		Name:      togglev1.EventName_EVENT_DELETED,
+func EventToggleDeleted(toggle *Toggle) *togglev1.ToggleEvent {
+	return &togglev1.ToggleEvent{
+		Name:      togglev1.ToggleEventName_TOGGLE_EVENT_NAME_DELETED,
 		Toggle:    createAPIToggle(toggle),
 		CreatedAt: timestamppb.Now(),
 	}

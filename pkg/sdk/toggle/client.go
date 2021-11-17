@@ -35,7 +35,7 @@ type CircuitBreaker interface {
 type Subscriber interface {
 	// Subscribe subscribes to a messaging system.
 	// The fn parameter is used to process the incoming message.
-	Subscribe(ctx context.Context, fn func(event *togglev1.EventToggle) error) error
+	Subscribe(ctx context.Context, fn func(event *togglev1.ToggleEvent) error) error
 }
 
 // Client acts as a client to connect to Toggle.
@@ -174,7 +174,7 @@ func (c *Client) Delete(ctx context.Context, key string) error {
 // and saves them in in-memory.
 // It should be run in a separate goroutine.
 func (c *Client) Subscribe(ctx context.Context, subscriber Subscriber, keys []string) error {
-	err := subscriber.Subscribe(ctx, func(event *togglev1.EventToggle) error {
+	err := subscriber.Subscribe(ctx, func(event *togglev1.ToggleEvent) error {
 		toggleKey := event.GetToggle().GetKey()
 		for _, key := range keys {
 			if key == toggleKey {
@@ -216,9 +216,9 @@ func isServerError(err error) bool {
 	}
 }
 
-func getIsEnabledFromEventType(name togglev1.EventName) bool {
+func getIsEnabledFromEventType(name togglev1.ToggleEventName) bool {
 	switch name {
-	case togglev1.EventName_EVENT_ENABLED:
+	case togglev1.ToggleEventName_TOGGLE_EVENT_NAME_ENABLED:
 		return true
 	default:
 		return false

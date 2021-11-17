@@ -47,7 +47,7 @@ func TestKafkaPublisher_Publish(t *testing.T) {
 
 	t.Run("event doesn't have toggle", func(t *testing.T) {
 		exec := createKafkaPublisherExecutor(ctrl)
-		err := exec.publisher.Publish(testCtx, &togglev1.EventToggle{})
+		err := exec.publisher.Publish(testCtx, &togglev1.ToggleEvent{})
 		assert.NotNil(t, err)
 	})
 
@@ -55,7 +55,7 @@ func TestKafkaPublisher_Publish(t *testing.T) {
 		exec := createKafkaPublisherExecutor(ctrl)
 		exec.writer.EXPECT().WriteMessages(testCtx, gomock.Any()).Return(errReturn)
 
-		err := exec.publisher.Publish(testCtx, &togglev1.EventToggle{Toggle: &togglev1.Toggle{}})
+		err := exec.publisher.Publish(testCtx, &togglev1.ToggleEvent{Toggle: &togglev1.Toggle{}})
 
 		assert.NotNil(t, err)
 	})
@@ -64,7 +64,7 @@ func TestKafkaPublisher_Publish(t *testing.T) {
 		exec := createKafkaPublisherExecutor(ctrl)
 		exec.writer.EXPECT().WriteMessages(testCtx, gomock.Any()).Return(nil)
 
-		err := exec.publisher.Publish(testCtx, &togglev1.EventToggle{Toggle: &togglev1.Toggle{}})
+		err := exec.publisher.Publish(testCtx, &togglev1.ToggleEvent{Toggle: &togglev1.Toggle{}})
 
 		assert.Nil(t, err)
 	})
@@ -121,7 +121,7 @@ func TestKafkaSubscriber_Subscribe(t *testing.T) {
 
 	t.Run("error processing message", func(t *testing.T) {
 		exec := createKafkaSubscriberExecutor(ctrl)
-		b, _ := json.Marshal(&togglev1.EventToggle{})
+		b, _ := json.Marshal(&togglev1.ToggleEvent{})
 		msg := kafka.Message{Value: b}
 		exec.reader.EXPECT().ReadMessage(testCtx).Return(msg, nil)
 		exec.reader.EXPECT().ReadMessage(testCtx).Return(kafka.Message{}, errReturn)
@@ -133,7 +133,7 @@ func TestKafkaSubscriber_Subscribe(t *testing.T) {
 
 	t.Run("success processing message", func(t *testing.T) {
 		exec := createKafkaSubscriberExecutor(ctrl)
-		b, _ := json.Marshal(&togglev1.EventToggle{})
+		b, _ := json.Marshal(&togglev1.ToggleEvent{})
 		msg := kafka.Message{Value: b}
 		exec.reader.EXPECT().ReadMessage(testCtx).Return(msg, nil)
 		exec.reader.EXPECT().ReadMessage(testCtx).Return(kafka.Message{}, errReturn)
@@ -144,11 +144,11 @@ func TestKafkaSubscriber_Subscribe(t *testing.T) {
 	})
 }
 
-func processor(err error) func(*togglev1.EventToggle) error {
+func processor(err error) func(*togglev1.ToggleEvent) error {
 	if err != nil {
-		return func(*togglev1.EventToggle) error { return err }
+		return func(*togglev1.ToggleEvent) error { return err }
 	}
-	return func(*togglev1.EventToggle) error { return nil }
+	return func(*togglev1.ToggleEvent) error { return nil }
 }
 
 func createKafkaSubscriberExecutor(ctrl *gomock.Controller) *KafkaSubscriberExecutor {

@@ -23,7 +23,7 @@ func NewKafkaPublisher(writer Writer) *KafkaPublisher {
 
 // Publish publishes toggle event to Kafka.
 // The event will be converted to JSON.
-func (kp *KafkaPublisher) Publish(ctx context.Context, event *togglev1.EventToggle) error {
+func (kp *KafkaPublisher) Publish(ctx context.Context, event *togglev1.ToggleEvent) error {
 	data, err := json.Marshal(event)
 	if err != nil {
 		return err
@@ -54,13 +54,13 @@ func NewKafkaSubscriber(reader Reader) *KafkaSubscriber {
 
 // Subscribe subscribes to a certain topic and process the incoming message using the fn parameter.
 // This method is blocking.
-func (ks *KafkaSubscriber) Subscribe(ctx context.Context, fn func(*togglev1.EventToggle) error) error {
+func (ks *KafkaSubscriber) Subscribe(ctx context.Context, fn func(*togglev1.ToggleEvent) error) error {
 	for {
 		msg, err := ks.reader.ReadMessage(ctx)
 		if err != nil {
 			return err
 		}
-		var event *togglev1.EventToggle
+		var event *togglev1.ToggleEvent
 		if err := json.Unmarshal(msg.Value, &event); err != nil {
 			log.Printf("error unmarshal message: %v\n", err)
 			continue

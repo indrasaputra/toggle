@@ -24,6 +24,11 @@
 
     Follow [Buf installation](https://docs.buf.build/installation).
 
+- Install protolint
+
+    We use [protolint](https://github.com/yoheimuta/protolint) to format and lint our protocol buffer files.
+    We use version 0.35.2 when we develop this project.
+
 - Install clang-format
 
     We use [clang-format](https://clang.llvm.org/docs/ClangFormat.html) to format our protocol buffer files.

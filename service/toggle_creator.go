@@ -35,7 +35,7 @@ type CreateToggleRepository interface {
 // TogglePublisher defines the interface to publish toggle to message queue.
 type TogglePublisher interface {
 	// Publish publishes event toggle to message queue.
-	Publish(ctx context.Context, event *togglev1.EventToggle) error
+	Publish(ctx context.Context, event *togglev1.ToggleEvent) error
 }
 
 // ToggleCreator is responsible for creating a new toggle.

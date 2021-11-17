@@ -1,0 +1,18 @@
+---
+# Lint directives.
+lint:
+  rules:
+    all_default: true
+
+  rules_option:
+    max_line_length:
+      max_chars: 100
+      tab_chars: 2
+
+    message_names_exclude_prepositions:
+      excludes:
+        - By
+
+    field_names_exclude_prepositions:
+      excludes:
+        - at

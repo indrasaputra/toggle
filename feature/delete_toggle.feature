@@ -15,7 +15,7 @@ Feature: Delete toggle
                 "details": [
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "NOT_FOUND"
+                        "errorCode": "TOGGLE_ERROR_CODE_NOT_FOUND"
                     }
                 ]
             }
@@ -35,7 +35,7 @@ Feature: Delete toggle
                 "details": [
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "PROHIBITED_TO_DELETE"
+                        "errorCode": "TOGGLE_ERROR_CODE_PROHIBITED_TO_DELETE"
                     }
                 ]
             }

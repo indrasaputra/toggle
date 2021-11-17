@@ -112,7 +112,7 @@ func (m *MockTogglePublisher) EXPECT() *MockTogglePublisherMockRecorder {
 }
 
 // Publish mocks base method.
-func (m *MockTogglePublisher) Publish(ctx context.Context, event *togglev1.EventToggle) error {
+func (m *MockTogglePublisher) Publish(ctx context.Context, event *togglev1.ToggleEvent) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Publish", ctx, event)
 	ret0, _ := ret[0].(error)

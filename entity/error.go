@@ -12,7 +12,7 @@ import (
 func ErrInternal(message string) error {
 	st := status.New(codes.Internal, message)
 	te := &togglev1.ToggleError{
-		ErrorCode: togglev1.ToggleErrorCode_INTERNAL,
+		ErrorCode: togglev1.ToggleErrorCode_TOGGLE_ERROR_CODE_INTERNAL,
 	}
 	res, err := st.WithDetails(te)
 	if err != nil {
@@ -30,7 +30,7 @@ func ErrEmptyToggle() error {
 	})
 
 	te := &togglev1.ToggleError{
-		ErrorCode: togglev1.ToggleErrorCode_EMPTY_TOGGLE,
+		ErrorCode: togglev1.ToggleErrorCode_TOGGLE_ERROR_CODE_EMPTY_TOGGLE,
 	}
 	res, err := st.WithDetails(br, te)
 	if err != nil {
@@ -43,7 +43,7 @@ func ErrEmptyToggle() error {
 func ErrAlreadyExists() error {
 	st := status.New(codes.AlreadyExists, "")
 	te := &togglev1.ToggleError{
-		ErrorCode: togglev1.ToggleErrorCode_ALREADY_EXISTS,
+		ErrorCode: togglev1.ToggleErrorCode_TOGGLE_ERROR_CODE_ALREADY_EXISTS,
 	}
 	res, err := st.WithDetails(te)
 	if err != nil {
@@ -61,7 +61,7 @@ func ErrInvalidKey() error {
 	})
 
 	te := &togglev1.ToggleError{
-		ErrorCode: togglev1.ToggleErrorCode_INVALID_KEY,
+		ErrorCode: togglev1.ToggleErrorCode_TOGGLE_ERROR_CODE_INVALID_KEY,
 	}
 	res, err := st.WithDetails(br, te)
 	if err != nil {
@@ -79,7 +79,7 @@ func ErrInvalidValue() error {
 	})
 
 	te := &togglev1.ToggleError{
-		ErrorCode: togglev1.ToggleErrorCode_INVALID_VALUE,
+		ErrorCode: togglev1.ToggleErrorCode_TOGGLE_ERROR_CODE_INVALID_VALUE,
 	}
 	res, err := st.WithDetails(br, te)
 	if err != nil {
@@ -92,7 +92,7 @@ func ErrInvalidValue() error {
 func ErrNotFound() error {
 	st := status.New(codes.NotFound, "")
 	te := &togglev1.ToggleError{
-		ErrorCode: togglev1.ToggleErrorCode_NOT_FOUND,
+		ErrorCode: togglev1.ToggleErrorCode_TOGGLE_ERROR_CODE_NOT_FOUND,
 	}
 	res, err := st.WithDetails(te)
 	if err != nil {
@@ -105,7 +105,7 @@ func ErrNotFound() error {
 func ErrProhibitedToDelete() error {
 	st := status.New(codes.FailedPrecondition, "toggle's is ENABLED hence it can't be deleted")
 	te := &togglev1.ToggleError{
-		ErrorCode: togglev1.ToggleErrorCode_PROHIBITED_TO_DELETE,
+		ErrorCode: togglev1.ToggleErrorCode_TOGGLE_ERROR_CODE_PROHIBITED_TO_DELETE,
 	}
 	res, err := st.WithDetails(te)
 	if err != nil {

@@ -39,6 +39,10 @@ jobs:
           source: '.'
           extensions: 'proto'
           clangFormatVersion: 11
+      - name: Lint proto files
+        uses: plexsystems/protolint-action@v0.2.0
+        with:
+          configDirectory: .      
       - name: Lint using golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:

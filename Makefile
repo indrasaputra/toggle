@@ -1,5 +1,5 @@
 GO_UNIT_TEST_FILES	= $(shell go list ./... | grep -v /feature)
-PROTOGEN_IMAGE 		= indrasaputra/protogen:2021-09-07
+PROTOGEN_IMAGE 		= indrasaputra/protogen:2021-11-16
 
 include Makefile.help.mk
 
@@ -20,6 +20,7 @@ lint.cleancache: ## Clean golangci-lint cache.
 lint: ## Lint proto files using buf and golang files using golangci-lint.
 lint: lint.cleancache
 	buf lint
+	protolint lint -fix .
 	golangci-lint run ./...
 
 .PHONY: pretty

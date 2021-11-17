@@ -67,7 +67,7 @@ Feature: Create new toggle
                     },
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "INVALID_KEY"
+                        "errorCode": "TOGGLE_ERROR_CODE_INVALID_KEY"
                     }
                 ]
             }
@@ -95,7 +95,7 @@ Feature: Create new toggle
                     },
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "INVALID_KEY"
+                        "errorCode": "TOGGLE_ERROR_CODE_INVALID_KEY"
                     }
                 ]
             }
@@ -123,7 +123,7 @@ Feature: Create new toggle
                     },
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "INVALID_KEY"
+                        "errorCode": "TOGGLE_ERROR_CODE_INVALID_KEY"
                     }
                 ]
             }
@@ -151,7 +151,7 @@ Feature: Create new toggle
                     },
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "INVALID_KEY"
+                        "errorCode": "TOGGLE_ERROR_CODE_INVALID_KEY"
                     }
                 ]
             }
@@ -179,7 +179,7 @@ Feature: Create new toggle
                     },
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "INVALID_KEY"
+                        "errorCode": "TOGGLE_ERROR_CODE_INVALID_KEY"
                     }
                 ]
             }
@@ -221,7 +221,7 @@ Feature: Create new toggle
                 "details": [
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "ALREADY_EXISTS"
+                        "errorCode": "TOGGLE_ERROR_CODE_ALREADY_EXISTS"
                     }
                 ]
             }

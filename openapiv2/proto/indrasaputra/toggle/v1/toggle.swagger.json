@@ -73,6 +73,7 @@
         "parameters": [
           {
             "name": "body",
+            "description": "toggle represents toggle data.",
             "in": "body",
             "required": true,
             "schema": {
@@ -248,16 +249,20 @@
       }
     },
     "v1CreateToggleResponse": {
-      "type": "object"
+      "type": "object",
+      "description": "CreateToggleResponse represents response from create toggle."
     },
     "v1DeleteToggleResponse": {
-      "type": "object"
+      "type": "object",
+      "description": "DeleteToggleResponse represents request from delete a toggle."
     },
     "v1DisableToggleResponse": {
-      "type": "object"
+      "type": "object",
+      "description": "DisableToggleResponse represents request from disable a toggle."
     },
     "v1EnableToggleResponse": {
-      "type": "object"
+      "type": "object",
+      "description": "EnableToggleResponse represents request from enable a toggle."
     },
     "v1GetAllTogglesResponse": {
       "type": "object",
@@ -266,17 +271,21 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1Toggle"
-          }
+          },
+          "description": "toggles represents an array of toggle data."
         }
-      }
+      },
+      "description": "GetAllTogglesResponse represents response from get all toggles."
     },
     "v1GetToggleByKeyResponse": {
       "type": "object",
       "properties": {
         "toggle": {
-          "$ref": "#/definitions/v1Toggle"
+          "$ref": "#/definitions/v1Toggle",
+          "description": "toggle represents toggle data."
         }
-      }
+      },
+      "description": "GetToggleByKeyResponse represents response from get toggle by key."
     },
     "v1Toggle": {
       "type": "object",
@@ -308,14 +317,17 @@
         "createdAt": {
           "type": "string",
           "format": "date-time",
+          "description": "created_at represents when the toggle was created.",
           "readOnly": true
         },
         "updatedAt": {
           "type": "string",
           "format": "date-time",
+          "description": "updated_at represents when the toggle was last updated.",
           "readOnly": true
         }
       },
+      "description": "Toggle represents a toggle data.",
       "required": [
         "key"
       ]

@@ -1,13 +1,15 @@
+// toggle.proto defines service for toggle.
+
 syntax = "proto3";
 
 package proto.indrasaputra.toggle.v1;
-
-option go_package = "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1;togglev1";
 
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1;togglev1";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info : {
@@ -26,6 +28,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   produces : "application/json",
 };
 
+// ToggleCommandService provides state-change service for toggle.
 service ToggleCommandService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
     description : "This service provides basic command or state-changing use cases to work with "
@@ -77,6 +80,7 @@ service ToggleCommandService {
   }
 }
 
+// ToggleQueryService provides query service for toggle.
 service ToggleQueryService {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {
     description : "This service provides basic query or data-retrieving use cases to work with "
@@ -104,14 +108,19 @@ service ToggleQueryService {
   }
 }
 
+// CreateToggleRequest represents request for create toggle.
 message CreateToggleRequest {
+  // toggle represents toggle data.
   Toggle toggle = 1;
 }
 
+// CreateToggleResponse represents response from create toggle.
 message CreateToggleResponse {
 }
 
+// GetToggleByKeyRequest represents request for get toggle by key.
 message GetToggleByKeyRequest {
+  // key represents unique toggle's key.
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
     description : "Unique identifier of a toggle",
@@ -121,18 +130,25 @@ message GetToggleByKeyRequest {
   } ];
 }
 
+// GetToggleByKeyResponse represents response from get toggle by key.
 message GetToggleByKeyResponse {
+  // toggle represents toggle data.
   Toggle toggle = 1;
 }
 
+// GetAllTogglesRequest represents request for get all toggles.
 message GetAllTogglesRequest {
 }
 
+// GetAllTogglesResponse represents response from get all toggles.
 message GetAllTogglesResponse {
+  // toggles represents an array of toggle data.
   repeated Toggle toggles = 1;
 }
 
+// EnableToggleRequest represents request for enable a toggle.
 message EnableToggleRequest {
+  // key represents unique toggle's key.
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
     description : "Unique identifier of a toggle",
@@ -142,10 +158,13 @@ message EnableToggleRequest {
   } ];
 }
 
+// EnableToggleResponse represents request from enable a toggle.
 message EnableToggleResponse {
 }
 
+// DisableToggleRequest represents request for disable a toggle.
 message DisableToggleRequest {
+  // key represents unique toggle's key.
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
     description : "Unique identifier of a toggle",
@@ -155,10 +174,13 @@ message DisableToggleRequest {
   } ];
 }
 
+// DisableToggleResponse represents request from disable a toggle.
 message DisableToggleResponse {
 }
 
+// DeleteToggleRequest represents request for delete a toggle.
 message DeleteToggleRequest {
+  // key represents unique toggle's key.
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
     description : "Unique identifier of a toggle",
@@ -168,10 +190,13 @@ message DeleteToggleRequest {
   } ];
 }
 
+// DeleteToggleResponse represents request from delete a toggle.
 message DeleteToggleResponse {
 }
 
+// Toggle represents a toggle data.
 message Toggle {
+  // key represents a unique identifier of a toggle.
   string key = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     required : "key",
     description : "Unique identifier of a toggle",
@@ -180,6 +205,7 @@ message Toggle {
     example : "\"dropdown-menubar\"",
   } ];
 
+  // is_enabled represents the toggle's usability status.
   bool is_enabled = 2 [
     (google.api.field_behavior) = OUTPUT_ONLY,
     (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
@@ -189,6 +215,7 @@ message Toggle {
     }
   ];
 
+  // description represents a concise description of a toggle.
   string description = 3 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description : "A concise description of a toggle",
     min_length : 1,
@@ -196,72 +223,82 @@ message Toggle {
     example : "\"toggle for showing/unshowing dropdown menubar\"",
   } ];
 
+  // created_at represents when the toggle was created.
   google.protobuf.Timestamp created_at = 4 [ (google.api.field_behavior) = OUTPUT_ONLY ];
+  // updated_at represents when the toggle was last updated.
   google.protobuf.Timestamp updated_at = 5 [ (google.api.field_behavior) = OUTPUT_ONLY ];
 }
 
+// ToggleError represents message for any error happening in toggle.
 message ToggleError {
+  // error_code represents specific and unique error code for toggle.
   ToggleErrorCode error_code = 1;
 }
 
+// ToggleErrorCode enumerates toggle error code.
 enum ToggleErrorCode {
   // Default enum code according to
   // https://medium.com/@akhaku/protobuf-definition-best-practices-87f281576f31.
-  UNSPECIFIED = 0;
+  TOGGLE_ERROR_CODE_UNSPECIFIED = 0;
 
   // Unexpected behavior occured in system.
-  INTERNAL = 1;
+  TOGGLE_ERROR_CODE_INTERNAL = 1;
 
   // Toggle instance is empty or nil.
-  EMPTY_TOGGLE = 2;
+  TOGGLE_ERROR_CODE_EMPTY_TOGGLE = 2;
 
   // Toggle already exists.
   // The uniqueness of a toggle is represented by its key.
-  ALREADY_EXISTS = 3;
+  TOGGLE_ERROR_CODE_ALREADY_EXISTS = 3;
 
   // Toggle's key is invalid.
   // It can be triggered when the key doesn't contain character other than alphanumeric and dash.
-  INVALID_KEY = 4;
+  TOGGLE_ERROR_CODE_INVALID_KEY = 4;
 
   // Toggle's value (is_enabled field) is invalid.
   // The value must be boolean.
-  INVALID_VALUE = 5;
+  TOGGLE_ERROR_CODE_INVALID_VALUE = 5;
 
   // Toggle not found in system.
-  NOT_FOUND = 6;
+  TOGGLE_ERROR_CODE_NOT_FOUND = 6;
 
   // Toggle's value (is_enabled field) is true and it can't be deleted.
   // It must be disabled (is_enabled set to false) first before deletion.
-  PROHIBITED_TO_DELETE = 7;
+  TOGGLE_ERROR_CODE_PROHIBITED_TO_DELETE = 7;
 }
 
-enum EventName {
+// ToggleEventName enumerates toggle event name.
+enum ToggleEventName {
   // Default enum code according to
   // https://medium.com/@akhaku/protobuf-definition-best-practices-87f281576f31.
-  EVENT_UNSPECIFIED = 0;
+  TOGGLE_EVENT_NAME_UNSPECIFIED = 0;
 
   // Occur when toggle is created.
-  EVENT_CREATED = 1;
+  TOGGLE_EVENT_NAME_CREATED = 1;
 
   // Occur when toggle is enabled.
-  EVENT_ENABLED = 2;
+  TOGGLE_EVENT_NAME_ENABLED = 2;
 
   // Occur when toggle is disabled.
-  EVENT_DISABLED = 3;
+  TOGGLE_EVENT_NAME_DISABLED = 3;
 
   // Occur when toggle is deleted.
-  EVENT_DELETED = 4;
+  TOGGLE_EVENT_NAME_DELETED = 4;
 }
 
-message EventToggle {
-  EventName name = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+// ToggleEvent represents an event of a toggle.
+message ToggleEvent {
+  // name represents event's name.
+  ToggleEventName name = 1 [ (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     description : "A concise identifier of an event",
     min_length : 1,
     max_length : 255,
     example : "\"EVENT_CREATED\"",
   } ];
 
+  // toggle represents the toggle in the event.
   Toggle toggle = 2;
 
+  // created_at represents when the event was created.
   google.protobuf.Timestamp created_at = 3 [ (google.api.field_behavior) = OUTPUT_ONLY ];
 }

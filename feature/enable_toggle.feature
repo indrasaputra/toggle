@@ -15,7 +15,7 @@ Feature: Enable toggle
                 "details": [
                     {
                         "@type": "type.googleapis.com/proto.indrasaputra.toggle.v1.ToggleError",
-                        "errorCode": "NOT_FOUND"
+                        "errorCode": "TOGGLE_ERROR_CODE_NOT_FOUND"
                     }
                 ]
             }

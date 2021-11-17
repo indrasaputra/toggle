@@ -29,6 +29,11 @@
     We use [protolint](https://github.com/yoheimuta/protolint) to format and lint our protocol buffer files.
     We use version 0.35.2 when we develop this project.
 
+- Install clang-format
+
+    We use [clang-format](https://clang.llvm.org/docs/ClangFormat.html) to format our protocol buffer files.
+    We use version 11.1.0 when we develop this project.
+
 - Install `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`, `protoc-gen-openapiv2`, `protoc-gen-go` 
 
     ```

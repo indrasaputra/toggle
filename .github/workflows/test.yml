@@ -33,6 +33,12 @@ jobs:
         uses: actions/checkout@v2
       - name: Validate migration file's name      
         run: make validate.migration
+      - name: Format proto files using clang-format
+        uses: DoozyX/clang-format-lint-action@v0.11
+        with:
+          source: '.'
+          extensions: 'proto'
+          clangFormatVersion: 11
       - name: Lint proto files
         uses: plexsystems/protolint-action@v0.2.0
         with:

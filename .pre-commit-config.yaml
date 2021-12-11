@@ -7,7 +7,7 @@ repos:
     rev: v0.17.0
     hooks:
       - id: gitlint
-        name: Git - Check commit message
+        name: Git - check commit message
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1
@@ -18,3 +18,26 @@ repos:
       - id: detect-private-key
       - id: end-of-file-fixer
       - id: trailing-whitespace
+
+  - repo: https://github.com/tekwizely/pre-commit-golang
+    rev: v1.0.0-beta.5
+    hooks:
+      - id: go-mod-tidy-repo
+        name: Go - check go.mod status
+      - id: go-test-mod
+        name: Go - check unit test status
+      - id: go-build-mod
+        name: Go - check build status
+      - id: go-vet-mod
+        name: Go - check suspicious constructs
+      - id: go-revive-mod
+        name: Go - check style
+      - id: go-sec-mod
+        name: Go - check source code for security problems
+      - id: go-staticcheck-mod
+        name: Go - check static analysis
+      - id: go-returns-repo
+        name: Go - check pretty printer
+        args: [ -w ]
+      - id: golangci-lint-mod
+        name: Go - check golangci-lint

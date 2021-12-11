@@ -34,7 +34,7 @@
     We use [clang-format](https://clang.llvm.org/docs/ClangFormat.html) to format our protocol buffer files.
     We use version 11.1.0 when we develop this project.
 
-- Install `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`, `protoc-gen-openapiv2`, `protoc-gen-go` 
+- Install `protoc-gen-go-grpc`, `protoc-gen-grpc-gateway`, `protoc-gen-openapiv2`, `protoc-gen-go`
 
     ```
     $ go install \
@@ -74,3 +74,23 @@
 - k6 (optional)
 
     Follow [k6 installation](https://k6.io/docs/getting-started/installation/).
+
+- Revive (optional)
+
+    Follow [revive installation](https://github.com/mgechev/revive#installation).
+    `revive` is currently only used in pre-commit. If pre-commit is not used, no need to install `revive`.
+
+- Gosec (optional)
+
+    Follow [gosec installation](https://github.com/securego/gosec#install).
+    `gosec` is currently only used in pre-commit. If pre-commit is not used, no need to install `gosec`.
+
+- Staticcheck (optional)
+
+    Follow [staticcheck installation](https://staticcheck.io/docs/getting-started/#installation).
+    `staticcheck` is currently only used in pre-commit. If pre-commit is not used, no need to install `staticcheck`.
+
+- Goreturns (optional)
+
+    Follow [goreturns installation](https://github.com/sqs/goreturns).
+    `goreturns` is currently only used in pre-commit. If pre-commit is not used, no need to install `goreturns`.

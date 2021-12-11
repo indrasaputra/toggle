@@ -71,6 +71,10 @@
 
     Follow [Kafka installation](https://kafka.apache.org/quickstart).
 
+- Pre-commit (encouraged)
+
+    Follow [pre-commit installation](https://pre-commit.com/#installation).
+
 - k6 (optional)
 
     Follow [k6 installation](https://k6.io/docs/getting-started/installation/).

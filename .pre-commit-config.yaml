@@ -1,0 +1,10 @@
+default_stages: [commit]
+
+fail_fast: true
+
+repos:
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.15.1
+    hooks:
+      - id: gitlint
+        name: Git - Check commit message

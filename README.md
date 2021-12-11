@@ -6,7 +6,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/019a5e0793400e5e90ba/maintainability)](https://codeclimate.com/github/indrasaputra/toggle/maintainability)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=indrasaputra_toggle&metric=alert_status)](https://sonarcloud.io/dashboard?id=indrasaputra_toggle)
 [![Go Reference](https://pkg.go.dev/badge/github.com/indrasaputra/toggle.svg)](https://pkg.go.dev/github.com/indrasaputra/toggle)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/indrasaputra/toggle/main.svg)](https://results.pre-commit.ci/latest/github/indrasaputra/toggle/main)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 
 
 Toggle is a [Feature-Flag](https://martinfowler.com/articles/feature-toggles.html) application. It uses event-driven paradigm.

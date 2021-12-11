@@ -24,8 +24,9 @@ repos:
   - repo: https://github.com/tekwizely/pre-commit-golang
     rev: v1.0.0-beta.5
     hooks:
-      - id: go-mod-tidy-repo
-        name: Go - check go.mod status
+      # deactivate this hook due to maximum supported version in pre-commit.ci is go 1.16
+      # - id: go-mod-tidy-repo
+      #   name: Go - check go.mod status
       - id: go-test-mod
         name: Go - check unit test status
       - id: go-build-mod

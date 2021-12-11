@@ -1,5 +1,5 @@
 Feature: Enable toggle
-    
+
     In order to use toggle
     I need to enable it first
 

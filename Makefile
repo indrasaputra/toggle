@@ -9,7 +9,7 @@ tidy: ## Tidy up go module.
 	GO111MODULE=on go mod tidy
 
 .PHONY: format
-format: ## Format golang and proto files. 
+format: ## Format golang and proto files.
 	bin/format.sh
 
 .PHONY: lint.cleancache
@@ -61,19 +61,19 @@ build.envoy: ## Build docker envoy.
 .PHONY: test.unit
 test.unit: ## Run unit test.
 test.unit: test.cleancache
-	go test -v -race $(GO_UNIT_TEST_FILES)
+	go test -failfast -v -race $(GO_UNIT_TEST_FILES)
 
 .PHONY: test.cover
 test.cover: ## Run unit test with coverage status printed in stdout.
 test.cover: test.cleancache
-	go test -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
+	go test -failfast -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
 	go tool cover -html=coverage.out -o coverage.html
 	go tool cover -func coverage.out
 
 .PHONY: test.coverhtml
 test.coverhtml: ## Run unit test with coverage status outputed as HTML.
 test.coverhtml: test.cleancache
-	go test -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
+	go test -failfast -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
 	go tool cover -html=coverage.out
 
 .PHONY: test.cleancache

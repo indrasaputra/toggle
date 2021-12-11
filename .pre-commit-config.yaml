@@ -4,7 +4,17 @@ fail_fast: true
 
 repos:
   - repo: https://github.com/jorisroovers/gitlint
-    rev: v0.15.1
+    rev: v0.17.0
     hooks:
       - id: gitlint
         name: Git - Check commit message
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-json
+      - id: pretty-format-json
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace

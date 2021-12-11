@@ -1,5 +1,5 @@
 Feature: Get toggle
-    
+
     In order to use toggle service
     I need to get them/it first
 

@@ -1,5 +1,5 @@
 Feature: Create new toggle
-    
+
     In order to use toggle service
     I need to create it first
 
@@ -156,7 +156,7 @@ Feature: Create new toggle
                 ]
             }
             """
-    
+
     Scenario: Invalid json request body (key doesn't contain alphanumeric or dash)
         Given the toggle is empty
         When I create toggle with body
@@ -198,7 +198,7 @@ Feature: Create new toggle
             """
             {}
             """
-    
+
     Scenario: Create new toggle with already exist keys
         Given there are toggles with
             | {"key": "toggle-1"} |

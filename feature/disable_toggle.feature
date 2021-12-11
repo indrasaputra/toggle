@@ -1,5 +1,5 @@
 Feature: Disable toggle
-    
+
     In order to delete toggle
     I need to disable it first
 

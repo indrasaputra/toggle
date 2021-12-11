@@ -9,7 +9,7 @@ tidy: ## Tidy up go module.
 	GO111MODULE=on go mod tidy
 
 .PHONY: format
-format: ## Format golang and proto files. 
+format: ## Format golang and proto files.
 	bin/format.sh
 
 .PHONY: lint.cleancache

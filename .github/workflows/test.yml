@@ -1,7 +1,7 @@
 name: Test
 
 on: [push, pull_request]
-  
+
 jobs:
   download-module:
     name: Download go module
@@ -23,15 +23,15 @@ jobs:
           key: go-module-${{ github.repository }}-${{ github.sha }}
           restore-keys: |
             go-module-${{ github.repository }}-${{ github.sha }}
-  
+
   code-linter:
     name: Lint all codes and file format
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - name: Clone repository 
+      - name: Clone repository
         uses: actions/checkout@v2
-      - name: Validate migration file's name      
+      - name: Validate migration file's name
         run: make validate.migration
       - name: Format proto files using clang-format
         uses: DoozyX/clang-format-lint-action@v0.11
@@ -42,7 +42,7 @@ jobs:
       - name: Lint proto files
         uses: plexsystems/protolint-action@v0.2.0
         with:
-          configDirectory: .      
+          configDirectory: .
       - name: Lint using golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
@@ -61,7 +61,7 @@ jobs:
         run: |
           make format
           make check.import
-  
+
   security-checking:
     name: Semgrep scan
     runs-on: ubuntu-latest
@@ -90,7 +90,7 @@ jobs:
           key: go-module-${{ github.repository }}-${{ github.sha }}
           restore-keys: |
             go-module-${{ github.repository }}-${{ github.sha }}
-      - name: Run unit test and coverage 
+      - name: Run unit test and coverage
         run: make test.cover
       - name: Push coverage result to Codecov
         uses: codecov/codecov-action@v1.0.13
@@ -145,13 +145,13 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            type=raw,value=${{ github.sha }}  
+            type=raw,value=${{ github.sha }}
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to DockerHub
-        uses: docker/login-action@v1 
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}

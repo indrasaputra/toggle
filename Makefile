@@ -31,6 +31,10 @@ pretty: tidy format lint
 check.import: ## Check if import blocks are separated accordingly.
 	bin/check-import.sh
 
+.PHONY: precommit
+precommit: ## Run pre-commit to all files.
+	pre-commit run --all-files
+
 ##@ Generator
 .PHONY: gen.proto
 gen.proto: ## Generate golang files from proto.

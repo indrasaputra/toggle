@@ -1,6 +1,7 @@
 default_stages: [commit]
 
 fail_fast: true
+exclude: .devcontainer/devcontainer.json
 
 repos:
   - repo: https://github.com/jorisroovers/gitlint

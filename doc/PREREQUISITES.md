@@ -1,5 +1,7 @@
 ## Prerequisites
 
+There are two options to provide the prerequisites. The first one is to install them all. The second is to use [VS Code Remote Container](https://code.visualstudio.com/docs/remote/containers). Visit the given link for the second option. Use the following guide if you prefer the first option.
+
 - Install Go
 
     We use version 1.17. Follow [Golang installation guideline](https://golang.org/doc/install).

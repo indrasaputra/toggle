@@ -125,49 +125,46 @@ jobs:
           path: toggle
           retention-days: 1
 
-  build-docker:
-    name: Build and push docker image
+  build-push-toggle:
+    name: Build and push toggle image
     if: github.event_name == 'push'
     needs: [compile-binary, unit-test]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v2
-      - name: Download go binary
-        uses: actions/download-artifact@v2
-        with:
-          name: go-binary-toggle-${{ github.sha }}
-      - name: Setup docker meta
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ${{ github.repository }}
-          flavor: |
-            latest=true
-          tags: |
-            type=raw,value=${{ github.sha }}
-      - name: Setup QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./dockerfiles/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
+    with:
+      image: toggle
+      dockerfile: ./dockerfile/toggle.dockerfile
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+  build-push-envoy:
+    name: Build and push envoy image
+    if: github.event_name == 'push'
+    needs: [compile-binary, unit-test]
+    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
+    with:
+      image: toggle
+      dockerfile: ./dockerfile/envoy.dockerfile
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+  build-push-elements:
+    name: Build and push elements image
+    if: github.event_name == 'push'
+    needs: [compile-binary, unit-test]
+    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
+    with:
+      image: toggle
+      dockerfile: ./dockerfile/elements.dockerfile
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   integration-test:
     name: Integration test
     if: github.event_name == 'push'
-    needs: [build-docker]
+    needs: [build-push-toggle]
     runs-on: ubuntu-latest
     container:
       image: indrasaputra/golang:2021-09-07

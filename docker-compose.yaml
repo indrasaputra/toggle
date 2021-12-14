@@ -79,9 +79,16 @@ services:
       - zookeeper
 
   proxy:
-    image: envoy/toggle:latest
+    image: indrasaputra/toggle-envoy:latest
     ports:
       - 8082:8082
+    networks:
+      - toggle
+
+  elements:
+    image: indrasaputra/toggle-elements:latest
+    ports:
+      - 8085:80
     networks:
       - toggle
 

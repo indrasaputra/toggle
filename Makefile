@@ -59,7 +59,11 @@ compile: ## Compile golang code to binary.
 
 .PHONY: build.envoy
 build.envoy: ## Build docker envoy.
-	docker build --no-cache -t envoy/toggle:latest -f envoy.dockerfile .
+	docker build --no-cache -t indrasaputra/toggle-envoy:latest -f dockerfile/envoy.dockerfile .
+
+.PHONY: build.elements
+build.elements: ## Build docker elements.
+	docker build --no-cache -t indrasaputra/toggle-elements:latest -f dockerfile/elements.dockerfile .
 
 ##@ Test
 .PHONY: test.unit

@@ -23,7 +23,15 @@ The API can be seen in proto files (`*.proto`) in directory [proto](proto/indras
 
 ### RESTful JSON
 
-The API is automatically generated in OpenAPIv2 format when generating gRPC codes.
+The API can be seen via web using [Stoplight Elements](https://stoplight.io/open-source/elements/).
+
+```
+$ docker run -p 8085:80 indrasaputra/toggle-elements:latest
+```
+
+Then, visit `http://localhost:8085` in browser.
+
+If docker is not preferred, the API is automatically generated in OpenAPIv2 format when generating gRPC codes.
 The generated files are stored in directory [openapiv2](openapiv2) in JSON format (`*.json`).
 To see the RESTful API contract, do the following:
 - Open the generated json file(s), such as [toggle.swagger.json](openapiv2/proto/indrasaputra/toggle/v1/toggle.swagger.json)

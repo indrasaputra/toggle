@@ -22,7 +22,7 @@
       "description": "This service provides basic query or data-retrieving use cases to work with feature-toggle.A toggle is represented by a key as its unique identifier."
     }
   ],
-  "host": "localhost",
+  "host": "localhost:8081",
   "schemes": [
     "http"
   ],

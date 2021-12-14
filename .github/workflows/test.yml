@@ -129,7 +129,7 @@ jobs:
     name: Build and push toggle image
     if: github.event_name == 'push'
     needs: [compile-binary, unit-test]
-    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
+    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@main
     with:
       image: toggle
       dockerfile: ./dockerfile/toggle.dockerfile
@@ -141,7 +141,7 @@ jobs:
   build-push-envoy:
     name: Build and push envoy image
     if: github.event_name == 'push'
-    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
+    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@main
     with:
       image: toggle-envoy
       dockerfile: ./dockerfile/envoy.dockerfile
@@ -152,7 +152,7 @@ jobs:
   build-push-elements:
     name: Build and push elements image
     if: github.event_name == 'push'
-    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
+    uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@main
     with:
       image: toggle-elements
       dockerfile: ./dockerfile/elements.dockerfile

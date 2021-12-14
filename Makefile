@@ -1,5 +1,5 @@
 GO_UNIT_TEST_FILES	= $(shell go list ./... | grep -v /feature)
-PROTOGEN_IMAGE 		= indrasaputra/protogen:2021-12-10
+PROTOGEN_IMAGE 		= indrasaputra/protogen:2021-12-14
 
 include Makefile.help.mk
 

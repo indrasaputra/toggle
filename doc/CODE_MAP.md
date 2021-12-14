@@ -34,6 +34,12 @@ This folder contains all documents related to the project.
 
 ---
 
+### `dockerfile`
+
+This folder contains all dockerfiles related to the project.
+
+---
+
 ### `entity`
 
 This folder contains the domain of the project.
@@ -135,6 +141,12 @@ This folder contains high-level interface to define a server. It also contains s
 
 This folder contains API definition for HTTP/1.1 REST.
 The contents of this folder are generated from `.proto` as well.
+
+---
+
+### `pkg`
+
+This folder contains exported toggle functionality, such as client SDK to connect with toggle.
 
 ---
 

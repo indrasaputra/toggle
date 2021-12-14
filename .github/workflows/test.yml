@@ -133,6 +133,7 @@ jobs:
     with:
       image: toggle
       dockerfile: ./dockerfile/toggle.dockerfile
+      need-go-binary: true
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -140,10 +141,9 @@ jobs:
   build-push-envoy:
     name: Build and push envoy image
     if: github.event_name == 'push'
-    needs: [compile-binary, unit-test]
     uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
     with:
-      image: toggle
+      image: toggle-envoy
       dockerfile: ./dockerfile/envoy.dockerfile
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -152,10 +152,9 @@ jobs:
   build-push-elements:
     name: Build and push elements image
     if: github.event_name == 'push'
-    needs: [compile-binary, unit-test]
     uses: indrasaputra/toggle/.github/workflows/reusable-docker.yml@add-stoplight-elements
     with:
-      image: toggle
+      image: toggle-elements
       dockerfile: ./dockerfile/elements.dockerfile
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}

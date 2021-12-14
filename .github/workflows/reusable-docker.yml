@@ -16,6 +16,11 @@ on:
         description: Path to dockerfile
         required: true
         type: string
+      need-go-binary:
+        description: Decide if job needs Go binary
+        required: false
+        type: boolean
+        default: false
 
     secrets:
       DOCKER_HUB_USERNAME:
@@ -31,6 +36,7 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v2
       - name: Download go binary
+        if: ${{ inputs.need-go-binary }}
         uses: actions/download-artifact@v2
         with:
           name: go-binary-toggle-${{ github.sha }}

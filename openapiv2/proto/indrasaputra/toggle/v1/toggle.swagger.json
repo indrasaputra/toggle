@@ -37,7 +37,7 @@
       "get": {
         "summary": "Get many toggles.",
         "description": "This endpoint gets all available toggles in the system.\nCurrently, it only retrieves 10 toggles at most.",
-        "operationId": "ToggleQueryService_GetAllToggles",
+        "operationId": "GetAllToggles",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -53,13 +53,13 @@
           }
         },
         "tags": [
-          "ToggleQueryService"
+          "Toggle"
         ]
       },
       "post": {
         "summary": "Create a new toggle.",
         "description": "This endpoint creates a new toggle with provided key and description.\nThe description can be left empty, but the key must exists.\nThe key must be unique and it can only contain alphanumeric and dash.\nThe key will be converted to lower case.",
-        "operationId": "ToggleCommandService_CreateToggle",
+        "operationId": "CreateToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -86,7 +86,7 @@
           }
         ],
         "tags": [
-          "ToggleCommandService"
+          "Toggle"
         ]
       }
     },
@@ -94,7 +94,7 @@
       "get": {
         "summary": "Get a toggle.",
         "description": "This endpoint gets a single toggle by its key.",
-        "operationId": "ToggleQueryService_GetToggleByKey",
+        "operationId": "GetToggleByKey",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -119,13 +119,13 @@
           }
         ],
         "tags": [
-          "ToggleQueryService"
+          "Toggle"
         ]
       },
       "delete": {
         "summary": "Delete a toggle.",
         "description": "This endpoint deletes a toggle by its key.\nThe operation is hard-delete, thus the toggle will be gone forever.",
-        "operationId": "ToggleCommandService_DeleteToggle",
+        "operationId": "DeleteToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -150,7 +150,7 @@
           }
         ],
         "tags": [
-          "ToggleCommandService"
+          "Toggle"
         ]
       }
     },
@@ -158,7 +158,7 @@
       "put": {
         "summary": "Disable a toggle.",
         "description": "This endpoint set toggle's usability to inactive.\nIts *isEnabled* attribute will be set to false.",
-        "operationId": "ToggleCommandService_DisableToggle",
+        "operationId": "DisableToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -183,7 +183,7 @@
           }
         ],
         "tags": [
-          "ToggleCommandService"
+          "Toggle"
         ]
       }
     },
@@ -191,7 +191,7 @@
       "put": {
         "summary": "Enable a toggle.",
         "description": "This endpoint set toggle's usability to active.\nIts *isEnabled* attribute will be set to true.",
-        "operationId": "ToggleCommandService_EnableToggle",
+        "operationId": "EnableToggle",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -216,7 +216,7 @@
           }
         ],
         "tags": [
-          "ToggleCommandService"
+          "Toggle"
         ]
       }
     }

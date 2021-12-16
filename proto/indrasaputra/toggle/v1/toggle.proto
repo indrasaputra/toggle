@@ -49,6 +49,11 @@ service ToggleCommandService {
       post : "/v1/toggles",
       body : "toggle"
     };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id : "CreateToggle",
+      tags : "Toggle"
+    };
   }
 
   // Enable a toggle.
@@ -58,6 +63,11 @@ service ToggleCommandService {
   rpc EnableToggle(EnableToggleRequest) returns (EnableToggleResponse) {
     option (google.api.http) = {
       put : "/v1/toggles/{key}/enable",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id : "EnableToggle",
+      tags : "Toggle"
     };
   }
 
@@ -69,6 +79,11 @@ service ToggleCommandService {
     option (google.api.http) = {
       put : "/v1/toggles/{key}/disable",
     };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id : "DisableToggle",
+      tags : "Toggle"
+    };
   }
 
   // Delete a toggle.
@@ -78,6 +93,11 @@ service ToggleCommandService {
   rpc DeleteToggle(DeleteToggleRequest) returns (DeleteToggleResponse) {
     option (google.api.http) = {
       delete : "/v1/toggles/{key}",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id : "DeleteToggle",
+      tags : "Toggle"
     };
   }
 }
@@ -97,6 +117,11 @@ service ToggleQueryService {
     option (google.api.http) = {
       get : "/v1/toggles/{key}",
     };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id : "GetToggleByKey",
+      tags : "Toggle"
+    };
   }
 
   // Get many toggles.
@@ -106,6 +131,11 @@ service ToggleQueryService {
   rpc GetAllToggles(GetAllTogglesRequest) returns (GetAllTogglesResponse) {
     option (google.api.http) = {
       get : "/v1/toggles",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      operation_id : "GetAllToggles",
+      tags : "Toggle"
     };
   }
 }

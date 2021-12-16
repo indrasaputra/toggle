@@ -88,7 +88,7 @@ services:
   elements:
     image: indrasaputra/toggle-elements:latest
     ports:
-      - 8085:80
+      - 4000:80
     networks:
       - toggle
 

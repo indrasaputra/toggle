@@ -57,6 +57,12 @@ func restoreDefaultState(ctx context.Context, sc *godog.Scenario) (context.Conte
 	return ctx, nil
 }
 
+func cleanUpData(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
+	err = disableAndDeleteAll()
+	checkErr(err)
+	return ctx, err
+}
+
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	_ = godotenv.Load()
 	url := os.Getenv("SERVER_URL")
@@ -65,6 +71,7 @@ func InitializeScenario(ctx *godog.ScenarioContext) {
 	}
 
 	ctx.Before(restoreDefaultState)
+	ctx.After(cleanUpData)
 
 	ctx.Step(`^there are toggles with$`, thereAreTogglesWith)
 	ctx.Step(`^the toggle is empty$`, theToggleIsEmpty)

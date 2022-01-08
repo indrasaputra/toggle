@@ -57,10 +57,10 @@ func restoreDefaultState(ctx context.Context, sc *godog.Scenario) (context.Conte
 	return ctx, nil
 }
 
-func cleanUpData(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
-	err = disableAndDeleteAll()
-	checkErr(err)
-	return ctx, err
+func cleanUpData(ctx context.Context, sc *godog.Scenario, _ error) (context.Context, error) {
+	errx := disableAndDeleteAll()
+	checkErr(errx)
+	return ctx, errx
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {

@@ -9,22 +9,27 @@ There are two options to provide the prerequisites. The first one is to install 
 - Install golangci-lint
 
     Follow [golangci-lint installation](https://golangci-lint.run/usage/install/).
+    We use version 1.43.0 when we develop this project.
 
 - Install gomock
 
     Follow [gomock installation](https://github.com/golang/mock).
+    We use version 1.6.0 when we develop this project.
 
 - Install golang-migrate
 
     Follow [golang-migrate](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md).
+    We use version 4.15.1 when we develop this project.
 
 - Install godog
 
     Follow [godog](https://github.com/cucumber/godog/#install).
+    We use version 0.12.0 when we develop this project.
 
 - Install Buf
 
     Follow [Buf installation](https://docs.buf.build/installation).
+    We use version 1.0.0-rc10 when we develop this project.
 
 - Install protolint
 

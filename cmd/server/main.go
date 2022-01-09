@@ -3,13 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"io"
-	"time"
+
+	"github.com/indrasaputra/toggle/internal/app"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/opentracing/opentracing-go"
-	"github.com/uber/jaeger-client-go"
-	jaegerconf "github.com/uber/jaeger-client-go/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
@@ -31,7 +28,9 @@ func main() {
 	rds, err := builder.BuildRedisClient(&cfg.Redis)
 	checkError(err)
 	kfk := builder.BuildKafkaWriter(&cfg.Kafka)
-	trc := initTracing(cfg)
+
+	tracerProvider, err := app.InitTracer(cfg)
+	checkError(err)
 
 	dep := &builder.Dependency{
 		PgxPool:     dbpool,
@@ -47,7 +46,7 @@ func main() {
 	registerGrpcGatewayService(context.Background(), gatewayServer, fmt.Sprintf(":%s", cfg.Port.Grpc), grpc.WithInsecure())
 
 	closer := func() {
-		_ = trc.Close()
+		_ = tracerProvider.Shutdown(context.Background())
 		_ = kfk.Close()
 		_ = rds.Close()
 		dbpool.Close()
@@ -84,35 +83,6 @@ func registerGrpcGatewayService(ctx context.Context, gatewayServer *gwayserver.G
 		return nil
 	})
 }
-
-func initTracing(cfg *config.Config) io.Closer {
-	if !cfg.Jaeger.Enabled {
-		return nopCloser{}
-	}
-
-	jaegerCfg := &jaegerconf.Configuration{
-		ServiceName: cfg.ServiceName,
-		Sampler: &jaegerconf.SamplerConfig{
-			Type:  cfg.Jaeger.SamplingType,
-			Param: cfg.Jaeger.SamplingParam,
-		},
-		Reporter: &jaegerconf.ReporterConfig{
-			LogSpans:            cfg.Jaeger.LogSpans,
-			LocalAgentHostPort:  fmt.Sprintf("%s:%s", cfg.Jaeger.Host, cfg.Jaeger.Port),
-			BufferFlushInterval: time.Duration(cfg.Jaeger.FlushInterval) * time.Second,
-		},
-	}
-	tracer, closer, err := jaegerCfg.NewTracer(jaegerconf.Logger(jaeger.StdLogger))
-	checkError(err)
-
-	opentracing.SetGlobalTracer(tracer)
-	return closer
-}
-
-type nopCloser struct{}
-
-// Closer closes nothing.
-func (nopCloser) Close() error { return nil }
 
 func checkError(err error) {
 	if err != nil {

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net"
 
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_logsettable "github.com/grpc-ecosystem/go-grpc-middleware/logging/settable"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpcmiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpclogsettable "github.com/grpc-ecosystem/go-grpc-middleware/logging/settable"
+	grpczap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpcrecovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
@@ -44,9 +44,9 @@ func newGrpcServer(port string, options ...grpc.ServerOption) *GrpcServer {
 // These are list of interceptors that are attached (from innermost to outermost):
 // 	- Metrics, using Prometheus.
 // 	- Logging, using zap logger.
-// 	- Recoverer, using grpc_recovery.
+// 	- Recoverer, using grpcrecovery.
 func NewGrpcServer(port string) *GrpcServer {
-	options := grpc_middleware.WithUnaryServerChain(defaultUnaryServerInterceptors()...)
+	options := grpcmiddleware.WithUnaryServerChain(defaultUnaryServerInterceptors()...)
 	srv := newGrpcServer(port, options)
 	grpc_prometheus.Register(srv.server)
 	return srv
@@ -104,12 +104,12 @@ func (gs *GrpcServer) Stop() {
 
 func defaultUnaryServerInterceptors() []grpc.UnaryServerInterceptor {
 	logger, _ := zap.NewProduction() // error is impossible, hence ignored.
-	grpc_zap.SetGrpcLoggerV2(grpc_logsettable.ReplaceGrpcLoggerV2(), logger)
+	grpczap.SetGrpcLoggerV2(grpclogsettable.ReplaceGrpcLoggerV2(), logger)
 	grpc_prometheus.EnableHandlingTimeHistogram()
 
 	options := []grpc.UnaryServerInterceptor{
-		grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(recoveryHandler)),
-		grpc_zap.UnaryServerInterceptor(logger),
+		grpcrecovery.UnaryServerInterceptor(grpcrecovery.WithRecoveryHandler(recoveryHandler)),
+		grpczap.UnaryServerInterceptor(logger),
 		grpc_prometheus.UnaryServerInterceptor,
 		otelgrpc.UnaryServerInterceptor(otelgrpc.WithTracerProvider(otel.GetTracerProvider())),
 	}

@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/opentracing/opentracing-go"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/indrasaputra/toggle/entity"
+	"github.com/indrasaputra/toggle/internal/app"
 	"github.com/indrasaputra/toggle/internal/decorator/service"
 	mock_service "github.com/indrasaputra/toggle/test/mock/service"
 )
@@ -40,8 +40,8 @@ func TestTracing_Create(t *testing.T) {
 	defer ctrl.Finish()
 
 	t.Run("success decorate Create method", func(t *testing.T) {
-		span, ctx := opentracing.StartSpanFromContext(testCtx, "Create")
-		defer span.Finish()
+		ctx, span := app.GetTracer().Start(testCtx, "Create")
+		defer span.End()
 
 		exec := createTracingExecutor(ctrl)
 		exec.creator.EXPECT().Create(ctx, testToggle).Return(nil)
@@ -57,8 +57,8 @@ func TestTracing_DeleteByKey(t *testing.T) {
 	defer ctrl.Finish()
 
 	t.Run("success decorate DeleteByKey method", func(t *testing.T) {
-		span, ctx := opentracing.StartSpanFromContext(testCtx, "DeleteByKey")
-		defer span.Finish()
+		ctx, span := app.GetTracer().Start(testCtx, "DeleteByKey")
+		defer span.End()
 
 		exec := createTracingExecutor(ctrl)
 		exec.deleter.EXPECT().DeleteByKey(ctx, testToggleKey).Return(nil)
@@ -74,8 +74,8 @@ func TestTracing_Enable(t *testing.T) {
 	defer ctrl.Finish()
 
 	t.Run("success decorate Enable method", func(t *testing.T) {
-		span, ctx := opentracing.StartSpanFromContext(testCtx, "Enable")
-		defer span.Finish()
+		ctx, span := app.GetTracer().Start(testCtx, "Enable")
+		defer span.End()
 
 		exec := createTracingExecutor(ctrl)
 		exec.enabler.EXPECT().Enable(ctx, testToggleKey).Return(nil)
@@ -91,8 +91,8 @@ func TestTracing_Disable(t *testing.T) {
 	defer ctrl.Finish()
 
 	t.Run("success decorate Disable method", func(t *testing.T) {
-		span, ctx := opentracing.StartSpanFromContext(testCtx, "Disable")
-		defer span.Finish()
+		ctx, span := app.GetTracer().Start(testCtx, "Disable")
+		defer span.End()
 
 		exec := createTracingExecutor(ctrl)
 		exec.disabler.EXPECT().Disable(ctx, testToggleKey).Return(nil)
@@ -108,8 +108,8 @@ func TestTracing_GetByKey(t *testing.T) {
 	defer ctrl.Finish()
 
 	t.Run("success decorate GetByKey method", func(t *testing.T) {
-		span, ctx := opentracing.StartSpanFromContext(testCtx, "GetByKey")
-		defer span.Finish()
+		ctx, span := app.GetTracer().Start(testCtx, "GetByKey")
+		defer span.End()
 
 		exec := createTracingExecutor(ctrl)
 		exec.getter.EXPECT().GetByKey(ctx, testToggleKey).Return(nil, nil)
@@ -126,8 +126,8 @@ func TestTracing_GetAll(t *testing.T) {
 	defer ctrl.Finish()
 
 	t.Run("success decorate GetAll method", func(t *testing.T) {
-		span, ctx := opentracing.StartSpanFromContext(testCtx, "GetAll")
-		defer span.Finish()
+		ctx, span := app.GetTracer().Start(testCtx, "GetAll")
+		defer span.End()
 
 		exec := createTracingExecutor(ctrl)
 		exec.getter.EXPECT().GetAll(ctx).Return(nil, nil)

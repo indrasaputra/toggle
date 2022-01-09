@@ -3,14 +3,9 @@ package service
 import (
 	"context"
 
-	"github.com/opentracing/opentracing-go"
-
 	"github.com/indrasaputra/toggle/entity"
+	"github.com/indrasaputra/toggle/internal/app"
 	"github.com/indrasaputra/toggle/service"
-)
-
-const (
-	tagService = "service"
 )
 
 // Tracing decorates toggle service and imbues it with tracing.
@@ -35,66 +30,52 @@ func NewTracing(creator service.CreateToggle, getter service.GetToggle, enabler 
 
 // Create decorates Create method.
 func (t *Tracing) Create(ctx context.Context, toggle *entity.Toggle) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "Create")
-	defer span.Finish()
+	ctx, span := app.GetTracer().Start(ctx, "Create")
+	defer span.End()
 
-	err := t.creator.Create(ctx, toggle)
-
-	span.SetTag(tagService, "Create")
-	return err
+	return t.creator.Create(ctx, toggle)
 }
 
 // DeleteByKey decorates DeleteByKey method.
 func (t *Tracing) DeleteByKey(ctx context.Context, key string) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "DeleteByKey")
-	defer span.Finish()
+	ctx, span := app.GetTracer().Start(ctx, "DeleteByKey")
+	defer span.End()
 
-	err := t.deleter.DeleteByKey(ctx, key)
-
-	span.SetTag(tagService, "DeleteByKey")
-	return err
+	return t.deleter.DeleteByKey(ctx, key)
 }
 
 // GetByKey decorates GetByKey method.
 func (t *Tracing) GetByKey(ctx context.Context, key string) (*entity.Toggle, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "GetByKey")
-	defer span.Finish()
+	ctx, span := app.GetTracer().Start(ctx, "GetByKey")
+	defer span.End()
 
 	resp, err := t.getter.GetByKey(ctx, key)
 
-	span.SetTag(tagService, "GetByKey")
 	return resp, err
 }
 
 // GetAll decorates GetAll method.
 func (t *Tracing) GetAll(ctx context.Context) ([]*entity.Toggle, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "GetAll")
-	defer span.Finish()
+	ctx, span := app.GetTracer().Start(ctx, "GetAll")
+	defer span.End()
 
 	resp, err := t.getter.GetAll(ctx)
 
-	span.SetTag(tagService, "GetAll")
 	return resp, err
 }
 
 // Enable decorates Enable method.
 func (t *Tracing) Enable(ctx context.Context, key string) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "Enable")
-	defer span.Finish()
+	ctx, span := app.GetTracer().Start(ctx, "Enable")
+	defer span.End()
 
-	err := t.enabler.Enable(ctx, key)
-
-	span.SetTag(tagService, "Enable")
-	return err
+	return t.enabler.Enable(ctx, key)
 }
 
 // Disable decorates Disable method.
 func (t *Tracing) Disable(ctx context.Context, key string) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "Disable")
-	defer span.Finish()
+	ctx, span := app.GetTracer().Start(ctx, "Disable")
+	defer span.End()
 
-	err := t.disabler.Disable(ctx, key)
-
-	span.SetTag(tagService, "Disable")
-	return err
+	return t.disabler.Disable(ctx, key)
 }

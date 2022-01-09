@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-redis/redis/extra/redisotel"
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/segmentio/kafka-go"
@@ -68,8 +69,8 @@ func BuildToggleQueryHandler(dep *Dependency) *handler.ToggleQuery {
 	return handler.NewToggleQuery(decor)
 }
 
-// BuildPgxPool builds a pool of pgx client.
-func BuildPgxPool(cfg *config.Postgres) (*pgxpool.Pool, error) {
+// BuildPostgrePgxPool builds a pool of pgx client.
+func BuildPostgrePgxPool(cfg *config.Postgres) (*pgxpool.Pool, error) {
 	connCfg := fmt.Sprintf(postgresConnFormat,
 		cfg.Host,
 		cfg.Port,
@@ -113,7 +114,8 @@ func BuildRedisClient(cfg *config.Redis) (*goredis.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	client.AddHook(redis.NewHookTracing())
+
+	client.AddHook(redisotel.TracingHook{})
 
 	return client, nil
 }

@@ -68,6 +68,12 @@ This folder contains all detail implementation specified in the `service` folder
 
 ---
 
+### `internal/app`
+
+This folder contains the global variables related to the app.
+
+---
+
 ### `internal/builder`
 
 This folder contains the [builder design pattern](https://sourcemaking.com/design_patterns/builder).
@@ -91,12 +97,6 @@ This folder contains decorator pattern implementation.
 
 This folder contains the HTTP/2 gRPC handlers.
 Codes in this folder implement gRPC server interface.
-
----
-
-### `internal/grpc/interceptor`
-
-This folder contains the HTTP/2 gRPC interceptors.
 
 ---
 

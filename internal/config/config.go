@@ -9,6 +9,7 @@ import (
 // Config holds configuration for the project.
 type Config struct {
 	ServiceName string `env:"SERVICE_NAME,default=toggle-api"`
+	AppEnv      string `env:"APP_ENV,default=development"`
 	Port        Port
 	Postgres    Postgres
 	CockroachDB CockroachDB

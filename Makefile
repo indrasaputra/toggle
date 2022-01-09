@@ -69,12 +69,12 @@ build.elements: ## Build docker elements.
 .PHONY: test.unit
 test.unit: ## Run unit test.
 test.unit: test.cleancache
-	go test -failfast -v -race $(GO_UNIT_TEST_FILES)
+	go test -count=1 -failfast -v -race $(GO_UNIT_TEST_FILES)
 
 .PHONY: test.cover
 test.cover: ## Run unit test with coverage status printed in stdout.
 test.cover: test.cleancache
-	go test -failfast -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
+	go test -count=1 -failfast -v -race $(GO_UNIT_TEST_FILES) -coverprofile=coverage.out
 	go tool cover -html=coverage.out -o coverage.html
 	go tool cover -func coverage.out
 

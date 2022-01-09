@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-redis/redis/extra/redisotel"
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/segmentio/kafka-go"
@@ -113,7 +114,8 @@ func BuildRedisClient(cfg *config.Redis) (*goredis.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	client.AddHook(redis.NewHookTracing())
+
+	client.AddHook(redisotel.TracingHook{})
 
 	return client, nil
 }

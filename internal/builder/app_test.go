@@ -50,7 +50,7 @@ func TestBuildPgxPool(t *testing.T) {
 	cfg := &config.Postgres{
 		Host:            "localhost",
 		Port:            "5432",
-		Name:            "guru",
+		Name:            "toggle",
 		User:            "user",
 		Password:        "password",
 		MaxOpenConns:    "10",
@@ -71,7 +71,7 @@ func TestBuildCockroachPgxPool(t *testing.T) {
 	cfg := &config.CockroachDB{
 		Host:            "localhost",
 		Port:            "5432",
-		Name:            "guru",
+		Name:            "toggle",
 		User:            "user",
 		Password:        "password",
 		MaxOpenConns:    "10",

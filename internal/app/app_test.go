@@ -38,4 +38,19 @@ func TestInitTracer(t *testing.T) {
 		assert.Nil(t, err)
 		assert.NotNil(t, prov)
 	})
+
+	t.Run("production env uses ratio sampler", func(t *testing.T) {
+		cfg := &config.Config{
+			Jaeger: config.Jaeger{
+				Enabled: true,
+			},
+			ServiceName: "svc",
+			AppEnv:      "production",
+		}
+		prov, err := app.InitTracer(cfg)
+		defer func() { _ = prov.Shutdown(context.Background()) }()
+
+		assert.Nil(t, err)
+		assert.NotNil(t, prov)
+	})
 }

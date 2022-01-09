@@ -13,7 +13,9 @@ import (
 )
 
 const (
-	appNoopTracer = "noop-tracer"
+	noopTracer    = "noop-tracer"
+	envProduction = "production"
+	samplerRatio  = 0.2
 )
 
 var (
@@ -36,7 +38,13 @@ func InitTracer(cfg *config.Config) (*tracesdk.TracerProvider, error) {
 		return nil, err
 	}
 
+	sampler := tracesdk.AlwaysSample()
+	if cfg.AppEnv == envProduction {
+		sampler = tracesdk.ParentBased(tracesdk.TraceIDRatioBased(samplerRatio))
+	}
+
 	tracerProvider := tracesdk.NewTracerProvider(
+		tracesdk.WithSampler(sampler),
 		tracesdk.WithBatcher(exporter),
 		tracesdk.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
@@ -58,7 +66,7 @@ func Tracer(tracer oteltrace.Tracer) {
 // GetTracer gets the global app tracer.
 func GetTracer() oteltrace.Tracer {
 	if appTracer == nil {
-		return otel.GetTracerProvider().Tracer(appNoopTracer)
+		return otel.GetTracerProvider().Tracer(noopTracer)
 	}
 	return appTracer
 }

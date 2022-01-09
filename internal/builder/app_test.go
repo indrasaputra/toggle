@@ -46,7 +46,7 @@ func TestBuildToggleHandler(t *testing.T) {
 	})
 }
 
-func TestBuildPgxPool(t *testing.T) {
+func TestBuildPostgrePgxPool(t *testing.T) {
 	cfg := &config.Postgres{
 		Host:            "localhost",
 		Port:            "5432",
@@ -60,7 +60,7 @@ func TestBuildPgxPool(t *testing.T) {
 	}
 
 	t.Run("fail build postgres pgxpool client", func(t *testing.T) {
-		client, err := builder.BuildPgxPool(cfg)
+		client, err := builder.BuildPostgrePgxPool(cfg)
 
 		assert.NotNil(t, err)
 		assert.Nil(t, client)

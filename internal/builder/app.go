@@ -69,8 +69,8 @@ func BuildToggleQueryHandler(dep *Dependency) *handler.ToggleQuery {
 	return handler.NewToggleQuery(decor)
 }
 
-// BuildPgxPool builds a pool of pgx client.
-func BuildPgxPool(cfg *config.Postgres) (*pgxpool.Pool, error) {
+// BuildPostgrePgxPool builds a pool of pgx client.
+func BuildPostgrePgxPool(cfg *config.Postgres) (*pgxpool.Pool, error) {
 	connCfg := fmt.Sprintf(postgresConnFormat,
 		cfg.Host,
 		cfg.Port,

@@ -22,19 +22,19 @@ func main() {
 	cfg, err := config.NewConfig(".env")
 	checkError(err)
 
-	dbpool, err := builder.BuildPgxPool(&cfg.Postgres)
+	postgrePool, err := builder.BuildPostgrePgxPool(&cfg.Postgres)
 	checkError(err)
-	rds, err := builder.BuildRedisClient(&cfg.Redis)
+	redisClient, err := builder.BuildRedisClient(&cfg.Redis)
 	checkError(err)
-	kfk := builder.BuildKafkaWriter(&cfg.Kafka)
+	kafkaWriter := builder.BuildKafkaWriter(&cfg.Kafka)
 
 	tracerProvider, err := app.InitTracer(cfg)
 	checkError(err)
 
 	dep := &builder.Dependency{
-		PgxPool:     dbpool,
-		RedisClient: rds,
-		KafkaWriter: kfk,
+		PgxPool:     postgrePool,
+		RedisClient: redisClient,
+		KafkaWriter: kafkaWriter,
 		Config:      cfg,
 	}
 
@@ -46,9 +46,9 @@ func main() {
 
 	closer := func() {
 		_ = tracerProvider.Shutdown(context.Background())
-		_ = kfk.Close()
-		_ = rds.Close()
-		dbpool.Close()
+		_ = kafkaWriter.Close()
+		_ = redisClient.Close()
+		postgrePool.Close()
 	}
 	defer closer()
 

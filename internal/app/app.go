@@ -1,7 +1,6 @@
 package app
 
 import (
-	"github.com/indrasaputra/toggle/internal/config"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/jaeger"
@@ -9,6 +8,8 @@ import (
 	tracesdk "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 	oteltrace "go.opentelemetry.io/otel/trace"
+
+	"github.com/indrasaputra/toggle/internal/config"
 )
 
 const (

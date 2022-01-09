@@ -16,7 +16,6 @@ require (
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/joho/godotenv v1.3.0
-	github.com/onsi/ginkgo v1.16.4
 	github.com/pashagolub/pgxmock v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0

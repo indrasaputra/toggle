@@ -4,9 +4,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/indrasaputra/toggle/internal/app"
 	"github.com/indrasaputra/toggle/internal/config"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestInitTracer(t *testing.T) {
@@ -32,7 +33,7 @@ func TestInitTracer(t *testing.T) {
 			AppEnv:      "test",
 		}
 		prov, err := app.InitTracer(cfg)
-		defer prov.Shutdown(context.Background())
+		defer func() { _ = prov.Shutdown(context.Background()) }()
 
 		assert.Nil(t, err)
 		assert.NotNil(t, prov)

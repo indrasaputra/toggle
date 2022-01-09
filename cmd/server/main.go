@@ -4,12 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/indrasaputra/toggle/internal/app"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
+	"github.com/indrasaputra/toggle/internal/app"
 	"github.com/indrasaputra/toggle/internal/builder"
 	"github.com/indrasaputra/toggle/internal/config"
 	gwayserver "github.com/indrasaputra/toggle/internal/grpc-gateway/server"

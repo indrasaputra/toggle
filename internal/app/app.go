@@ -22,9 +22,9 @@ var (
 // InitTracer initializes tracer and set it as default tracer.
 // The created tracer can be accessed using GetTracer method.
 // Tracer will only be created if jaeger config is enabled.
-func InitTracer(cfg *config.Config) error {
+func InitTracer(cfg *config.Config) (*tracesdk.TracerProvider, error) {
 	if !cfg.Jaeger.Enabled {
-		return nil
+		return nil, nil
 	}
 
 	exporter, err := jaeger.New(jaeger.WithAgentEndpoint(
@@ -32,10 +32,10 @@ func InitTracer(cfg *config.Config) error {
 		jaeger.WithAgentPort(cfg.Jaeger.Port),
 	))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	tracer := tracesdk.NewTracerProvider(
+	tracerProvider := tracesdk.NewTracerProvider(
 		tracesdk.WithBatcher(exporter),
 		tracesdk.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
@@ -44,9 +44,9 @@ func InitTracer(cfg *config.Config) error {
 		)),
 	)
 
-	otel.SetTracerProvider(tracer)
-	Tracer(tracer.Tracer(cfg.ServiceName))
-	return nil
+	otel.SetTracerProvider(tracerProvider)
+	Tracer(tracerProvider.Tracer(cfg.ServiceName))
+	return tracerProvider, nil
 }
 
 // Tracer sets the global app tracer.

@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/indrasaputra/toggle/internal/app"
@@ -15,8 +16,11 @@ func TestInitTracer(t *testing.T) {
 				Enabled: false,
 			},
 		}
-		err := app.InitTracer(cfg)
+
+		prov, err := app.InitTracer(cfg)
+
 		assert.Nil(t, err)
+		assert.Nil(t, prov)
 	})
 
 	t.Run("success init tracer and set it to app", func(t *testing.T) {
@@ -27,7 +31,10 @@ func TestInitTracer(t *testing.T) {
 			ServiceName: "svc",
 			AppEnv:      "test",
 		}
-		err := app.InitTracer(cfg)
+		prov, err := app.InitTracer(cfg)
+		defer prov.Shutdown(context.Background())
+
 		assert.Nil(t, err)
+		assert.NotNil(t, prov)
 	})
 }

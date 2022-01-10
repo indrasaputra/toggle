@@ -3,6 +3,16 @@ name: Test
 on: [push, pull_request]
 
 jobs:
+  pr-title-check:
+    name: Check PR title
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      # Refer to https://www.conventionalcommits.org/en/v1.0.0/ for commit message convention.
+      - uses: amannn/action-semantic-pull-request@v3.5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   download-module:
     name: Download go module
     runs-on: ubuntu-latest

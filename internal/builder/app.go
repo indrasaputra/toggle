@@ -37,16 +37,16 @@ type Dependency struct {
 func BuildToggleCommandHandler(dep *Dependency) *handler.ToggleCommand {
 	psql := postgres.NewToggle(dep.PgxPool)
 	rds := redis.NewToggle(dep.RedisClient, time.Duration(dep.Config.Redis.TTL)*time.Minute)
-	writer := messaging.NewKafkaPublisher(dep.KafkaWriter)
+	publisher := messaging.NewRedisPublisher(&dep.Config.Redis)
 
 	inserterRepo := repository.NewToggleInserter(psql, rds)
 	updaterRepo := repository.NewToggleUpdater(psql, rds)
 	deleterRepo := repository.NewToggleDeleter(psql, rds)
 
-	creator := service.NewToggleCreator(inserterRepo, writer)
-	enabler := service.NewToggleEnabler(updaterRepo, writer)
-	disabler := service.NewToggleDisabler(updaterRepo, writer)
-	deleter := service.NewToggleDeleter(deleterRepo, writer)
+	creator := service.NewToggleCreator(inserterRepo, publisher)
+	enabler := service.NewToggleEnabler(updaterRepo, publisher)
+	disabler := service.NewToggleDisabler(updaterRepo, publisher)
+	deleter := service.NewToggleDeleter(deleterRepo, publisher)
 
 	decor := decorservice.NewTracing(creator, nil, enabler, disabler, deleter)
 

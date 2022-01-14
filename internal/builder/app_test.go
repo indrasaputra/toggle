@@ -6,7 +6,6 @@ import (
 	"github.com/alicebob/miniredis/v2"
 	goredis "github.com/go-redis/redis/v8"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/segmentio/kafka-go"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/indrasaputra/toggle/internal/builder"
@@ -18,7 +17,6 @@ func TestBuildToggleCommandHandler(t *testing.T) {
 		dep := &builder.Dependency{
 			PgxPool:     &pgxpool.Pool{},
 			RedisClient: &goredis.Client{},
-			KafkaWriter: &kafka.Writer{},
 			Config: &config.Config{
 				Redis: config.Redis{},
 			},

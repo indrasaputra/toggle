@@ -8,6 +8,16 @@ services:
     networks:
       - toggle
 
+  asynqmon:
+    image: hibiken/asynqmon:0.5
+    ports:
+      - 3001:8080
+    networks:
+      - toggle
+    command: --redis-addr=redis:6379
+    depends_on:
+      - redis
+
   postgres:
     image: postgres:13.2-alpine
     environment:

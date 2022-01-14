@@ -21,21 +21,20 @@ import (
 func main() {
 	// start of non-circuit breaker client
 	ctx := context.Background()
-	config := &toggle.DialConfig{
+	dialConfig := &toggle.DialConfig{
 		Host:    "localhost:8080",
 		Options: []grpc.DialOption{grpc.WithInsecure()},
 	}
-	client, err := toggle.NewClient(config, nil)
+	client, err := toggle.NewClient(dialConfig, nil)
 	if err != nil {
 		log.Printf("err init client: %v\n", err)
 		return
 	}
 
-	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"localhost:9092"},
-		Topic:   "toggle",
-	})
-	subscriber := messaging.NewKafkaSubscriber(reader)
+	redisConfig := &config.Redis{
+		Address: "localhost:6379",
+	}
+	subscriber := messaging.NewRedisSubscriber(redisConfig)
 	go client.Subscribe(ctx, subscriber, []string{"toggle-test-1", "toggle-test-2", "toggle-test-3"})
 
 	key := "toggle-test-1"
@@ -55,8 +54,8 @@ func main() {
 
 	// end of non-circuit breaker client
 	//
+	//
 	// start of circuit-breaker client
-
 	setting := gobreaker.Settings{
 		ReadyToTrip: func(counts gobreaker.Counts) bool {
 			failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
@@ -66,7 +65,7 @@ func main() {
 	}
 	breaker := gobreaker.NewCircuitBreaker(setting)
 
-	client, err = toggle.NewClient(config, breaker)
+	client, err = toggle.NewClient(dialConfig, breaker)
 	if err != nil {
 		log.Printf("err init client: %v\n", err)
 		return

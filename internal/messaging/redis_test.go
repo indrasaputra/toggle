@@ -5,14 +5,13 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/indrasaputra/toggle/entity"
-
-	"github.com/hibiken/asynq"
-
 	"github.com/alicebob/miniredis/v2"
+	"github.com/hibiken/asynq"
+	"github.com/stretchr/testify/assert"
+
+	"github.com/indrasaputra/toggle/entity"
 	"github.com/indrasaputra/toggle/internal/config"
 	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
-	"github.com/stretchr/testify/assert"
 )
 
 type RedisPublisherExecutor struct {

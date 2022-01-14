@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/hibiken/asynq"
+
 	"github.com/indrasaputra/toggle/internal/config"
 	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )

@@ -104,12 +104,13 @@ $ make test.load
 The application already emits necessary telemetry. If application's dependencies are run using [docker compose](doc/HOW_TO_RUN.md#docker), then monitoring is [provided by default](docker-compose.yaml). Otherwise, you have to provide them.
 These are stacks used as monitoring system.
 
-| Monitoring       | Stack                                      | Address                                           |
-| ---              | ---                                        | ---                                               |
-| Metrics          | [Prometheus](https://prometheus.io/)       | [http://localhost:9090](http://localhost:9090)    |
-| Visualization    | [Grafana](https://grafana.com/)            | [http://localhost:3000](http://localhost:3000)    |
-| Tracing          | [Jaeger](https://www.jaegertracing.io/)    | [http://localhost:16686](http://localhost:16686)  |
-| Log              | [Zap](https://github.com/uber-go/zap)      | Stdout                                            |
+| Monitoring       | Stack                                              | Address                                           |
+| ---              | ---                                                | ---                                               |
+| Metrics          | [Prometheus](https://prometheus.io/)               | [http://localhost:9090](http://localhost:9090)    |
+| Visualization    | [Grafana](https://grafana.com/)                    | [http://localhost:3000](http://localhost:3000)    |
+| Tracing          | [Jaeger](https://www.jaegertracing.io/)            | [http://localhost:16686](http://localhost:16686)  |
+| Job Queue        | [Asynqmon](https://github.com/hibiken/asynqmon)    | [http://localhost:3001](http://localhost:3001)  |
+| Log              | [Zap](https://github.com/uber-go/zap)              | Stdout                                            |
 
 Currently, tracing only works on gRPC server (handler), service/usecase, and redis. Postgres is not traced yet.
 

@@ -17,7 +17,7 @@ The second is to use docker image and docker compose.
 
 - Run or start PostgreSQL
 
-- Fill the `REDIS_ADDRESS` and `REDIS_TTL`
+- Fill the `REDIS_*` envs
 
     `REDIS_TTL` is a Time to Live for a key-value in redis. `REDIS_TTL=5` means its TTL is 5 minutes
 

@@ -114,7 +114,7 @@ This folder contains the HTTP/1.1 grpc gateway server.
 
 ### `internal/messaging`
 
-This folder contains codes that connect to the message queue system, such as Kafka.
+This folder contains codes that connect to the message queue system, such as Kafka and Redis Queue.
 
 ---
 

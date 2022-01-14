@@ -56,7 +56,9 @@ type CockroachDB struct {
 type Redis struct {
 	Address string `env:"REDIS_ADDRESS,default=localhost:6379"`
 	// TTL in minute.
-	TTL uint `env:"REDIS_TTL,default=5"`
+	TTL         uint `env:"REDIS_TTL,default=5"`
+	DBSelect    int  `env:"REDIS_DB_SELECT,default=0"`
+	Concurrency int  `env:"REDIS_CONCURRENCY,default=10"`
 }
 
 // Kafka holds configuration for Kafka.

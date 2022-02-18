@@ -5,7 +5,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
+	togglev1 "github.com/indrasaputra/toggle/proto/toggle/v1"
 )
 
 // ErrInternal returns codes.Internal explained that unexpected behavior occurred in system.

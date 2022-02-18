@@ -1,17 +1,21 @@
-version: v1beta1
+version: v1
 plugins:
   - name: go
-    out: .
+    out: proto
     opt:
       - paths=source_relative
   - name: go-grpc
-    out: .
+    out: proto
     opt:
       - paths=source_relative
   - name: grpc-gateway
-    out: .
+    out: proto
     opt:
       - paths=source_relative
       - generate_unbound_methods=true
   - name: openapiv2
     out: openapiv2
+  - name: gql
+    out: proto
+    opt:
+      - paths=source_relative

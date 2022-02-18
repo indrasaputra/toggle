@@ -11,7 +11,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 
 	entity "github.com/indrasaputra/toggle/entity"
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
+	togglev1 "github.com/indrasaputra/toggle/proto/toggle/v1"
 )
 
 // MockCreateToggle is a mock of CreateToggle interface.

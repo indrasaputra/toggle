@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
+	togglev1 "github.com/indrasaputra/toggle/proto/toggle/v1"
 )
 
 var (

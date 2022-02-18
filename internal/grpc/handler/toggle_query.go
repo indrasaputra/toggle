@@ -6,7 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"github.com/indrasaputra/toggle/entity"
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
+	togglev1 "github.com/indrasaputra/toggle/proto/toggle/v1"
 	"github.com/indrasaputra/toggle/service"
 )
 

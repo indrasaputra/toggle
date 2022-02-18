@@ -4,10 +4,9 @@ set -euo pipefail
 
 IMAGE_DIR=bin
 
-buf mod update
+(cd proto && buf mod update)
+# buf breaking --against '.git#branch=main'
 buf lint
-buf breaking --against '.git#branch=main'
-buf generate
-
 mkdir -p ${IMAGE_DIR}
 buf build -o ${IMAGE_DIR}/image.bin
+buf generate

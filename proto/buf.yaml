@@ -1,14 +1,11 @@
-version: v1beta1
+version: v1
 name: buf.build/indrasaputra/toggle
-build:
-  roots:
-    - .
-lint:
-  use:
-    - BASIC
 breaking:
   use:
     - FILE
+lint:
+  use:
+    - BASIC
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/grpc-ecosystem/grpc-gateway

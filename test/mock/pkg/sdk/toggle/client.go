@@ -10,7 +10,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
+	togglev1 "github.com/indrasaputra/toggle/proto/toggle/v1"
 )
 
 // MockCircuitBreaker is a mock of CircuitBreaker interface.

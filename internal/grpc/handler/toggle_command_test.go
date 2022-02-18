@@ -13,7 +13,7 @@ import (
 
 	"github.com/indrasaputra/toggle/entity"
 	"github.com/indrasaputra/toggle/internal/grpc/handler"
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
+	togglev1 "github.com/indrasaputra/toggle/proto/toggle/v1"
 	mock_service "github.com/indrasaputra/toggle/test/mock/service"
 )
 

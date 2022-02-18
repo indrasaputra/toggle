@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/indrasaputra/toggle/internal/messaging"
-	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
+	togglev1 "github.com/indrasaputra/toggle/proto/toggle/v1"
 	mock_messaging "github.com/indrasaputra/toggle/test/mock/messaging"
 )
 

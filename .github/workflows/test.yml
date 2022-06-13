@@ -176,7 +176,7 @@ jobs:
     needs: [build-push-toggle]
     runs-on: ubuntu-latest
     container:
-      image: indrasaputra/golang:2021-09-07
+      image: indrasaputra/golang:2022-06-13
     services:
       postgres:
         image: postgres:13.4-alpine

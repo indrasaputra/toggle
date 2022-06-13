@@ -4,12 +4,12 @@ There are two options to provide the prerequisites. The first one is to install 
 
 - Install Go
 
-    We use version 1.17. Follow [Golang installation guideline](https://golang.org/doc/install).
+    We use version 1.18. Follow [Golang installation guideline](https://golang.org/doc/install).
 
 - Install golangci-lint
 
     Follow [golangci-lint installation](https://golangci-lint.run/usage/install/).
-    We use version 1.43.0 when we develop this project.
+    We use version 1.46.2 when we develop this project.
 
 - Install gomock
 
@@ -24,17 +24,17 @@ There are two options to provide the prerequisites. The first one is to install 
 - Install godog
 
     Follow [godog](https://github.com/cucumber/godog/#install).
-    We use version 0.12.0 when we develop this project.
+    We use version 0.12.5 when we develop this project.
 
 - Install Buf
 
     Follow [Buf installation](https://docs.buf.build/installation).
-    We use version 1.0.0-rc10 when we develop this project.
+    We use version 1.5.0 when we develop this project.
 
 - Install protolint
 
     We use [protolint](https://github.com/yoheimuta/protolint) to format and lint our protocol buffer files.
-    We use version 0.35.2 when we develop this project.
+    We use version 0.38.1 when we develop this project.
 
 - Install clang-format
 

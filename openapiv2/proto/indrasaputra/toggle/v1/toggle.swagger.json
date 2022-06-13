@@ -76,7 +76,7 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "toggle",
             "description": "toggle represents toggle data.",
             "in": "body",
             "required": true,

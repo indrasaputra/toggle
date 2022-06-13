@@ -303,12 +303,13 @@ func RegisterToggleCommandServiceHandlerServer(ctx context.Context, mux *runtime
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle", runtime.WithHTTPPathPattern("/v1/toggles"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle", runtime.WithHTTPPathPattern("/v1/toggles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleCommandService_CreateToggle_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_CreateToggle_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -326,12 +327,13 @@ func RegisterToggleCommandServiceHandlerServer(ctx context.Context, mux *runtime
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/enable"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/enable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleCommandService_EnableToggle_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_EnableToggle_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -349,12 +351,13 @@ func RegisterToggleCommandServiceHandlerServer(ctx context.Context, mux *runtime
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/disable"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/disable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleCommandService_DisableToggle_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_DisableToggle_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -372,12 +375,13 @@ func RegisterToggleCommandServiceHandlerServer(ctx context.Context, mux *runtime
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleCommandService_DeleteToggle_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleCommandService_DeleteToggle_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -404,12 +408,13 @@ func RegisterToggleQueryServiceHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleQueryService_GetToggleByKey_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleQueryService_GetToggleByKey_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -427,12 +432,13 @@ func RegisterToggleQueryServiceHandlerServer(ctx context.Context, mux *runtime.S
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles", runtime.WithHTTPPathPattern("/v1/toggles"))
+		var err error
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles", runtime.WithHTTPPathPattern("/v1/toggles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_ToggleQueryService_GetAllToggles_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_ToggleQueryService_GetAllToggles_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -489,12 +495,13 @@ func RegisterToggleCommandServiceHandlerClient(ctx context.Context, mux *runtime
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle", runtime.WithHTTPPathPattern("/v1/toggles"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/CreateToggle", runtime.WithHTTPPathPattern("/v1/toggles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleCommandService_CreateToggle_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_CreateToggle_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -509,12 +516,13 @@ func RegisterToggleCommandServiceHandlerClient(ctx context.Context, mux *runtime
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/enable"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/EnableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/enable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleCommandService_EnableToggle_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_EnableToggle_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -529,12 +537,13 @@ func RegisterToggleCommandServiceHandlerClient(ctx context.Context, mux *runtime
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/disable"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DisableToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}/disable"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleCommandService_DisableToggle_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_DisableToggle_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -549,12 +558,13 @@ func RegisterToggleCommandServiceHandlerClient(ctx context.Context, mux *runtime
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleCommandService/DeleteToggle", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleCommandService_DeleteToggle_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleCommandService_DeleteToggle_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -630,12 +640,13 @@ func RegisterToggleQueryServiceHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetToggleByKey", runtime.WithHTTPPathPattern("/v1/toggles/{key}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleQueryService_GetToggleByKey_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleQueryService_GetToggleByKey_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
@@ -650,12 +661,13 @@ func RegisterToggleQueryServiceHandlerClient(ctx context.Context, mux *runtime.S
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles", runtime.WithHTTPPathPattern("/v1/toggles"))
+		var err error
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/proto.indrasaputra.toggle.v1.ToggleQueryService/GetAllToggles", runtime.WithHTTPPathPattern("/v1/toggles"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_ToggleQueryService_GetAllToggles_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_ToggleQueryService_GetAllToggles_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)

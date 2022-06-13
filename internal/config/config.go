@@ -16,6 +16,7 @@ type Config struct {
 	Redis       Redis
 	Kafka       Kafka
 	Jaeger      Jaeger
+	Asynq       Asynq
 }
 
 // Port holds configuration for project's port.
@@ -56,9 +57,16 @@ type CockroachDB struct {
 type Redis struct {
 	Address string `env:"REDIS_ADDRESS,default=localhost:6379"`
 	// TTL in minute.
-	TTL         uint `env:"REDIS_TTL,default=5"`
-	DBSelect    int  `env:"REDIS_DB_SELECT,default=0"`
-	Concurrency int  `env:"REDIS_CONCURRENCY,default=10"`
+	TTL uint `env:"REDIS_TTL,default=5"`
+}
+
+// Asynq holds configuration for Asynq. It is basically Redis.
+type Asynq struct {
+	Address string `env:"ASYNQ_ADDRESS,default=localhost:6379"`
+	// TTL in minute.
+	TTL         uint `env:"ASYNQ_TTL,default=5"`
+	DBSelect    int  `env:"ASYNQ_DB_SELECT,default=0"`
+	Concurrency int  `env:"ASYNQ_CONCURRENCY,default=10"`
 }
 
 // Kafka holds configuration for Kafka.

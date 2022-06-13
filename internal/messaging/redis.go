@@ -11,62 +11,61 @@ import (
 	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
 
-// RedisPublisher is responsible to publish message to Redis.
-// It uses asynq client.
-type RedisPublisher struct {
+// AsynqPublisher is responsible to publish message to Asynq.
+type AsynqPublisher struct {
 	client *asynq.Client
 }
 
-// NewRedisPublisher creates an instance of RedisPublisher.
-func NewRedisPublisher(cfg *config.Redis) *RedisPublisher {
+// NewAsynqPublisher creates an instance of AsynqPublisher.
+func NewAsynqPublisher(cfg *config.Asynq) *AsynqPublisher {
 	client := asynq.NewClient(
 		asynq.RedisClientOpt{
 			Addr: cfg.Address,
 			DB:   cfg.DBSelect,
 		},
 	)
-	return &RedisPublisher{client: client}
+	return &AsynqPublisher{client: client}
 }
 
-// Publish publishes toggle event to Redis.
+// Publish publishes toggle event to Asynq.
 // The event will be converted to JSON.
-func (rp *RedisPublisher) Publish(ctx context.Context, event *togglev1.ToggleEvent) error {
+func (ap *AsynqPublisher) Publish(ctx context.Context, event *togglev1.ToggleEvent) error {
 	payload, err := json.Marshal(event)
 	if err != nil {
 		return err
 	}
 
 	task := asynq.NewTask(event.GetName().String(), payload)
-	_, err = rp.client.Enqueue(task)
+	_, err = ap.client.Enqueue(task)
 	return err
 }
 
-// RedisSubscriber is responsible to subscribe message from Redis.
-type RedisSubscriber struct {
+// AsynqSubscriber is responsible to subscribe message from Asynq.
+type AsynqSubscriber struct {
 	server *asynq.Server
 }
 
-// NewRedisSubscriber creates an instance of RedisSubscriber.
-func NewRedisSubscriber(cfg *config.Redis) *RedisSubscriber {
+// NewAsynqSubscriber creates an instance of AsynqSubscriber.
+func NewAsynqSubscriber(cfg *config.Asynq) *AsynqSubscriber {
 	server := asynq.NewServer(
 		asynq.RedisClientOpt{Addr: cfg.Address},
 		asynq.Config{Concurrency: cfg.Concurrency},
 	)
-	return &RedisSubscriber{server: server}
+	return &AsynqSubscriber{server: server}
 }
 
 // Subscribe subscribes to a certain topic and process the incoming message using the fn parameter.
 // This method is blocking.
-func (rs *RedisSubscriber) Subscribe(ctx context.Context, fn func(*togglev1.ToggleEvent) error) error {
-	return rs.server.Run(asynq.HandlerFunc(rs.handleToggleEvent(fn)))
+func (as *AsynqSubscriber) Subscribe(ctx context.Context, fn func(*togglev1.ToggleEvent) error) error {
+	return as.server.Run(asynq.HandlerFunc(as.handleToggleEvent(fn)))
 }
 
 // Stop stops the subscriber.
-func (rs *RedisSubscriber) Stop() {
-	rs.server.Shutdown()
+func (as *AsynqSubscriber) Stop() {
+	as.server.Shutdown()
 }
 
-func (rs *RedisSubscriber) handleToggleEvent(fn func(*togglev1.ToggleEvent) error) func(ctx context.Context, t *asynq.Task) error {
+func (as *AsynqSubscriber) handleToggleEvent(fn func(*togglev1.ToggleEvent) error) func(ctx context.Context, t *asynq.Task) error {
 	return func(ctx context.Context, t *asynq.Task) error {
 		var event *togglev1.ToggleEvent
 		if err := json.Unmarshal(t.Payload(), &event); err != nil {

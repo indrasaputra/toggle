@@ -37,7 +37,7 @@ type Dependency struct {
 func BuildToggleCommandHandler(dep *Dependency) *handler.ToggleCommand {
 	psql := postgres.NewToggle(dep.PgxPool)
 	rds := redis.NewToggle(dep.RedisClient, time.Duration(dep.Config.Redis.TTL)*time.Minute)
-	publisher := messaging.NewRedisPublisher(&dep.Config.Redis)
+	publisher := messaging.NewAsynqPublisher(&dep.Config.Asynq)
 
 	inserterRepo := repository.NewToggleInserter(psql, rds)
 	updaterRepo := repository.NewToggleUpdater(psql, rds)

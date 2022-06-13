@@ -28,10 +28,10 @@ func ExampleNewClient() {
 		return
 	}
 
-	redisConfig := &config.Redis{
+	asynqConfig := &config.Asynq{
 		Address: "localhost:6379",
 	}
-	subscriber := messaging.NewRedisSubscriber(redisConfig)
+	subscriber := messaging.NewAsynqSubscriber(asynqConfig)
 	go func() {
 		_ = client.Subscribe(ctx, subscriber, []string{"toggle-test-1", "toggle-test-2", "toggle-test-3"})
 	}()

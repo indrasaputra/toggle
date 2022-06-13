@@ -8,6 +8,15 @@ services:
     networks:
       - toggle
 
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:v0.2.0
+    ports:
+      - 6380:6379
+    ulimits:
+      memlock: -1
+    networks:
+      - toggle
+
   asynqmon:
     image: hibiken/asynqmon:0.5
     ports:

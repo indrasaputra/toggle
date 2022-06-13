@@ -46,7 +46,7 @@ func (te *ToggleEnabler) Enable(ctx context.Context, key string) error {
 		return err
 	}
 	if err := te.publisher.Publish(ctx, entity.EventToggleEnabled(&entity.Toggle{Key: key})); err != nil {
-		log.Printf("publish on toggle deleter error: %v", err)
+		log.Printf("publish on toggle enabler error: %v", err)
 	}
 	return nil
 }

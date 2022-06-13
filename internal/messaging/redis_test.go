@@ -14,24 +14,24 @@ import (
 	togglev1 "github.com/indrasaputra/toggle/proto/indrasaputra/toggle/v1"
 )
 
-type RedisPublisherExecutor struct {
-	publisher *RedisPublisher
+type AsynqPublisherExecutor struct {
+	publisher *AsynqPublisher
 	server    *miniredis.Miniredis
 }
 
-func TestNewRedisPublisher(t *testing.T) {
+func TestNewAsynqPublisher(t *testing.T) {
 	t.Run("successfully create redis publisher", func(t *testing.T) {
-		exec := createRedisPublisherExecutor()
+		exec := createAsynqPublisherExecutor()
 		defer exec.server.Close()
 		assert.NotNil(t, exec.publisher)
 	})
 }
 
-func TestRedisPublisher_Publish(t *testing.T) {
+func TestAsynqPublisher_Publish(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success publish event to redis queue", func(t *testing.T) {
-		exec := createRedisPublisherExecutor()
+		exec := createAsynqPublisherExecutor()
 		defer exec.server.Close()
 
 		err := exec.publisher.Publish(ctx, &togglev1.ToggleEvent{})
@@ -40,22 +40,22 @@ func TestRedisPublisher_Publish(t *testing.T) {
 	})
 }
 
-type RedisSubscriberExecutor struct {
-	subscriber *RedisSubscriber
+type AsynqSubscriberExecutor struct {
+	subscriber *AsynqSubscriber
 	server     *miniredis.Miniredis
 }
 
-func TestNewRedisSubscriber(t *testing.T) {
+func TestNewAsynqSubscriber(t *testing.T) {
 	t.Run("successfully create redis subscriber", func(t *testing.T) {
-		exec := createRedisSubscriberExecutor()
+		exec := createAsynqSubscriberExecutor()
 		defer exec.server.Close()
 		assert.NotNil(t, exec.subscriber)
 	})
 }
 
-func TestRedisSubscriber_Subscribe(t *testing.T) {
+func TestAsynqSubscriber_Subscribe(t *testing.T) {
 	ctx := context.Background()
-	exec := createRedisSubscriberExecutor()
+	exec := createAsynqSubscriberExecutor()
 	defer exec.server.Close()
 
 	t.Run("success execute fn", func(t *testing.T) {
@@ -72,9 +72,9 @@ func TestRedisSubscriber_Subscribe(t *testing.T) {
 	})
 }
 
-func TestRedisSubscriber_handleToggleEvent(t *testing.T) {
+func TestAsynqSubscriber_handleToggleEvent(t *testing.T) {
 	ctx := context.Background()
-	exec := createRedisSubscriberExecutor()
+	exec := createAsynqSubscriberExecutor()
 	defer exec.server.Close()
 
 	t.Run("unmarshal task fail", func(t *testing.T) {
@@ -101,26 +101,26 @@ func TestRedisSubscriber_handleToggleEvent(t *testing.T) {
 	})
 }
 
-func createRedisPublisherExecutor() *RedisPublisherExecutor {
+func createAsynqPublisherExecutor() *AsynqPublisherExecutor {
 	mr, _ := miniredis.Run()
-	cfg := &config.Redis{
+	cfg := &config.Asynq{
 		Address: mr.Addr(),
 	}
 
-	return &RedisPublisherExecutor{
-		publisher: NewRedisPublisher(cfg),
+	return &AsynqPublisherExecutor{
+		publisher: NewAsynqPublisher(cfg),
 		server:    mr,
 	}
 }
 
-func createRedisSubscriberExecutor() *RedisSubscriberExecutor {
+func createAsynqSubscriberExecutor() *AsynqSubscriberExecutor {
 	mr, _ := miniredis.Run()
-	cfg := &config.Redis{
+	cfg := &config.Asynq{
 		Address: mr.Addr(),
 	}
 
-	return &RedisSubscriberExecutor{
-		subscriber: NewRedisSubscriber(cfg),
+	return &AsynqSubscriberExecutor{
+		subscriber: NewAsynqSubscriber(cfg),
 		server:     mr,
 	}
 }

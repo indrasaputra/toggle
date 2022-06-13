@@ -200,6 +200,16 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      dragonfly:
+        image: docker.dragonflydb.io/dragonflydb/dragonfly:v0.2.0
+        ports:
+          - 6380:6379
+        options: >-
+          --ulimit memlock=-1
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       toggle:
         image: ${{ github.repository }}:${{ github.sha }}
         env:
@@ -214,7 +224,11 @@ jobs:
           POSTGRES_MAX_CONN_LIFETIME: 10m
           POSTGRES_MAX_IDLE_LIFETIME: 5m
           POSTGRES_SSL_MODE: disable
-          REDIS_ADDRESS: redis:6379
+          ASYNQ_ADDRESS: redis:6379
+          ASYNQ_TTL: 5
+          ASYNQ_DB_SELECT: 0
+          ASYNQ_CONCURRENCY: 10
+          REDIS_ADDRESS: dragonfly:6380
           REDIS_TTL: 5
           JAEGER_ENABLED: false
         ports:
